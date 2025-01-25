@@ -24,7 +24,7 @@ This project is a desktop application that allows teachers to manage student gra
 #### Grade
 - `id` (Primary Key)
 - `student_id` (Foreign Key)
-- `assignment` (String)
+- `type` (Enum: ASSIGNMENT, EXAM, PROJECT)
 - `grade` (Double)
 - `weight` (Double)  
 
@@ -61,7 +61,7 @@ CREATE TABLE Student (
 CREATE TABLE Grade (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id INT,
-    assignment VARCHAR(100) NOT NULL,
+    type ENUM('ASSIGNMENT', 'EXAM', 'PROJECT') NOT NULL,
     grade DOUBLE NOT NULL,
     weight DOUBLE NOT NULL,
     FOREIGN KEY (student_id) REFERENCES Student(id)
@@ -82,10 +82,13 @@ CREATE TABLE Grade (
 
 #### Grade Management
 - Add, view, update, and delete grades for each student.
-- Calculate averages (weighted and non-weighted).
+- Record grades with categories: Assignment, Exam, Project.
+- Assign weights to each category for calculating averages.
+- Calculate overall average and weighted average.
 
 #### Report Card
 - Generate a performance report for each student.
+- Include breakdown by grade category (Assignment, Exam, Project).
 - Export report cards as PDF files.
 
 ---
@@ -110,12 +113,13 @@ CREATE TABLE Grade (
 
 5. **Grade Management**
    - TableView: List grades by student
+   - Fields: Assignment, Exam, Project, Grade, Weight
    - Buttons: Add Grade, Edit Grade, Delete Grade
    - Summary: Display average grade and weighted average
 
 6. **Report Card Generation**
    - Dropdown: Select Student
-   - Display: Grades, averages, and remarks
+   - Display: Grades (categorized by type), averages, and remarks
    - Buttons: Export to PDF, Print
 
 ---
@@ -153,11 +157,15 @@ public class Student {
 public class Grade {
     private int id;
     private int studentId;
-    private String assignment;
+    private GradeType type; // ASSIGNMENT, EXAM, PROJECT
     private double grade;
     private double weight;
 
     // Getters and Setters
+}
+
+public enum GradeType {
+    ASSIGNMENT, EXAM, PROJECT
 }
 ```
 
@@ -203,6 +211,7 @@ public class UserDAO {
 public class ReportCardGenerator {
     public void generateReport(int studentId) {
         // Fetch student data, grades, and calculate averages
+        // Calculate weighted averages based on type and weights
         // Generate a PDF report using a library like iText
     }
 }
