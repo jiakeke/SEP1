@@ -12,7 +12,6 @@ This project is a desktop application that allows teachers to manage student gra
 #### Student
 - `id` (Primary Key)
 - `name` (String)
-- `group_id` (Foreign Key)
 - `email` (String)
 - `phone` (String)
 
@@ -21,12 +20,22 @@ This project is a desktop application that allows teachers to manage student gra
 - `name` (String)
 - `description` (String)
 
+#### GroupStudents (Many-to-Many Relationship)
+- `group_id` (Foreign Key)
+- `student_id` (Foreign Key)
+
+#### GradeType
+- `id` (Primary Key)
+- `name` (String)
+- `weight` (Double)
+- `group_id` (Foreign Key)
+
 #### Grade
 - `id` (Primary Key)
 - `student_id` (Foreign Key)
-- `type` (Enum: ASSIGNMENT, EXAM, PROJECT)
+- `group_id` (Foreign Key)
+- `grade_type_id` (Foreign Key)
 - `grade` (Double)
-- `weight` (Double)  
 
 #### User (For authentication)
 - `id` (Primary Key)
@@ -52,19 +61,35 @@ CREATE TABLE Group (
 CREATE TABLE Student (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    group_id INT,
     email VARCHAR(100),
     phone VARCHAR(20),
+);
+
+CREATE TABLE GroupStudents (
+    group_id INT,
+    student_id INT,
+    PRIMARY KEY (group_id, student_id),
+    FOREIGN KEY (group_id) REFERENCES Group(id),
+    FOREIGN KEY (student_id) REFERENCES Student(id)
+);
+
+CREATE TABLE GradeType (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    weight DOUBLE NOT NULL,
+    group_id INT,
     FOREIGN KEY (group_id) REFERENCES Group(id)
 );
 
 CREATE TABLE Grade (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id INT,
-    type ENUM('ASSIGNMENT', 'EXAM', 'PROJECT') NOT NULL,
+    group_id INT,
+    grade_type_id INT,
     grade DOUBLE NOT NULL,
-    weight DOUBLE NOT NULL,
-    FOREIGN KEY (student_id) REFERENCES Student(id)
+    FOREIGN KEY (student_id) REFERENCES Student(id),
+    FOREIGN KEY (group_id) REFERENCES Group(id),
+    FOREIGN KEY (grade_type_id) REFERENCES GradeType(id)
 );
 ```
 
@@ -80,16 +105,22 @@ CREATE TABLE Grade (
 - **Group**: Create, Read, Update, Delete groups of students.
 - **Student**: Manage individual student records.
 
+#### Group-Student Relationship
+- Assign students to groups and view students by group.
+
+#### Grade Categories and Weights Management
+- Define grade categories (e.g., Assignment, Exam, Project) with weights.
+
 #### Grade Management
 - Add, view, update, and delete grades for each student.
-- Record grades with categories: Assignment, Exam, Project.
-- Assign weights to each category for calculating averages.
+- Record grades with categories: (e.g., Assignment, Exam, Project).
 - Calculate overall average and weighted average.
 
 #### Report Card
 - Generate a performance report for each student.
 - Include breakdown by grade category (Assignment, Exam, Project).
 - Export report cards as PDF files.
+- Print report cards.
 
 ---
 
@@ -105,7 +136,7 @@ CREATE TABLE Grade (
 
 3. **Group Management**
    - TableView: List all groups
-   - Buttons: Add Group, Edit Group, Delete Group
+   - Buttons: Add Group, Edit Group, Delete Group, Manage Students
 
 4. **Student Management**
    - TableView: List all students with search and filter by group
@@ -113,7 +144,7 @@ CREATE TABLE Grade (
 
 5. **Grade Management**
    - TableView: List grades by student
-   - Fields: Assignment, Exam, Project, Grade, Weight
+   - Fields: Assignment, Exam, Project, Grade
    - Buttons: Add Grade, Edit Grade, Delete Grade
    - Summary: Display average grade and weighted average
 
@@ -147,9 +178,24 @@ public class Group {
 public class Student {
     private int id;
     private String name;
-    private int groupId;
     private String email;
     private String phone;
+
+    // Getters and Setters
+}
+
+public class GroupStudents {
+    private int groupId;
+    private int studentId;
+
+    // Getters and Setters
+}
+
+public class GradeType {
+    private int id;
+    private String name;
+    private double weight;
+    private int groupId;
 
     // Getters and Setters
 }
@@ -157,16 +203,13 @@ public class Student {
 public class Grade {
     private int id;
     private int studentId;
-    private GradeType type; // ASSIGNMENT, EXAM, PROJECT
+    private int groupId;
+    private int gradeTypeId;
     private double grade;
-    private double weight;
 
     // Getters and Setters
 }
 
-public enum GradeType {
-    ASSIGNMENT, EXAM, PROJECT
-}
 ```
 
 ---
