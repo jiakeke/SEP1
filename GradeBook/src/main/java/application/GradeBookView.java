@@ -61,8 +61,35 @@ public class GradeBookView extends Application {
     public void showSystemInterface(Stage primaryStage) {
         Label welcomeLabel = new Label("Welcome to Grade Book!");
         VBox vbox = new VBox(10, welcomeLabel);
+
+        Button studentsButton = new Button("Students");
+        Button groupsButton = new Button("Groups");
+
+        vbox.getChildren().addAll(studentsButton, groupsButton);
+
+        studentsButton.setOnAction(e -> openStudents());
+        groupsButton.setOnAction(e -> openGroups());
+
         Scene scene = new Scene(vbox, 800, 600);
         primaryStage.setScene(scene);
+    }
+
+    private void openStudents() {
+        Stage stage = new Stage();
+        stage.setTitle("Students");
+        VBox layout = new VBox(10);
+        Scene scene = new Scene(layout, 800, 600);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void openGroups() {
+        Stage stage = new Stage();
+        stage.setTitle("Groups");
+        VBox layout = new VBox(10);
+        Scene scene = new Scene(layout, 800, 600);
+        stage.setScene(scene);
+        stage.show();
     }
 
 }
