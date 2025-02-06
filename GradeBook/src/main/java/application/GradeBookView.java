@@ -6,6 +6,12 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.geometry.Pos;
+import javafx.geometry.Insets;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+
 
 import controller.UserController;
 
@@ -18,20 +24,60 @@ public class GradeBookView extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Grade Book");
+        Label loginLabel = new Label("Login or Register!");
+        loginLabel.setStyle("-fx-font-weight: bold;");
 
-        // Input fields
+        // Create the form layout
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+
+        grid.add(loginLabel, 0, 1, 2, 1);
+
+        // Add form fields
+        Label username = new Label("Username:");
+        username.setStyle("-fx-font-weight: bold;");
+        grid.add(username, 0, 2);
+
         usernameField = new TextField();
-        usernameField.setPromptText("Username");
+        //usernameField.setPromptText("Username");
+        grid.add(usernameField, 1, 2);
+
+        Label password = new Label("Password:");
+        password.setStyle("-fx-font-weight: bold;");
+        grid.add(password, 0, 3);
+
         passwordField = new PasswordField();
-        passwordField.setPromptText("Password");
+        //passwordField.setPromptText("Password");
+        grid.add(passwordField, 1, 3);
 
         // Buttons
-        registerButton = new Button("Register");
         loginButton = new Button("Login");
+        registerButton = new Button("Register");
 
-        // Layout
-        VBox vbox = new VBox(10, usernameField, passwordField, registerButton, loginButton);
-        Scene scene = new Scene(vbox, 300, 200);
+        // Create HBox for buttons
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_CENTER);
+        hbBtn.getChildren().addAll(loginButton, registerButton);
+
+        // Add buttons to the grid
+        grid.add(hbBtn, 1, 4);
+
+        // Create a border pane to add a border around the form
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(grid);
+        borderPane.setPadding(new Insets(10)); // Add padding to move the border away from the window edges
+        borderPane.setStyle("-fx-border-color: black; -fx-border-width: 2;");
+
+        // Create a StackPane to add padding around the BorderPane
+        StackPane root = new StackPane();
+        root.setPadding(new Insets(40)); // Padding outside the border
+        root.getChildren().add(borderPane);
+
+        // Create a scene with a larger size
+        Scene scene = new Scene(root, 400, 300);
 
         primaryStage.setScene(scene);
         primaryStage.show();
