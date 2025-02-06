@@ -46,4 +46,12 @@ public class studentDAO {
             stmt.executeQuery();
         }
     }
+
+    public static void searchStudentByName(String name) throws SQLException {
+        String query = "SELECT * FROM students WHERE name = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, name);
+            stmt.executeQuery();
+        }
+    }
 }
