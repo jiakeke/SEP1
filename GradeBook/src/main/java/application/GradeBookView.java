@@ -137,12 +137,15 @@ public class GradeBookView extends Application {
 
 
     private void openGroups() {
+//        Stage stage = new Stage();
+//        stage.setTitle("Groups");
+//        VBox layout = new VBox(10);
+//        Scene scene = new Scene(layout, 800, 600);
+//        stage.setScene(scene);
+//        stage.show();
+        GroupManageView groupManageView = new GroupManageView();
         Stage stage = new Stage();
-        stage.setTitle("Groups");
-        VBox layout = new VBox(10);
-        Scene scene = new Scene(layout, 800, 600);
-        stage.setScene(scene);
-        stage.show();
+        groupManageView.start(stage);
     }
 
 }
