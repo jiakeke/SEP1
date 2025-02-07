@@ -5,6 +5,7 @@ import dao.StudentDAO;
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Student;
@@ -20,7 +21,7 @@ public class StudentController {
     }
 
     // 处理“学生”按钮点击事件
-    public void handleOpenStudents(ActionEvent event) {
+    public void handleOpenStudents(ActionEvent open) {
         Stage stage = new Stage();
         stage.setTitle("Students");
 
@@ -45,6 +46,30 @@ public class StudentController {
 
         studentTable.getColumns().addAll(idCol, nameCol, emailCol, phoneCol);
         loadStudents(studentTable); // 载入数据
+
+        studentTable.setRowFactory(tv -> {
+            TableRow<Student> row = new TableRow<>();
+            ContextMenu contextMenu = new ContextMenu();
+
+            // 修改选项
+            MenuItem editItem = new MenuItem("🖊 Modify");
+            editItem.setOnAction(event -> handleModifyStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
+
+            // 删除选项
+            MenuItem deleteItem = new MenuItem(" 🗑 Delete");
+            deleteItem.setOnAction(event -> handleDeleteStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
+
+            contextMenu.getItems().addAll(editItem, deleteItem);
+
+            // 仅在非空行启用右键菜单
+            row.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.SECONDARY && (!row.isEmpty())) {
+                    contextMenu.show(row, event.getScreenX(), event.getScreenY());
+                }
+            });
+
+            return row;
+        });
 
         searchButton.setOnAction(e -> handleSearch(searchField.getText(), studentTable));
         refreshButton.setOnAction(e -> loadStudents(studentTable));
@@ -113,6 +138,67 @@ public class StudentController {
         Scene scene = new Scene(layout, 400, 300);
         addStage.setScene(scene);
         addStage.show();
+    }
+
+    // 处理"修改学生"事件
+    private void handleModifyStudent(Student student, TableView<Student> studentTable) {
+        if (student == null) {
+            showAlert("Error", "Please select a student to modify.");
+            return;
+        }
+
+        Stage editStage = new Stage();
+        editStage.setTitle("Modify Student");
+
+        TextField nameField = new TextField(student.getName());
+        TextField emailField = new TextField(student.getEmail());
+        TextField phoneField = new TextField(student.getPhone());
+
+        Button saveButton = new Button("Save");
+        saveButton.setOnAction(event -> {
+            try {
+                student.setName(nameField.getText());
+                student.setEmail(emailField.getText());
+                student.setPhone(phoneField.getText());
+
+                StudentDAO.updateStudent(student); // 更新数据库
+                loadStudents(studentTable); // 刷新数据
+                editStage.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert("Database Error", "Failed to update student.");
+            }
+        });
+
+        VBox layout = new VBox(10, nameField, emailField, phoneField, saveButton);
+        Scene scene = new Scene(layout, 400, 300);
+        editStage.setScene(scene);
+        editStage.show();
+    }
+
+    // 处理"删除学生"事件
+    private void handleDeleteStudent(Student student, TableView<Student> studentTable) {
+        if (student == null) {
+            showAlert("Error", "Please select a student to delete.");
+            return;
+        }
+
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle("Confirm Delete");
+        confirmation.setHeaderText(null);
+        confirmation.setContentText("Are you sure you want to delete " + student.getName() + "?");
+
+        confirmation.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    StudentDAO.deleteStudent(student.getId());
+                    loadStudents(studentTable); // 刷新数据
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    showAlert("Database Error", "Failed to delete student.");
+                }
+            }
+        });
     }
 
     // 显示错误提示框
