@@ -25,14 +25,14 @@ public class StudentController {
         Stage stage = new Stage();
         stage.setTitle("Students");
 
-        // 搜索框
+        // Search bar
         TextField searchField = new TextField();
         searchField.setPromptText("Search by name");
         Button searchButton = new Button("Search");
         Button refreshButton = new Button("Refresh");
         Button addStudentButton = new Button("Add Student");
 
-        // 学生表格
+        // Student table
         TableView<Student> studentTable = new TableView<>();
         TableColumn<Student, Integer> idCol = new TableColumn<>("ID");
         TableColumn<Student, String> nameCol = new TableColumn<>("Name");
@@ -45,23 +45,23 @@ public class StudentController {
         phoneCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getPhone()));
 
         studentTable.getColumns().addAll(idCol, nameCol, emailCol, phoneCol);
-        loadStudents(studentTable); // 载入数据
+        loadStudents(studentTable);
 
         studentTable.setRowFactory(tv -> {
             TableRow<Student> row = new TableRow<>();
             ContextMenu contextMenu = new ContextMenu();
 
-            // 修改选项
+            // Modify option
             MenuItem editItem = new MenuItem("🖊 Modify");
             editItem.setOnAction(event -> handleModifyStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
 
-            // 删除选项
+            // Delete option
             MenuItem deleteItem = new MenuItem(" 🗑 Delete");
             deleteItem.setOnAction(event -> handleDeleteStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
 
             contextMenu.getItems().addAll(editItem, deleteItem);
 
-            // 仅在非空行启用右键菜单
+            // Show context menu on right-click
             row.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.SECONDARY && (!row.isEmpty())) {
                     contextMenu.show(row, event.getScreenX(), event.getScreenY());
@@ -81,7 +81,7 @@ public class StudentController {
         stage.show();
     }
 
-    // 载入所有学生
+    // Load students from database
     private void loadStudents(TableView<Student> studentTable) {
         try {
             List<Student> students = StudentDAO.showAllStudents();
@@ -91,7 +91,7 @@ public class StudentController {
         }
     }
 
-    // 搜索学生
+    // Search students by name
     private void handleSearch(String name, TableView<Student> studentTable) {
         if (!name.isEmpty()) {
             try {
@@ -103,7 +103,7 @@ public class StudentController {
         }
     }
 
-    // 添加学生
+    // Add a new student
     private void handleAddStudent(TableView<Student> studentTable) {
         Stage addStage = new Stage();
         addStage.setTitle("Add New Student");
@@ -124,9 +124,9 @@ public class StudentController {
                 String email = emailField.getText();
                 String phone = phoneField.getText();
 
-                Student newStudent = new Student(0, name, email, phone); // 无 ID
-                StudentDAO.registerStudent(newStudent); // 由数据库生成 ID
-                loadStudents(studentTable); // 刷新数据
+                Student newStudent = new Student(0, name, email, phone);
+                StudentDAO.registerStudent(newStudent);
+                loadStudents(studentTable);
                 addStage.close();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -140,7 +140,7 @@ public class StudentController {
         addStage.show();
     }
 
-    // 处理"修改学生"事件
+    // Modify student
     private void handleModifyStudent(Student student, TableView<Student> studentTable) {
         if (student == null) {
             showAlert("Error", "Please select a student to modify.");
@@ -161,8 +161,8 @@ public class StudentController {
                 student.setEmail(emailField.getText());
                 student.setPhone(phoneField.getText());
 
-                StudentDAO.updateStudent(student); // 更新数据库
-                loadStudents(studentTable); // 刷新数据
+                StudentDAO.updateStudent(student);
+                loadStudents(studentTable);
                 editStage.close();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -176,7 +176,7 @@ public class StudentController {
         editStage.show();
     }
 
-    // 处理"删除学生"事件
+    // Delete student
     private void handleDeleteStudent(Student student, TableView<Student> studentTable) {
         if (student == null) {
             showAlert("Error", "Please select a student to delete.");
@@ -192,7 +192,7 @@ public class StudentController {
             if (response == ButtonType.OK) {
                 try {
                     StudentDAO.deleteStudent(student.getId());
-                    loadStudents(studentTable); // 刷新数据
+                    loadStudents(studentTable);
                 } catch (SQLException e) {
                     e.printStackTrace();
                     showAlert("Database Error", "Failed to delete student.");
@@ -201,7 +201,7 @@ public class StudentController {
         });
     }
 
-    // 显示错误提示框
+    // Show alert dialog
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
