@@ -1,7 +1,5 @@
 package controller;
 
-import application.AddNewGroupView;
-import application.ModifyGroupView;
 import dao.GroupDao;
 import datasource.MariaDbConnection;
 import javafx.collections.FXCollections;
