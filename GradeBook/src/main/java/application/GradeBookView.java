@@ -78,6 +78,7 @@ public class GradeBookView extends Application {
 
         // Create a scene with a larger size
         Scene scene = new Scene(root, 400, 300);
+        scene.getStylesheets().add("styles.css");
 
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -106,17 +107,26 @@ public class GradeBookView extends Application {
 
     public void showSystemInterface(Stage primaryStage) {
         Label welcomeLabel = new Label("Welcome to Grade Book!");
+        welcomeLabel.getStyleClass().add("page-title");
         VBox vbox = new VBox(10, welcomeLabel);
 
         Button studentsButton = new Button("Students");
         Button groupsButton = new Button("Groups");
 
-        vbox.getChildren().addAll(studentsButton, groupsButton);
+        studentsButton.getStyleClass().add("big-button");
+        groupsButton.getStyleClass().add("big-button");
+
+        HBox hbox = new HBox(20); // 20px spacing between buttons
+        hbox.setAlignment(Pos.CENTER);
+        hbox.getChildren().addAll(studentsButton, groupsButton);
+
+        vbox.getChildren().add(hbox);
 
         studentsButton.setOnAction(e -> openStudents());
         groupsButton.setOnAction(e -> openGroups());
 
         Scene scene = new Scene(vbox, 800, 600);
+        scene.getStylesheets().add("styles.css");
         primaryStage.setScene(scene);
     }
 

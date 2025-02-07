@@ -1,0 +1,11 @@
+.big-button {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-padding: 30 30 30 30;
+}
+
+.page-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 30px;
+    -fx-padding: 20 20 20 20;
+}
