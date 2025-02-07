@@ -1,17 +1,19 @@
 package application;
 
+import controller.StudentController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+
+import javafx.event.ActionEvent;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-
 
 import controller.UserController;
 
@@ -130,14 +132,19 @@ public class GradeBookView extends Application {
         primaryStage.setScene(scene);
     }
 
+//    private void openStudents() {
+//        Stage stage = new Stage();
+//        stage.setTitle("Students");
+//        VBox layout = new VBox(10);
+//        Scene scene = new Scene(layout, 800, 600);
+//        stage.setScene(scene);
+//        stage.show();
+//    }
     private void openStudents() {
-        Stage stage = new Stage();
-        stage.setTitle("Students");
-        VBox layout = new VBox(10);
-        Scene scene = new Scene(layout, 800, 600);
-        stage.setScene(scene);
-        stage.show();
+        StudentController studentController = new StudentController(this);
+        studentController.handleOpenStudents(new ActionEvent());
     }
+
 
     private void openGroups() {
         Stage stage = new Stage();
