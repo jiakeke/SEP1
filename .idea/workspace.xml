@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b109e156-b8b2-4176-bf08-699eecb3d967" name="Changes" comment="add basic student functions">
-      <change beforePath="$PROJECT_DIR$/GradeBook/src/main/java/controller/StudentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/GradeBook/src/main/java/controller/StudentController.java" afterDir="false" />
+    <list default="true" id="b109e156-b8b2-4176-bf08-699eecb3d967" name="Changes" comment="add modify&amp;delete menu in student list">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GradeBook/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/GradeBook/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +102,7 @@
       <workItem from="1738840224535" duration="75000" />
       <workItem from="1738875674780" duration="133000" />
       <workItem from="1738875836151" duration="203000" />
-      <workItem from="1738876068178" duration="8278000" />
+      <workItem from="1738876068178" duration="8941000" />
     </task>
     <task id="LOCAL-00001" summary="add student model">
       <option name="closed" value="true" />
@@ -135,7 +136,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738885124631</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="add modify&amp;delete menu in student list">
+      <option name="closed" value="true" />
+      <created>1738914364502</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1738914364502</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -146,6 +155,7 @@
     <MESSAGE value="add student DAO" />
     <MESSAGE value="add student DAO(search by name)" />
     <MESSAGE value="add basic student functions" />
-    <option name="LAST_COMMIT_MESSAGE" value="add basic student functions" />
+    <MESSAGE value="add modify&amp;delete menu in student list" />
+    <option name="LAST_COMMIT_MESSAGE" value="add modify&amp;delete menu in student list" />
   </component>
 </project>
