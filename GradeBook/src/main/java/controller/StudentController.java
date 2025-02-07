@@ -20,7 +20,7 @@ public class StudentController {
         this.view = view;
     }
 
-    // 处理“学生”按钮点击事件
+    // Handle open students
     public void handleOpenStudents(ActionEvent open) {
         Stage stage = new Stage();
         stage.setTitle("Students");
