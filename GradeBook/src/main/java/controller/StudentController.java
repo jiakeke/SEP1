@@ -3,9 +3,12 @@ package controller;
 import application.GradeBookView;
 import dao.StudentDAO;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Student;
@@ -34,17 +37,15 @@ public class StudentController {
 
         // Student table
         TableView<Student> studentTable = new TableView<>();
-        TableColumn<Student, Integer> idCol = new TableColumn<>("ID");
         TableColumn<Student, String> nameCol = new TableColumn<>("Name");
         TableColumn<Student, String> emailCol = new TableColumn<>("Email");
         TableColumn<Student, String> phoneCol = new TableColumn<>("Phone");
 
-        idCol.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getId()).asObject());
         nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getName()));
         emailCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getEmail()));
         phoneCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getPhone()));
 
-        studentTable.getColumns().addAll(idCol, nameCol, emailCol, phoneCol);
+        studentTable.getColumns().addAll(nameCol, emailCol, phoneCol);
         loadStudents(studentTable);
 
         studentTable.setRowFactory(tv -> {
@@ -75,8 +76,18 @@ public class StudentController {
         refreshButton.setOnAction(e -> loadStudents(studentTable));
         addStudentButton.setOnAction(e -> handleAddStudent(studentTable));
 
-        VBox layout = new VBox(10, searchField, searchButton, studentTable, refreshButton, addStudentButton);
+        searchButton.getStyleClass().add("search-button");
+        refreshButton.getStyleClass().add("refresh-button");
+        addStudentButton.getStyleClass().add("add-button");
+
+        HBox searchButtonContainer = new HBox(searchButton);
+        searchButtonContainer.setAlignment(Pos.CENTER);
+        HBox buttons = new HBox(15, refreshButton, addStudentButton);
+        buttons.setAlignment(Pos.CENTER);
+        VBox layout = new VBox(10, searchField, searchButtonContainer, studentTable, buttons);
+        layout.setPadding(new Insets(20, 20, 20, 20));
         Scene scene = new Scene(layout, 600, 500);
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
@@ -134,8 +145,13 @@ public class StudentController {
             }
         });
 
-        VBox layout = new VBox(10, nameField, emailField, phoneField, submitButton);
+        submitButton.getStyleClass().add("submit-button");
+        HBox submitButtonContainer = new HBox(submitButton);
+        submitButtonContainer.setAlignment(Pos.CENTER);
+        VBox layout = new VBox(10, nameField, emailField, phoneField, submitButtonContainer);
+        layout.setPadding(new Insets(20, 20, 20, 20));
         Scene scene = new Scene(layout, 400, 300);
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         addStage.setScene(scene);
         addStage.show();
     }
@@ -151,8 +167,11 @@ public class StudentController {
         editStage.setTitle("Modify Student");
 
         TextField nameField = new TextField(student.getName());
+        nameField.setPromptText("Name");
         TextField emailField = new TextField(student.getEmail());
+        emailField.setPromptText("Email");
         TextField phoneField = new TextField(student.getPhone());
+        phoneField.setPromptText("Phone");
 
         Button saveButton = new Button("Save");
         saveButton.setOnAction(event -> {
@@ -170,8 +189,13 @@ public class StudentController {
             }
         });
 
-        VBox layout = new VBox(10, nameField, emailField, phoneField, saveButton);
+        saveButton.getStyleClass().add("save-button");
+        HBox saveButtonContainer = new HBox(saveButton);
+        saveButtonContainer.setAlignment(Pos.CENTER);
+        VBox layout = new VBox(10, nameField, emailField, phoneField, saveButtonContainer);
+        layout.setPadding(new Insets(20, 20, 20, 20));
         Scene scene = new Scene(layout, 400, 300);
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         editStage.setScene(scene);
         editStage.show();
     }

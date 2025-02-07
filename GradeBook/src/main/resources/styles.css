@@ -9,3 +9,33 @@
     -fx-font-size: 30px;
     -fx-padding: 20 20 20 20;
 }
+
+.search-button {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 10 10 10;
+}
+
+.add-button, .submit-button, .save-button {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 10 10 10;
+    -fx-background-color: #4CAF50;
+    -fx-border-color: #388E3C;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+}
+
+.refresh-button {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 10 10 10;
+    -fx-background-color: #2196F3;
+    -fx-border-color: #1976D2;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+}
