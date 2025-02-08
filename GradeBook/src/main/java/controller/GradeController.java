@@ -5,9 +5,12 @@ import dao.StudentDAO;
 import dao.GradeTypeDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Grade;
@@ -28,7 +31,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 public class GradeController {
 
     private static TableView<Map<String, Object>> gradeTable;
-    private static Button deleteButton, exportButton;
+    private static Button exportButton;
 
     private static int currentGroupId;
     private static Stage stage;
@@ -44,16 +47,19 @@ public class GradeController {
     private static void initializeUI() {
         gradeTable = new TableView<>();
 
-        deleteButton = new Button("Delete");
         exportButton = new Button("Export to PDF");
+        exportButton.getStyleClass().add("export-button");
+        HBox buttonContainer = new HBox(exportButton);
+        buttonContainer.setAlignment(Pos.CENTER);
 
-        deleteButton.setOnAction(e -> handleDelete());
         exportButton.setOnAction(e -> exportToPDF());
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(deleteButton, exportButton, gradeTable);
+        layout.setPadding(new Insets(20, 20, 20, 20));
+        layout.getChildren().addAll(gradeTable, buttonContainer);
 
         Scene scene = new Scene(layout, 800, 600);
+        scene.getStylesheets().add(GradeController.class.getResource("/styles.css").toExternalForm());
         stage.setTitle("Grade Management");
         stage.setScene(scene);
     }
@@ -159,24 +165,24 @@ public class GradeController {
         }
     }
 
-    private static void handleDelete() {
-        Map<String, Object> selectedRow = gradeTable.getSelectionModel().getSelectedItem();
-        if (selectedRow == null) {
-            showError("Selection error", "Please select a grade to delete.");
-            return;
-        }
-
-        int studentId = (int) selectedRow.get("studentId");
-        int gradeTypeId = 1;
-        double gradeValue = (double) selectedRow.getOrDefault("total", 0.0);
-
-        try {
-            GradeDAO.deleteGradeByStudentAndType(studentId, currentGroupId, gradeTypeId);
-            loadGradeData();
-        } catch (SQLException e) {
-            showError("Database error", "Unable to delete grade: " + e.getMessage());
-        }
-    }
+//    private static void handleDelete() {
+//        Map<String, Object> selectedRow = gradeTable.getSelectionModel().getSelectedItem();
+//        if (selectedRow == null) {
+//            showError("Selection error", "Please select a grade to delete.");
+//            return;
+//        }
+//
+//        int studentId = (int) selectedRow.get("studentId");
+//        int gradeTypeId = 1;
+//        double gradeValue = (double) selectedRow.getOrDefault("total", 0.0);
+//
+//        try {
+//            GradeDAO.deleteGradeByStudentAndType(studentId, currentGroupId, gradeTypeId);
+//            loadGradeData();
+//        } catch (SQLException e) {
+//            showError("Database error", "Unable to delete grade: " + e.getMessage());
+//        }
+//    }
 
     private static void exportToPDF() {
         try {
