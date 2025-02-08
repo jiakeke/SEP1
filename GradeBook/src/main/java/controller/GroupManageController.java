@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 
 import java.sql.Connection;
 
+import static controller.GradeTypeController.showError;
+
 public class GroupManageController {
 
     @FXML
@@ -124,7 +126,13 @@ public class GroupManageController {
 
     @FXML
     void addGradeType(MouseEvent event) {
+        Group selectedGroup = GroupsInfo.getSelectionModel().getSelectedItem();
+        if (selectedGroup.getId() == 0) {
+            showError("Select error", "Please select a group to add grade type");
+            return;
+        }
 
+        GradeTypeController.showGradeTypeEditor(selectedGroup.getId());
     }
 
     @FXML
