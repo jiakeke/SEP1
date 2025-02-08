@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
+import javafx.scene.text.Text;
 import javafx.scene.layout.VBox;
 
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import javafx.scene.layout.StackPane;
 import controller.UserController;
 
 public class GradeBookView extends Application {
+    private Text errorLabel;
     private TextField usernameField;
     private PasswordField passwordField;
     private Button registerButton;
@@ -26,8 +28,11 @@ public class GradeBookView extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Grade Book");
+        errorLabel = new Text();
+        errorLabel.getStyleClass().add("error-message");
+
         Label loginLabel = new Label("Login or Register!");
-        loginLabel.setStyle("-fx-font-weight: bold;");
+        loginLabel.getStyleClass().add("label");
 
         // Create the form layout
         GridPane grid = new GridPane();
@@ -36,24 +41,26 @@ public class GradeBookView extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        grid.add(loginLabel, 0, 1, 2, 1);
+        grid.add(errorLabel, 0, 0, 2, 1);
+
+        grid.add(loginLabel, 0, 2, 2, 1);
 
         // Add form fields
         Label username = new Label("Username:");
-        username.setStyle("-fx-font-weight: bold;");
-        grid.add(username, 0, 2);
+        username.getStyleClass().add("label");
+        grid.add(username, 0, 3);
 
         usernameField = new TextField();
         //usernameField.setPromptText("Username");
-        grid.add(usernameField, 1, 2);
+        grid.add(usernameField, 1, 3);
 
         Label password = new Label("Password:");
-        password.setStyle("-fx-font-weight: bold;");
-        grid.add(password, 0, 3);
+        password.getStyleClass().add("label");
+        grid.add(password, 0, 4);
 
         passwordField = new PasswordField();
         //passwordField.setPromptText("Password");
-        grid.add(passwordField, 1, 3);
+        grid.add(passwordField, 1, 4);
 
         // Buttons
         loginButton = new Button("Login");
@@ -65,13 +72,13 @@ public class GradeBookView extends Application {
         hbBtn.getChildren().addAll(loginButton, registerButton);
 
         // Add buttons to the grid
-        grid.add(hbBtn, 1, 4);
+        grid.add(hbBtn, 1, 5);
 
         // Create a border pane to add a border around the form
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(grid);
         borderPane.setPadding(new Insets(10)); // Add padding to move the border away from the window edges
-        borderPane.setStyle("-fx-border-color: black; -fx-border-width: 2;");
+        borderPane.getStyleClass().add("border-pane");
 
         // Create a StackPane to add padding around the BorderPane
         StackPane root = new StackPane();
@@ -89,6 +96,10 @@ public class GradeBookView extends Application {
         UserController controller = new UserController(this);
         registerButton.setOnAction(controller::handleRegister);
         loginButton.setOnAction(controller::handleLogin);
+    }
+
+    public void setErrorLabel(String message) {
+        errorLabel.setText(message);
     }
 
     public TextField getUsernameField() {

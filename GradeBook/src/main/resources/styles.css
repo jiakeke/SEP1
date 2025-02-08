@@ -51,3 +51,17 @@
     -fx-cursor: hand;
     -fx-text-fill: white;
 }
+
+.error-message {
+    -fx-fill: red;
+}
+
+.label {
+    -fx-font-weight: bold;
+}
+
+.border-pane {
+    -fx-border-color: black;
+    -fx-border-width: 2;
+}
+

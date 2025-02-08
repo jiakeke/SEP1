@@ -16,6 +16,9 @@ public class UserDAO {
     static Connection conn = MariaDbConnection.getConnection();
 
     public static void registerUser(User user) throws SQLException, NoSuchAlgorithmException {
+        if (user.getUsername().isEmpty() || user.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Username and password cannot be empty");
+        }
         String hashedPassword = hashPassword(user.getPassword());
         String query = "INSERT INTO users (username, password) VALUES (?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
