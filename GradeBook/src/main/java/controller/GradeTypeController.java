@@ -22,7 +22,6 @@ public class GradeTypeController {
     private static TextField weightField;
     private static Button saveButton;
     private static Button deleteButton;
-    private static Button closeButton;
 
     private static int currentGroupId;
     private static Stage stage;
@@ -45,6 +44,13 @@ public class GradeTypeController {
         weightColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("weight"));
 
         gradeTypeTable.getColumns().addAll(nameColumn, weightColumn);
+
+        gradeTypeTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                nameField.setText(newSelection.getName());
+                weightField.setText(String.valueOf(newSelection.getWeight()));
+            }
+        });
 
         // TextFields
         nameField = new TextField();
