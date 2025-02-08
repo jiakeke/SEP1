@@ -73,4 +73,25 @@ public class StudentDAO {
         }
         return students;
     }
+
+    public static List<Student> getStudentsByGroupId(int groupId) throws SQLException {
+        List<Student> students = new ArrayList<>();
+        String query = "SELECT s.id, s.name FROM students s " +
+                "JOIN group_students gs ON s.id = gs.student_id " +
+                "WHERE gs.group_id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, groupId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    students.add(new Student(
+                            rs.getInt("id"),
+                            rs.getString("name")
+                    ));
+                }
+            }
+        }
+        return students;
+    }
+
 }

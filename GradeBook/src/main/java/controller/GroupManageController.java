@@ -137,6 +137,13 @@ public class GroupManageController {
 
     @FXML
     void viewGrade(MouseEvent event) {
+        Group selectedGroup = GroupsInfo.getSelectionModel().getSelectedItem();
+        if (selectedGroup.getId() == 0) {
+            showError("Selection error", "Please select a Group first.");
+            return;
+        }
 
+        // 调用 GradeController，打开成绩管理界面
+        GradeController.showGradeEditor(selectedGroup.getId());
     }
 }
