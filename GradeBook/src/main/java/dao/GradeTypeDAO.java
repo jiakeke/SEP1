@@ -4,13 +4,16 @@ import datasource.MariaDbConnection;
 import model.GradeType;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GradeTypeDAO {
-    private static final Connection conn = MariaDbConnection.getConnection();
 
+    // Insert data
     public static void registerGradeType(GradeType gradeType) throws SQLException {
         String query = "INSERT INTO grade_types (name, weight, group_id) VALUES (?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = MariaDbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, gradeType.getName());
             stmt.setDouble(2, gradeType.getWeight());
             stmt.setInt(3, gradeType.getGroupId());
@@ -18,9 +21,11 @@ public class GradeTypeDAO {
         }
     }
 
+    // Update data
     public static void updateGradeType(GradeType gradeType) throws SQLException {
         String query = "UPDATE grade_types SET name = ?, weight = ?, group_id = ? WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = MariaDbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, gradeType.getName());
             stmt.setDouble(2, gradeType.getWeight());
             stmt.setInt(3, gradeType.getGroupId());
@@ -29,26 +34,57 @@ public class GradeTypeDAO {
         }
     }
 
+    // Delete data
     public static void deleteGradeType(int id) throws SQLException {
         String query = "DELETE FROM grade_types WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = MariaDbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         }
     }
 
-    public static ResultSet showAllGradeTypes() throws SQLException {
+    // check all GradeType
+    public static List<GradeType> showAllGradeTypes() throws SQLException {
         String query = "SELECT * FROM grade_types";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            return stmt.executeQuery();
+        List<GradeType> gradeTypes = new ArrayList<>();
+
+        try (Connection conn = MariaDbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                GradeType gradeType = new GradeType(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getDouble("weight"),
+                        rs.getInt("group_id")
+                );
+                gradeTypes.add(gradeType);
+            }
         }
+        return gradeTypes;
     }
 
-    public static ResultSet showGradeTypesByGroupId(int groupId) throws SQLException {
+    // check GradeType by groupId
+    public static List<GradeType> showGradeTypesByGroupId(int groupId) throws SQLException {
         String query = "SELECT * FROM grade_types WHERE group_id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        List<GradeType> gradeTypes = new ArrayList<>();
+
+        try (Connection conn = MariaDbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, groupId);
-            return stmt.executeQuery();
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    GradeType gradeType = new GradeType(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getDouble("weight"),
+                            rs.getInt("group_id")
+                    );
+                    gradeTypes.add(gradeType);
+                }
+            }
         }
+        return gradeTypes;
     }
 }
