@@ -31,6 +31,12 @@ public class GroupManageController {
     private Button modifyBtn;
 
     @FXML
+    private Button typeBtn;
+
+    @FXML
+    private Button viewGradebtn;
+
+    @FXML
     private TableView<Group> GroupsInfo;
     @FXML
     private TableColumn<Group, String> groupsDesClu;
@@ -113,6 +119,16 @@ public class GroupManageController {
             e.printStackTrace();
         }
 
+
+    }
+
+    @FXML
+    void addGradeType(MouseEvent event) {
+
+    }
+
+    @FXML
+    void viewGrade(MouseEvent event) {
 
     }
 }
