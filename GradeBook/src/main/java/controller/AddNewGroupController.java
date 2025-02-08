@@ -3,17 +3,16 @@ package controller;
 import datasource.MariaDbConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
+
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import model.Student;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
+
 
 public class AddNewGroupController {
 
@@ -25,16 +24,28 @@ public class AddNewGroupController {
 
     @FXML
     private TextField groupName;
+    @FXML
+    private TableColumn<Student, Integer> selectedId;
 
     @FXML
-    private ListView<String> selectedStudentsList;
+    private TableColumn<Student, String> selectedName;
 
     @FXML
-    private ListView<String> unSelectStudentsList;
+    private TableColumn<Student, Integer> unSelectedId;
+
+    @FXML
+    private TableColumn<Student, String> unSelectedName;
+
+
+    @FXML
+    private TableView<Student> selectedStudentsList;
+
+    @FXML
+    private TableView<Student> unSelectedStudentsList;
 
     private Connection conn= MariaDbConnection.getConnection();
-    private ObservableList<String> unselectedStudents=FXCollections.observableArrayList();;
-    private ObservableList<String> selectedStudents=FXCollections.observableArrayList();;
+    private ObservableList<Student> unselectedStudents=FXCollections.observableArrayList();;
+    private ObservableList<Student> selectedStudents=FXCollections.observableArrayList();;
 
     private GroupManageController groupManageController=new GroupManageController();
 
@@ -44,23 +55,29 @@ public class AddNewGroupController {
 
     @FXML
     public void initialize() {
+
+        // Load students
+        unSelectedId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        unSelectedName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        selectedId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        selectedName.setCellValueFactory(new PropertyValueFactory<>("name"));
         String query = "SELECT id,name FROM students";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.execute();
             var rs = stmt.getResultSet();
             while (rs.next()) {
-                unselectedStudents.add(rs.getInt("id") + " " + rs.getString("name"));
+                unselectedStudents.add(new Student(rs.getInt("id"), rs.getString("name")));
             }
         } catch (Exception e) {
             e.printStackTrace();
-
         }
-        unSelectStudentsList.setItems( unselectedStudents);
+
+        unSelectedStudentsList.setItems(unselectedStudents);
         selectedStudentsList.setItems(selectedStudents);
     }
 
     void refresh(){
-        unSelectStudentsList.setItems( unselectedStudents);
+        unSelectedStudentsList.setItems( unselectedStudents);
         selectedStudentsList.setItems(selectedStudents);
     }
 
@@ -102,12 +119,12 @@ public class AddNewGroupController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            for (String student : selectedStudents) {
-                String[] studentInfo = student.split(" ");
+            for (Student student : selectedStudents) {
+
                 query = "INSERT INTO group_students (group_id,student_id) VALUES (?,?)";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     stmt.setInt(1, groupId);
-                    stmt.setInt(2, Integer.parseInt(studentInfo[0]));
+                    stmt.setInt(2, student.getId());
                     stmt.execute();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -123,23 +140,21 @@ public class AddNewGroupController {
 
     @FXML
     void moveStudentToSelectedList(MouseEvent event) {
-        String selectedStudent = unSelectStudentsList.getSelectionModel().getSelectedItem();
+        Student selectedStudent = unSelectedStudentsList.getSelectionModel().getSelectedItem();
         if (selectedStudent != null) {
             selectedStudents.add(selectedStudent);
             unselectedStudents.remove(selectedStudent);
         }
-//        selectedStudentsList.setItems(selectedStudents);
         refresh();
     }
 
     @FXML
     void moveStudentToUnselectedList(MouseEvent event) {
-        String selectedStudent = selectedStudentsList.getSelectionModel().getSelectedItem();
+        Student selectedStudent = selectedStudentsList.getSelectionModel().getSelectedItem();
         if (selectedStudent != null) {
             unselectedStudents.add(selectedStudent);
             selectedStudents.remove(selectedStudent);
         }
-//        selectedStudentsList.setItems(selectedStudents);
         refresh();
 
     }
