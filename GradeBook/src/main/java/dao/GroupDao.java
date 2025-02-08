@@ -1,8 +1,11 @@
 package dao;
 
 import datasource.MariaDbConnection;
+import model.Group;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GroupDao {
     Connection conn = MariaDbConnection.getConnection();
@@ -55,5 +58,20 @@ public class GroupDao {
             return false;
         }
         return true;
+    }
+
+    public List<Group> getAllGroups() {
+        List<Group> groups = new ArrayList<>();
+        String query = "SELECT * FROM groups";
+        try (var stmt = conn.prepareStatement(query)) {
+            stmt.execute();
+            var rs = stmt.getResultSet();
+            while (rs.next()) {
+                groups.add(new Group(rs.getInt("id"), rs.getString("name"), rs.getString("description")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return groups;
     }
 }

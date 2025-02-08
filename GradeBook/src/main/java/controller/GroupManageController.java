@@ -1,6 +1,8 @@
 package controller;
 
 import dao.GroupDao;
+import javafx.scene.control.cell.PropertyValueFactory;
+import model.Group;
 import datasource.MariaDbConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,9 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -31,30 +31,40 @@ public class GroupManageController {
     private Button modifyBtn;
 
     @FXML
-    private ListView<String> groupsInfo;
+    private Button typeBtn;
+
+    @FXML
+    private Button viewGradebtn;
+
+    @FXML
+    private TableView<Group> GroupsInfo;
+    @FXML
+    private TableColumn<Group, String> groupsDesClu;
+
+    @FXML
+    private TableColumn<Group, Integer> groupsIdClu;
+
+    @FXML
+    private TableColumn<Group, String> groupsNameclu;
 
     private GroupDao groupDao = new GroupDao();
 
 
-    private Connection conn= MariaDbConnection.getConnection();
-    private ObservableList<String> groupInfoList= FXCollections.observableArrayList();;
+    private Connection conn = MariaDbConnection.getConnection();
+    private ObservableList<Group> groupInfoList = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
-        groupInfoList.clear(); // Clear the list to avoid duplicates
-        String query = "SELECT * FROM groups";
-        try (var stmt = conn.prepareStatement(query)) {
-            stmt.execute();
-            var rs = stmt.getResultSet();
-            while (rs.next()) {
-                groupInfoList.add("id:"+rs.getInt("id") + " name:" + rs.getString("name") + " Des:" + rs.getString("description"));
-            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        groupsInfo.setItems(groupInfoList);
+        groupInfoList.clear();
+        groupsNameclu.setCellValueFactory(new PropertyValueFactory<>("name"));
+        groupsDesClu.setCellValueFactory(new PropertyValueFactory<>("description"));
+        groupDao.getAllGroups().forEach(group -> {
+            groupInfoList.add(group);
+        });
+        GroupsInfo.setItems(groupInfoList);
     }
+
     @FXML
     void addNewGroup(MouseEvent event) {
 
@@ -76,15 +86,9 @@ public class GroupManageController {
 
     @FXML
     void deleteGroupInfo(MouseEvent event) {
-        if (groupsInfo.getSelectionModel().getSelectedItem() == null) {
-            return;
-        }
-        String selectedGroup = groupsInfo.getSelectionModel().getSelectedItem();
-        String groupId = selectedGroup.split(" ")[0].split(":")[1];
-//        groupDao.removeGroup(Integer.parseInt(groupId));
-//        groupsInfo.getItems().remove(groupsInfo.getSelectionModel().getSelectedItem());
-        if (groupDao.removeGroup(Integer.parseInt(groupId))) {
-            groupsInfo.getItems().remove(groupsInfo.getSelectionModel().getSelectedItem());
+        Group selectedGroup = GroupsInfo.getSelectionModel().getSelectedItem();
+        if (groupDao.removeGroup(selectedGroup.getId())) {
+            groupInfoList.remove(selectedGroup);
         }
     }
 
@@ -95,25 +99,36 @@ public class GroupManageController {
 
     @FXML
     void modifyGroupInfo(MouseEvent event) {
-        if (groupsInfo.getSelectionModel().getSelectedItem() == null) {
+        if (GroupsInfo.getSelectionModel().getSelectedItem() == null) {
             return;
         }
 
-        try {FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ModifyGroupInfo.fxml"));
+        Group selectedGroup = GroupsInfo.getSelectionModel().getSelectedItem();
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ModifyGroupInfo.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-            GroupModifyController controller = fxmlLoader.getController();
-            int groupId = Integer.parseInt(groupsInfo.getSelectionModel().getSelectedItem().split(" ")[0].split(":")[1]);
-            controller.setGroupManageController(this,groupId);
-
-
             Stage stage = new Stage();
-            stage.setTitle("Modify GroupInfo");
+            stage.setTitle("Modify Group");
             stage.setScene(scene);
+
+            GroupModifyController controller = fxmlLoader.getController();
+            controller.setGroupManageController(this, selectedGroup);
 
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 
+    @FXML
+    void addGradeType(MouseEvent event) {
+
+    }
+
+    @FXML
+    void viewGrade(MouseEvent event) {
+
+    }
 }
