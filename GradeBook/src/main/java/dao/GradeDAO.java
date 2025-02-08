@@ -43,6 +43,18 @@ public class GradeDAO {
         }
     }
 
+    // Update data by type
+    public static void updateGradeByType(int studentId, int groupId, int gradeTypeId, double grade) throws SQLException {
+        String query = "UPDATE grades SET grade = ? WHERE student_id = ? AND group_id = ? AND grade_type_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setDouble(1, grade);
+            stmt.setInt(2, studentId);
+            stmt.setInt(3, groupId);
+            stmt.setInt(4, gradeTypeId);
+            stmt.executeUpdate();
+        }
+    }
+
     // Delete data
     public static void deleteGrade(int id) throws SQLException {
         String query = "DELETE FROM grades WHERE id = ?";
@@ -51,6 +63,18 @@ public class GradeDAO {
             stmt.executeUpdate();
         }
     }
+
+    // Delete data by student and type
+    public static void deleteGradeByStudentAndType(int studentId, int groupId, int gradeTypeId) throws SQLException {
+        String query = "DELETE FROM grades WHERE student_id = ? AND group_id = ? AND grade_type_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, studentId);
+            stmt.setInt(2, groupId);
+            stmt.setInt(3, gradeTypeId);
+            stmt.executeUpdate();
+        }
+    }
+
 
     // check all Grade
     public static List<Grade> showAllGrades() throws SQLException {
@@ -125,5 +149,33 @@ public class GradeDAO {
             }
         }
         return false;
+    }
+
+    // check grade exists
+    public static boolean gradeExists(int studentId, int groupId, int gradeTypeId) throws SQLException {
+        String query = "SELECT COUNT(*) FROM grades WHERE student_id = ? AND group_id = ? AND grade_type_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, studentId);
+            stmt.setInt(2, groupId);
+            stmt.setInt(3, gradeTypeId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+
+    // insert grade
+    public static void insertGrade(int studentId, int groupId, int gradeTypeId, double grade) throws SQLException {
+        String query = "INSERT INTO grades (grade, student_id, group_id, grade_type_id) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setDouble(1, grade);
+            stmt.setInt(2, studentId);
+            stmt.setInt(3, groupId);
+            stmt.setInt(4, gradeTypeId);
+            stmt.executeUpdate();
+        }
     }
 }
