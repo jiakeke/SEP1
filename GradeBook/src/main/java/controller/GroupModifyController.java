@@ -1,21 +1,19 @@
 package controller;
 
-import datasource.MariaDbConnection;
+import dao.GroupDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import model.Group;
 import model.Student;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 
 public class GroupModifyController {
-
-
 
     @FXML
     private TextField groupDes;
@@ -25,7 +23,6 @@ public class GroupModifyController {
 
     @FXML
     private Button saveBtn;
-
 
     @FXML
     private TableColumn<Student, Integer> selectedId;
@@ -47,70 +44,46 @@ public class GroupModifyController {
 
     private Group group;
 
-    private Connection conn= MariaDbConnection.getConnection();
-    private ObservableList<Student> unselectedStudents= FXCollections.observableArrayList();;
-    private ObservableList<Student> selectedStudents=FXCollections.observableArrayList();;
+    private GroupDao groupDao = new GroupDao();
+    private ObservableList<Student> unselectedStudents = FXCollections.observableArrayList();
+    private ObservableList<Student> selectedStudents = FXCollections.observableArrayList();
 
-    private GroupManageController groupManageController=new GroupManageController();
-    public void setGroupManageController(GroupManageController groupManageController , Group group) {
+    private GroupManageController groupManageController = new GroupManageController();
+
+    // This method sets the groupManageController and group
+    public void setGroupManageController(GroupManageController groupManageController, Group group) {
         this.groupManageController = groupManageController;
-        this.group=group;
+        this.group = group;
         loadGroupDetails();
     }
 
-
+    // This method loads the group details
     public void loadGroupDetails() {
-
         selectedId.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("id"));
         selectedName.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
         unselectedId.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("id"));
         unselectedName.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
 
-        String gruopInfoQuery = "SELECT * FROM groups WHERE id=?";
-        try (PreparedStatement stmt = conn.prepareStatement(gruopInfoQuery)) {
-            stmt.setInt(1,group.getId());
-            stmt.execute();
-            var rs = stmt.getResultSet();
-            while (rs.next()) {
-                groupName.setText(rs.getString("name"));
-                groupDes.setText(rs.getString("description"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        Group groupDetails = groupDao.getGroupById(group.getId());
+        if (groupDetails != null) {
+            groupName.setText(groupDetails.getName());
+            groupDes.setText(groupDetails.getDescription());
         }
 
-        String query = "SELECT id,name FROM students WHERE id NOT IN (SELECT student_id FROM group_students WHERE group_id=?)";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1,group.getId());
-            stmt.execute();
-            var rs = stmt.getResultSet();
-            while (rs.next()) {
-                unselectedStudents.add(new Student(rs.getInt("id"), rs.getString("name")));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        unselectedStudents.addAll(groupDao.getStudentsNotInGroup(group.getId()));
+        selectedStudents.addAll(groupDao.getStudentsInGroup(group.getId()));
 
-        String selectedQuery = "SELECT id,name FROM students WHERE id IN (SELECT student_id FROM group_students WHERE group_id=?)";
-        try (PreparedStatement stmt = conn.prepareStatement(selectedQuery)) {
-            stmt.setInt(1,group.getId());
-            stmt.execute();
-            var rs = stmt.getResultSet();
-            while (rs.next()) {
-                selectedStudents.add(new Student(rs.getInt("id"), rs.getString("name")));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        unSelectedStudentsList.setItems( unselectedStudents);
+        unSelectedStudentsList.setItems(unselectedStudents);
         selectedStudentList.setItems(selectedStudents);
     }
 
-    void refresh(){
-        unSelectedStudentsList.setItems( unselectedStudents);
+    // This method refreshes the table view
+    void refresh() {
+        unSelectedStudentsList.setItems(unselectedStudents);
         selectedStudentList.setItems(selectedStudents);
     }
 
+    // This method moves a student to the selected list
     @FXML
     void moveStudentToSelectedList(MouseEvent event) {
         Student selectedStudent = unSelectedStudentsList.getSelectionModel().getSelectedItem();
@@ -121,6 +94,7 @@ public class GroupModifyController {
         refresh();
     }
 
+    // This method moves a student to the unselected list
     @FXML
     void moveStudentToUnselectedList(MouseEvent event) {
         Student selectedStudent = selectedStudentList.getSelectionModel().getSelectedItem();
@@ -129,49 +103,23 @@ public class GroupModifyController {
             selectedStudents.remove(selectedStudent);
         }
         refresh();
-
     }
 
+    // This method saves the modifications
     @FXML
     void saveModify(MouseEvent event) {
-
         if (groupName.getText().isEmpty() || groupDes.getText().isEmpty()) {
             return;
         }
-        String updateGroupInfo = "UPDATE groups SET name=?,description=? WHERE id=?";
-        try (PreparedStatement stmt = conn.prepareStatement(updateGroupInfo)) {
-            stmt.setString(1, groupName.getText());
-            stmt.setString(2, groupDes.getText());
-            stmt.setInt(3, group.getId());
-            stmt.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
 
-        }
-
-        String deleteGroupStudents = "DELETE FROM group_students WHERE group_id=?";
-        try (PreparedStatement stmt = conn.prepareStatement(deleteGroupStudents)) {
-            stmt.setInt(1, group.getId());
-            stmt.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        groupDao.updateGroup(group.getId(), groupName.getText(), groupDes.getText());
+        groupDao.deleteGroupStudents(group.getId());
 
         for (Student student : selectedStudents) {
-            String insertGroupStudents = "INSERT INTO group_students (group_id,student_id) VALUES (?,?)";
-            try (PreparedStatement stmt = conn.prepareStatement(insertGroupStudents)) {
-                stmt.setInt(1, group.getId());
-                stmt.setInt(2, student.getId());
-                stmt.execute();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            groupDao.addStudentToGroup(group.getId(), student.getId());
         }
 
         groupManageController.initialize();
         saveBtn.getScene().getWindow().hide();
-
-
-
     }
 }

@@ -1,30 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.Pane?>
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="523.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddNewGroupController">
-   <children>
-      <TextField fx:id="groupName" alignment="CENTER" layoutX="34.0" layoutY="22.0" prefHeight="52.0" prefWidth="200.0" promptText="Name" style="-fx-font-size: 15px; -fx-background-radius: 8px; -fx-background-color: #e3f2fd; -fx-border-radius: 8px;" />
-      <TextField fx:id="groupDes" alignment="CENTER" layoutX="285.0" layoutY="22.0" prefHeight="52.0" prefWidth="200.0" promptText="Description" style="-fx-font-size: 15px; -fx-background-radius: 8px; -fx-background-color: #e8f5e9; -fx-border-radius: 8px;" />
-      <Button fx:id="creatBtn" layoutX="217.0" layoutY="349.0" mnemonicParsing="false" onMouseClicked="#createNewGroup" style="-fx-background-color: #4CAF50; -fx-border-color: #388E3C; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-text-fill: white;" text="Create" />
-      <Label layoutX="98.0" layoutY="93.0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333333; -fx-alignment: center;" text="All Students" />
-      <Label layoutX="321.0" layoutY="93.0" style="-fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: #333333; -fx-font-size: 12px;" text="Selected Students" />
-      <TableView fx:id="unSelectedStudentsList" layoutX="35.0" layoutY="122.0" onMouseClicked="#moveStudentToSelectedList" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #f0f0f0; -fx-border-color: #cccccc; -fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-width: 4px;">
-        <columns>
-            <TableColumn fx:id="unSelectedId" prefWidth="75.0" text="ID" visible="false" />
-          <TableColumn fx:id="unSelectedName" prefWidth="100.0" text="Name" />
-        </columns>
-      </TableView>
-      <TableView fx:id="selectedStudentsList" layoutX="285.0" layoutY="122.0" onMouseClicked="#moveStudentToUnselectedList" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #e0e0ff; -fx-border-color: #9999ff; -fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-width: 4px;">
-        <columns>
-          <TableColumn fx:id="selectedId" prefWidth="75.0" text="ID" visible="false" />
-          <TableColumn fx:id="selectedName" prefWidth="100.0" text="Name" />
-        </columns>
-      </TableView>
-   </children>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="523.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.AddNewGroupController">
+    <children>
+        <TextField fx:id="groupName" alignment="CENTER" layoutX="34.0" layoutY="22.0" prefHeight="52.0"
+                   prefWidth="200.0" promptText="Name"
+                   style="-fx-font-size: 15px; -fx-background-radius: 8px; -fx-background-color: #e3f2fd; -fx-border-radius: 8px;"/>
+        <TextField fx:id="groupDes" alignment="CENTER" layoutX="285.0" layoutY="22.0" prefHeight="52.0"
+                   prefWidth="200.0" promptText="Description"
+                   style="-fx-font-size: 15px; -fx-background-radius: 8px; -fx-background-color: #e8f5e9; -fx-border-radius: 8px;"/>
+        <Button fx:id="creatBtn" layoutX="217.0" layoutY="349.0" mnemonicParsing="false"
+                onMouseClicked="#createNewGroup"
+                style="-fx-background-color: #4CAF50; -fx-border-color: #388E3C; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-text-fill: white;"
+                text="Create"/>
+        <Label layoutX="98.0" layoutY="93.0"
+               style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333333; -fx-alignment: center;"
+               text="All Students"/>
+        <Label layoutX="321.0" layoutY="93.0"
+               style="-fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: #333333; -fx-font-size: 12px;"
+               text="Selected Students"/>
+        <TableView fx:id="unSelectedStudentsList" layoutX="35.0" layoutY="122.0"
+                   onMouseClicked="#moveStudentToSelectedList" prefHeight="200.0" prefWidth="200.0"
+                   style="-fx-background-color: #f0f0f0; -fx-border-color: #cccccc; -fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-width: 4px;">
+            <columns>
+                <TableColumn fx:id="unSelectedId" prefWidth="75.0" text="ID" visible="false"/>
+                <TableColumn fx:id="unSelectedName" prefWidth="100.0" text="Name"/>
+            </columns>
+        </TableView>
+        <TableView fx:id="selectedStudentsList" layoutX="285.0" layoutY="122.0"
+                   onMouseClicked="#moveStudentToUnselectedList" prefHeight="200.0" prefWidth="200.0"
+                   style="-fx-background-color: #e0e0ff; -fx-border-color: #9999ff; -fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-width: 4px;">
+            <columns>
+                <TableColumn fx:id="selectedId" prefWidth="75.0" text="ID" visible="false"/>
+                <TableColumn fx:id="selectedName" prefWidth="100.0" text="Name"/>
+            </columns>
+        </TableView>
+    </children>
 </Pane>
