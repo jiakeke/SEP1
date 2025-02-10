@@ -120,4 +120,104 @@ public class AddNewGroupController {
         }
         refresh();
     }
+
+    public Button getCreatBtn() {
+        return creatBtn;
+    }
+
+    public void setCreatBtn(Button creatBtn) {
+        this.creatBtn = creatBtn;
+    }
+
+    public TextField getGroupDes() {
+        return groupDes;
+    }
+
+    public void setGroupDes(TextField groupDes) {
+        this.groupDes = groupDes;
+    }
+
+    public TextField getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(TextField groupName) {
+        this.groupName = groupName;
+    }
+
+    public TableColumn<Student, Integer> getSelectedId() {
+        return selectedId;
+    }
+
+    public void setSelectedId(TableColumn<Student, Integer> selectedId) {
+        this.selectedId = selectedId;
+    }
+
+    public TableColumn<Student, String> getSelectedName() {
+        return selectedName;
+    }
+
+    public void setSelectedName(TableColumn<Student, String> selectedName) {
+        this.selectedName = selectedName;
+    }
+
+    public TableColumn<Student, Integer> getUnSelectedId() {
+        return unSelectedId;
+    }
+
+    public void setUnSelectedId(TableColumn<Student, Integer> unSelectedId) {
+        this.unSelectedId = unSelectedId;
+    }
+
+    public TableColumn<Student, String> getUnSelectedName() {
+        return unSelectedName;
+    }
+
+    public void setUnSelectedName(TableColumn<Student, String> unSelectedName) {
+        this.unSelectedName = unSelectedName;
+    }
+
+    public TableView<Student> getSelectedStudentsList() {
+        return selectedStudentsList;
+    }
+
+    public void setSelectedStudentsList(TableView<Student> selectedStudentsList) {
+        this.selectedStudentsList = selectedStudentsList;
+    }
+
+    public TableView<Student> getUnSelectedStudentsList() {
+        return unSelectedStudentsList;
+    }
+
+    public void setUnSelectedStudentsList(TableView<Student> unSelectedStudentsList) {
+        this.unSelectedStudentsList = unSelectedStudentsList;
+    }
+
+    public GroupDao getGroupDao() {
+        return groupDao;
+    }
+
+    public void setGroupDao(GroupDao groupDao) {
+        this.groupDao = groupDao;
+    }
+
+    public ObservableList<Student> getUnselectedStudents() {
+        return unselectedStudents;
+    }
+
+    public void setUnselectedStudents(ObservableList<Student> unselectedStudents) {
+        this.unselectedStudents = unselectedStudents;
+    }
+
+    public ObservableList<Student> getSelectedStudents() {
+        return selectedStudents;
+    }
+
+    public void setSelectedStudents(ObservableList<Student> selectedStudents) {
+        this.selectedStudents = selectedStudents;
+    }
+
+    public GroupManageController getGroupManageController() {
+        return groupManageController;
+    }
 }

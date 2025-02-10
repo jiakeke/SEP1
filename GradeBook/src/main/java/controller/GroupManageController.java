@@ -134,4 +134,44 @@ public class GroupManageController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    public TableView<Group> getGroupsInfo() {
+        return GroupsInfo;
+    }
+
+    public void setGroupsInfo(TableView<Group> groupsInfo) {
+        GroupsInfo = groupsInfo;
+    }
+
+    public TableColumn<Group, String> getGroupsDesClu() {
+        return groupsDesClu;
+    }
+
+    public void setGroupsDesClu(TableColumn<Group, String> groupsDesClu) {
+        this.groupsDesClu = groupsDesClu;
+    }
+
+    public TableColumn<Group, String> getGroupsNameclu() {
+        return groupsNameclu;
+    }
+
+    public void setGroupsNameclu(TableColumn<Group, String> groupsNameclu) {
+        this.groupsNameclu = groupsNameclu;
+    }
+
+    public GroupDao getGroupDao() {
+        return groupDao;
+    }
+
+    public void setGroupDao(GroupDao groupDao) {
+        this.groupDao = groupDao;
+    }
+
+    public ObservableList<Group> getGroupInfoList() {
+        return groupInfoList;
+    }
+
+    public void setGroupInfoList(ObservableList<Group> groupInfoList) {
+        this.groupInfoList = groupInfoList;
+    }
 }

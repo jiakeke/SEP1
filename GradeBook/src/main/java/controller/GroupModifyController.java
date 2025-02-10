@@ -122,4 +122,116 @@ public class GroupModifyController {
         groupManageController.initialize();
         saveBtn.getScene().getWindow().hide();
     }
+
+    public TextField getGroupDes() {
+        return groupDes;
+    }
+
+    public void setGroupDes(TextField groupDes) {
+        this.groupDes = groupDes;
+    }
+
+    public TextField getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(TextField groupName) {
+        this.groupName = groupName;
+    }
+
+    public Button getSaveBtn() {
+        return saveBtn;
+    }
+
+    public void setSaveBtn(Button saveBtn) {
+        this.saveBtn = saveBtn;
+    }
+
+    public TableColumn<Student, Integer> getSelectedId() {
+        return selectedId;
+    }
+
+    public void setSelectedId(TableColumn<Student, Integer> selectedId) {
+        this.selectedId = selectedId;
+    }
+
+    public TableColumn<Student, String> getSelectedName() {
+        return selectedName;
+    }
+
+    public void setSelectedName(TableColumn<Student, String> selectedName) {
+        this.selectedName = selectedName;
+    }
+
+    public TableView<Student> getSelectedStudentList() {
+        return selectedStudentList;
+    }
+
+    public void setSelectedStudentList(TableView<Student> selectedStudentList) {
+        this.selectedStudentList = selectedStudentList;
+    }
+
+    public TableView<Student> getUnSelectedStudentsList() {
+        return unSelectedStudentsList;
+    }
+
+    public void setUnSelectedStudentsList(TableView<Student> unSelectedStudentsList) {
+        this.unSelectedStudentsList = unSelectedStudentsList;
+    }
+
+    public TableColumn<Student, Integer> getUnselectedId() {
+        return unselectedId;
+    }
+
+    public void setUnselectedId(TableColumn<Student, Integer> unselectedId) {
+        this.unselectedId = unselectedId;
+    }
+
+    public TableColumn<Student, String> getUnselectedName() {
+        return unselectedName;
+    }
+
+    public void setUnselectedName(TableColumn<Student, String> unselectedName) {
+        this.unselectedName = unselectedName;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public GroupDao getGroupDao() {
+        return groupDao;
+    }
+
+    public void setGroupDao(GroupDao groupDao) {
+        this.groupDao = groupDao;
+    }
+
+    public ObservableList<Student> getUnselectedStudents() {
+        return unselectedStudents;
+    }
+
+    public void setUnselectedStudents(ObservableList<Student> unselectedStudents) {
+        this.unselectedStudents = unselectedStudents;
+    }
+
+    public ObservableList<Student> getSelectedStudents() {
+        return selectedStudents;
+    }
+
+    public void setSelectedStudents(ObservableList<Student> selectedStudents) {
+        this.selectedStudents = selectedStudents;
+    }
+
+    public GroupManageController getGroupManageController() {
+        return groupManageController;
+    }
+
+    public void setGroupManageController(GroupManageController groupManageController) {
+        this.groupManageController = groupManageController;
+    }
 }
