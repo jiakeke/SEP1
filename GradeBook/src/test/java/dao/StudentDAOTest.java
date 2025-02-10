@@ -45,6 +45,11 @@ class StudentDAOTest {
     }
 
     @Test
+    void testStudentDAOConstructor() {
+        new StudentDAO();
+    }
+
+    @Test
     void testRegisterStudent() throws SQLException {
         Student newStudent = new Student(0, "Charlie", "charlie@example.com", "987654");
         StudentDAO.registerStudent(newStudent);
@@ -83,5 +88,20 @@ class StudentDAOTest {
         List<Student> students = StudentDAO.searchStudentByName("Alice");
         assertEquals(1, students.size());
         assertEquals("Alice", students.get(0).getName());
+    }
+
+    @Test
+    void testGetStudentsByGroupId() throws SQLException {
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("CREATE TABLE IF NOT EXISTS group_students (group_id INT, student_id INT)");
+            stmt.execute("INSERT INTO group_students (group_id, student_id) VALUES (1, 1)");
+            stmt.execute("INSERT INTO group_students (group_id, student_id) VALUES (1, 2)");
+        }
+
+        List<Student> students = StudentDAO.getStudentsByGroupId(1);
+
+        assertEquals(2, students.size());
+        assertEquals("Alice", students.get(0).getName());
+        assertEquals("Bob", students.get(1).getName());
     }
 }
