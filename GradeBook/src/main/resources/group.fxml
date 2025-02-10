@@ -31,10 +31,10 @@
         <Button layoutX="302.0" layoutY="306.0" mnemonicParsing="false" onMouseClicked="#addGradeType" prefHeight="37.0"
                 prefWidth="71.0"
                 style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-background-color: #FFA500; -fx-border-color: #D17A00;"
-                text="Type"/>
+                text="Types"/>
         <Button layoutX="384.0" layoutY="306.0" mnemonicParsing="false" onMouseClicked="#viewGrade" prefHeight="37.0"
                 prefWidth="71.0"
                 style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-background-color: #6A5ACD; -fx-border-color: #4B0082;"
-                text="View"/>
+                text="Grades"/>
     </children>
 </Pane>
