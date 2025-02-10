@@ -93,7 +93,7 @@ public class StudentController {
     }
 
     // Load students from database
-    private void loadStudents(TableView<Student> studentTable) {
+    void loadStudents(TableView<Student> studentTable) {
         try {
             List<Student> students = StudentDAO.showAllStudents();
             studentTable.getItems().setAll(students);
@@ -103,7 +103,7 @@ public class StudentController {
     }
 
     // Search students by name
-    private void handleSearch(String name, TableView<Student> studentTable) {
+    void handleSearch(String name, TableView<Student> studentTable) {
         if (!name.isEmpty()) {
             try {
                 List<Student> students = StudentDAO.searchStudentByName(name);
@@ -115,7 +115,7 @@ public class StudentController {
     }
 
     // Add a new student
-    private void handleAddStudent(TableView<Student> studentTable) {
+    void handleAddStudent(TableView<Student> studentTable) {
         Stage addStage = new Stage();
         addStage.setTitle("Add New Student");
 
@@ -201,7 +201,7 @@ public class StudentController {
     }
 
     // Delete student
-    private void handleDeleteStudent(Student student, TableView<Student> studentTable) {
+    void handleDeleteStudent(Student student, TableView<Student> studentTable) {
         if (student == null) {
             showAlert("Error", "Please select a student to delete.");
             return;

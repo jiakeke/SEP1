@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentDAO {
-    private static final Connection conn = MariaDbConnection.getConnection();
+    private static Connection conn = MariaDbConnection.getConnection();
+
+    public static void setConnection(Connection conn) {
+        StudentDAO.conn = conn;
+    }
 
     public static void registerStudent(Student student) throws SQLException {
         String query = "INSERT INTO students (name, email, phone) VALUES (?, ?, ?)";
