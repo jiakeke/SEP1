@@ -24,6 +24,7 @@ public class GradeBookView extends Application {
     private PasswordField passwordField;
     private Button registerButton;
     private Button loginButton;
+    private Scene scene;
 
     @Override
     public void start(Stage primaryStage) {
@@ -86,7 +87,7 @@ public class GradeBookView extends Application {
         root.getChildren().add(borderPane);
 
         // Create a scene with a larger size
-        Scene scene = new Scene(root, 400, 300);
+        scene = new Scene(root, 400, 300);
         scene.getStylesheets().add("styles.css");
 
         primaryStage.setScene(scene);

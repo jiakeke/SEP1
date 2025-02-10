@@ -15,47 +15,30 @@
     </properties>
 
     <dependencies>
-        <dependency> <groupId>org.openjfx</groupId> <artifactId>javafx</artifactId> <version>21.0.1</version> <type>pom</type> </dependency>
+        <!-- JavaFX -->
         <dependency> <groupId>org.openjfx</groupId> <artifactId>javafx-graphics</artifactId> <version>21.0.1</version> </dependency>
-        <dependency> <groupId>org.openjfx</groupId> <artifactId>javafx-fxml</artifactId> <version>21.0.1</version> </dependency>
         <dependency> <groupId>org.openjfx</groupId> <artifactId>javafx-controls</artifactId> <version>21.0.1</version> </dependency>
+        <dependency> <groupId>org.openjfx</groupId> <artifactId>javafx-fxml</artifactId> <version>21.0.1</version> </dependency>
+        <dependency> <groupId>org.openjfx</groupId> <artifactId>javafx-base</artifactId> <version>21.0.1</version> </dependency>
+        <dependency> <groupId>com.itextpdf</groupId> <artifactId>itextpdf</artifactId> <version>5.5.13.3</version> </dependency>
 
-        <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-            <version>3.1.2</version>
-        </dependency>
+        <!-- 数据库 -->
+        <dependency> <groupId>org.mariadb.jdbc</groupId> <artifactId>mariadb-java-client</artifactId> <version>3.1.2</version> </dependency>
+        <dependency> <groupId>com.h2database</groupId> <artifactId>h2</artifactId> <version>2.2.220</version> <scope>test</scope> </dependency>
 
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itextpdf</artifactId>
-            <version>5.5.13.3</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.4.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.2.220</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- JUnit 5 -->
+        <dependency> <groupId>org.junit.jupiter</groupId> <artifactId>junit-jupiter-api</artifactId> <version>5.9.2</version> <scope>test</scope> </dependency>
+        <dependency> <groupId>org.junit.jupiter</groupId> <artifactId>junit-jupiter-engine</artifactId> <version>5.9.2</version> <scope>test</scope> </dependency>
 
+        <!-- TestFX -->
+        <dependency> <groupId>org.testfx</groupId> <artifactId>testfx-core</artifactId> <version>4.0.16-alpha</version> <scope>test</scope> </dependency>
+        <dependency> <groupId>org.testfx</groupId> <artifactId>testfx-junit5</artifactId> <version>4.0.16-alpha</version> <scope>test</scope> </dependency>
+        <dependency> <groupId>org.testfx</groupId> <artifactId>openjfx-monocle</artifactId> <version>1.8.0_20</version> <scope>test</scope> </dependency>
+
+        <!-- 日志 -->
+        <dependency> <groupId>ch.qos.logback</groupId> <artifactId>logback-classic</artifactId> <version>1.4.12</version> </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <!-- JaCoCo plugin for code coverage -->

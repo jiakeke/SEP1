@@ -19,7 +19,7 @@ class StudentDAOTest {
         StudentDAO.setConnection(conn);
 
         try (Statement stmt = conn.createStatement()) {
-            String createTable = "CREATE TABLE students (" +
+            String createTable = "CREATE TABLE IF NOT EXISTS students (" +
                     "id INT AUTO_INCREMENT PRIMARY KEY, " +
                     "name VARCHAR(255), " +
                     "email VARCHAR(255), " +
