@@ -52,6 +52,7 @@ public class GradeBookView extends Application {
         grid.add(username, 0, 3);
 
         usernameField = new TextField();
+        usernameField.setId("usernameField");
         //usernameField.setPromptText("Username");
         grid.add(usernameField, 1, 3);
 
@@ -60,12 +61,15 @@ public class GradeBookView extends Application {
         grid.add(password, 0, 4);
 
         passwordField = new PasswordField();
+        passwordField.setId("passwordField");
         //passwordField.setPromptText("Password");
         grid.add(passwordField, 1, 4);
 
         // Buttons
         loginButton = new Button("Login");
+        loginButton.setId("loginButton");
         registerButton = new Button("Register");
+        registerButton.setId("registerButton");
 
         // Create HBox for buttons
         HBox hbBtn = new HBox(10);
@@ -125,6 +129,7 @@ public class GradeBookView extends Application {
         VBox vbox = new VBox(10, welcomeLabel);
 
         Button studentsButton = new Button("Students");
+        studentsButton.setId("studentsButton");
         Button groupsButton = new Button("Groups");
 
         studentsButton.getStyleClass().add("big-button");
