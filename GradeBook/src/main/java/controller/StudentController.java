@@ -2,6 +2,7 @@ package controller;
 
 import application.GradeBookView;
 import dao.StudentDAO;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -31,15 +32,23 @@ public class StudentController {
         // Search bar
         TextField searchField = new TextField();
         searchField.setPromptText("Search by name");
+        searchField.setId("search-field");
         Button searchButton = new Button("Search");
+        searchButton.setId("search-button");
         Button refreshButton = new Button("Refresh");
+        refreshButton.setId("refresh-button");
         Button addStudentButton = new Button("Add Student");
+        addStudentButton.setId("add-button");
 
         // Student table
         TableView<Student> studentTable = new TableView<>();
+        studentTable.setId("studentTable");
         TableColumn<Student, String> nameCol = new TableColumn<>("Name");
+        nameCol.setId("name-col");
         TableColumn<Student, String> emailCol = new TableColumn<>("Email");
+        emailCol.setId("email-col");
         TableColumn<Student, String> phoneCol = new TableColumn<>("Phone");
+        phoneCol.setId("phone-col");
 
         nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getName()));
         emailCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getEmail()));
@@ -50,14 +59,18 @@ public class StudentController {
 
         studentTable.setRowFactory(tv -> {
             TableRow<Student> row = new TableRow<>();
+            row.setId("student-row");
             ContextMenu contextMenu = new ContextMenu();
+            contextMenu.setId("context-menu");
 
             // Modify option
             MenuItem editItem = new MenuItem("🖊 Modify");
+            editItem.setId("edit-item");
             editItem.setOnAction(event -> handleModifyStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
 
             // Delete option
             MenuItem deleteItem = new MenuItem(" 🗑 Delete");
+            deleteItem.setId("delete-item");
             deleteItem.setOnAction(event -> handleDeleteStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
 
             contextMenu.getItems().addAll(editItem, deleteItem);
@@ -99,6 +112,7 @@ public class StudentController {
             studentTable.getItems().setAll(students);
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert("Database Error", "Failed to load students from database.");
         }
     }
 
@@ -120,15 +134,19 @@ public class StudentController {
         addStage.setTitle("Add New Student");
 
         TextField nameField = new TextField();
+        nameField.setId("name-field");
         nameField.setPromptText("Name");
 
         TextField emailField = new TextField();
+        emailField.setId("email-field");
         emailField.setPromptText("Email");
 
         TextField phoneField = new TextField();
+        phoneField.setId("phone-field");
         phoneField.setPromptText("Phone");
 
         Button submitButton = new Button("Submit");
+        submitButton.setId("submit-button");
         submitButton.setOnAction(event -> {
             try {
                 String name = nameField.getText();
@@ -158,22 +176,26 @@ public class StudentController {
 
     // Modify student
     private void handleModifyStudent(Student student, TableView<Student> studentTable) {
-        if (student == null) {
-            showAlert("Error", "Please select a student to modify.");
-            return;
-        }
+//        if (student == null) {
+//            showAlert("Error", "Please select a student to modify.");
+//            return;
+//        }
 
         Stage editStage = new Stage();
         editStage.setTitle("Modify Student");
 
         TextField nameField = new TextField(student.getName());
+        nameField.setId("name-field");
         nameField.setPromptText("Name");
         TextField emailField = new TextField(student.getEmail());
+        emailField.setId("email-field");
         emailField.setPromptText("Email");
         TextField phoneField = new TextField(student.getPhone());
+        phoneField.setId("phone-field");
         phoneField.setPromptText("Phone");
 
         Button saveButton = new Button("Save");
+        saveButton.setId("save-button");
         saveButton.setOnAction(event -> {
             try {
                 student.setName(nameField.getText());
@@ -202,15 +224,16 @@ public class StudentController {
 
     // Delete student
     void handleDeleteStudent(Student student, TableView<Student> studentTable) {
-        if (student == null) {
-            showAlert("Error", "Please select a student to delete.");
-            return;
-        }
+//        if (student == null) {
+//            showAlert("Error", "Please select a student to delete.");
+//            return;
+//        }
 
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Confirm Delete");
         confirmation.setHeaderText(null);
         confirmation.setContentText("Are you sure you want to delete " + student.getName() + "?");
+        confirmation.getDialogPane().setId("delete-confirmation");
 
         confirmation.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
