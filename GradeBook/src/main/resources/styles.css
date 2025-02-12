@@ -28,7 +28,7 @@
     -fx-text-fill: white;
 }
 
-.refresh-button, .export-button {
+.refresh-button, .export-button, .modify-button {
     -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-padding: 10 10 10 10;
