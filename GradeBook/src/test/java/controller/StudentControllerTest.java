@@ -138,6 +138,7 @@ import dao.StudentDAO;
 import javafx.scene.control.Button;
 import model.Student;
 import org.junit.jupiter.api.*;
+import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.control.TableViewMatchers;
 
@@ -146,8 +147,10 @@ import javafx.stage.Stage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.control.LabeledMatchers.hasText;
 
@@ -191,6 +194,10 @@ class StudentControllerTest extends ApplicationTest {
 
     @BeforeEach
     void setup() throws Exception {
+        if (conn.isClosed()) {
+            conn = DriverManager.getConnection("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1", "sa", "");
+            StudentDAO.setConnection(conn);
+        }
 
         clickOn("#usernameField").write("admin");
         clickOn("#passwordField").write("password123");
@@ -234,8 +241,8 @@ class StudentControllerTest extends ApplicationTest {
             TableView<Student> studentTable = lookup("#studentTable").query();
             studentTable.getSelectionModel().selectFirst();
         });
-        rightClickOn();
-        clickOn("#edit-item");
+        clickOn();
+        clickOn("#modify-button");
 
         doubleClickOn("#name-field").eraseText(7).write("Charlie Modified");
         doubleClickOn("#email-field").eraseText(19).write("modified@example.com");
@@ -255,13 +262,140 @@ class StudentControllerTest extends ApplicationTest {
             studentTable.getSelectionModel().selectFirst();
         });
 
-        rightClickOn();
+        int initialRowCount = lookup("#studentTable").queryTableView().getItems().size();
 
-        clickOn("#delete-item");
+        clickOn();
+
+        clickOn("#delete-button");
+
+        Button cancelButton = lookup(".button").match(hasText("取消")).queryButton();
+        clickOn(cancelButton);
+
+        verifyThat("#studentTable", TableViewMatchers.hasNumRows(initialRowCount));
+
+        interact(() -> {
+            TableView<Student> studentTable = lookup("#studentTable").query();
+            studentTable.getSelectionModel().selectFirst();
+        });
+
+        clickOn();
+
+        clickOn("#delete-button");
 
         Button okButton = lookup(".button").match(hasText("确定")).queryButton();
         clickOn(okButton);
 
-        verifyThat("#studentTable", TableViewMatchers.hasNumRows(3));
+        verifyThat("#studentTable", TableViewMatchers.hasNumRows(initialRowCount - 1));
+    }
+
+    @Test
+    void testLoadStudentsWithDBError() {
+        try {
+            clickOn("#studentsButton");
+            clickOn("#refresh-button");
+
+            conn.close();
+            clickOn("#refresh-button");
+
+            assertTrue(lookup(".alert").tryQuery().isPresent(), "No alert is shown.");
+
+            verifyThat(lookup(".alert .content").queryLabeled(), hasText("Failed to load students from database."));
+
+        } catch (SQLException e) {
+            Assertions.fail("Failed to close H2 connection.");
+        }
+    }
+
+    @Test
+    void testAddStudentWithDBError() {
+
+        clickOn("#studentsButton");
+
+        clickOn("#add-button");
+
+        clickOn("#name-field").write("Lucy");
+        clickOn("#email-field").write("lucy@example.com");
+        clickOn("#phone-field").write("111222");
+        try {
+            conn.close();
+            clickOn("#submit-button");
+
+            assertTrue(lookup(".alert").tryQuery().isPresent(), "No alert is shown.");
+
+            verifyThat(lookup(".alert .content").queryLabeled(), hasText("Failed to add student."));
+        } catch (SQLException e) {
+            Assertions.fail("Failed to add student.");
+        }
+    }
+
+    @Test
+    void testHandleSearchWithDBError() {
+        try {
+            clickOn("#studentsButton");
+
+            clickOn("#search-field").write("Alice");
+
+            conn.close();
+            clickOn("#search-button");
+
+            assertTrue(lookup(".alert").tryQuery().isPresent(), "No alert is shown.");
+
+            verifyThat(lookup(".alert .content").queryLabeled(), hasText("Failed to search students."));
+        } catch (SQLException e) {
+            Assertions.fail("Failed to close H2 connection.");
+        }
+    }
+
+    @Test
+    void testHandleModifyStudentWithDBError() {
+        try {
+            clickOn("#studentsButton");
+
+            interact(() -> {
+                TableView<Student> studentTable = lookup("#studentTable").query();
+                studentTable.getSelectionModel().selectFirst();
+            });
+            clickOn();
+            clickOn("#modify-button");
+
+            doubleClickOn("#name-field").eraseText(9).write("Charlie Modified");
+            doubleClickOn("#email-field").eraseText(19).write("modified@example.com");
+            doubleClickOn("#phone-field").eraseText(6).write("987654");
+
+            conn.close();
+            clickOn("#save-button");
+
+            assertTrue(lookup(".alert").tryQuery().isPresent(), "No alert is shown.");
+
+            verifyThat(lookup(".alert .content").queryLabeled(), hasText("Failed to update student."));
+        } catch (SQLException e) {
+            Assertions.fail("Failed to close H2 connection.");
+        }
+    }
+
+    @Test
+    void testHandleDeleteStudentWithDBError() {
+        try {
+            clickOn("#studentsButton");
+
+            interact(() -> {
+                TableView<Student> studentTable = lookup("#studentTable").query();
+                studentTable.getSelectionModel().selectFirst();
+            });
+
+            clickOn();
+
+            clickOn("#delete-button");
+
+            Button okButton = lookup(".button").match(hasText("确定")).queryButton();
+            conn.close();
+            clickOn(okButton);
+
+            assertTrue(lookup(".alert").tryQuery().isPresent(), "No alert is shown.");
+
+            verifyThat(lookup(".alert .content").queryLabeled(), hasText("Failed to delete student."));
+        } catch (SQLException e) {
+            Assertions.fail("Failed to close H2 connection.");
+        }
     }
 }
