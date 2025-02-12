@@ -39,6 +39,10 @@ public class StudentController {
         refreshButton.setId("refresh-button");
         Button addStudentButton = new Button("Add Student");
         addStudentButton.setId("add-button");
+        Button modifyStudentButton = new Button("Modify");
+        modifyStudentButton.setId("modify-button");
+        Button deleteStudentButton = new Button("Delete");
+        deleteStudentButton.setId("delete-button");
 
         // Student table
         TableView<Student> studentTable = new TableView<>();
@@ -62,40 +66,43 @@ public class StudentController {
             row.setId("student-row");
             ContextMenu contextMenu = new ContextMenu();
             contextMenu.setId("context-menu");
-
-            // Modify option
-            MenuItem editItem = new MenuItem("🖊 Modify");
-            editItem.setId("edit-item");
-            editItem.setOnAction(event -> handleModifyStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
-
-            // Delete option
-            MenuItem deleteItem = new MenuItem(" 🗑 Delete");
-            deleteItem.setId("delete-item");
-            deleteItem.setOnAction(event -> handleDeleteStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
-
-            contextMenu.getItems().addAll(editItem, deleteItem);
-
-            // Show context menu on right-click
-            row.setOnMouseClicked(event -> {
-                if (event.getButton() == MouseButton.SECONDARY && (!row.isEmpty())) {
-                    contextMenu.show(row, event.getScreenX(), event.getScreenY());
-                }
-            });
-
+//
+//            // Modify option
+//            MenuItem editItem = new MenuItem("🖊 Modify");
+//            editItem.setId("edit-item");
+//            editItem.setOnAction(event -> handleModifyStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
+//
+//            // Delete option
+//            MenuItem deleteItem = new MenuItem(" 🗑 Delete");
+//            deleteItem.setId("delete-item");
+//            deleteItem.setOnAction(event -> handleDeleteStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
+//
+//            contextMenu.getItems().addAll(editItem, deleteItem);
+//
+//            // Show context menu on right-click
+//            row.setOnMouseClicked(event -> {
+//                if (event.getButton() == MouseButton.SECONDARY && (!row.isEmpty())) {
+//                    contextMenu.show(row, event.getScreenX(), event.getScreenY());
+//                }
+//            });
             return row;
         });
 
         searchButton.setOnAction(e -> handleSearch(searchField.getText(), studentTable));
         refreshButton.setOnAction(e -> loadStudents(studentTable));
         addStudentButton.setOnAction(e -> handleAddStudent(studentTable));
+        modifyStudentButton.setOnAction(e -> handleModifyStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
+        deleteStudentButton.setOnAction(e -> handleDeleteStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
 
         searchButton.getStyleClass().add("search-button");
         refreshButton.getStyleClass().add("refresh-button");
         addStudentButton.getStyleClass().add("add-button");
+        modifyStudentButton.getStyleClass().add("modify-button");
+        deleteStudentButton.getStyleClass().add("delete-button");
 
         HBox searchButtonContainer = new HBox(searchButton);
         searchButtonContainer.setAlignment(Pos.CENTER);
-        HBox buttons = new HBox(15, refreshButton, addStudentButton);
+        HBox buttons = new HBox(15, refreshButton, addStudentButton, modifyStudentButton, deleteStudentButton);
         buttons.setAlignment(Pos.CENTER);
         VBox layout = new VBox(10, searchField, searchButtonContainer, studentTable, buttons);
         layout.setPadding(new Insets(20, 20, 20, 20));
@@ -118,13 +125,12 @@ public class StudentController {
 
     // Search students by name
     void handleSearch(String name, TableView<Student> studentTable) {
-        if (!name.isEmpty()) {
-            try {
-                List<Student> students = StudentDAO.searchStudentByName(name);
-                studentTable.getItems().setAll(students);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        try {
+            List<Student> students = StudentDAO.searchStudentByName(name);
+            studentTable.getItems().setAll(students);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Database Error", "Failed to search students.");
         }
     }
 
