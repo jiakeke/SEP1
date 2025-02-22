@@ -83,7 +83,7 @@ public class GroupDao {
     }
 
     // This method removes a student from a group
-    private void executeUpdateQuery(String query, Object... params) {
+    public void executeUpdateQuery(String query, Object... params) {
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             for (int i = 0; i < params.length; i++) {
                 stmt.setObject(i + 1, params[i]);
@@ -95,7 +95,7 @@ public class GroupDao {
     }
 
     // This method returns a list of groups
-    private List<Group> getGroupsByQuery(String query, Integer id) {
+    public List<Group> getGroupsByQuery(String query, Integer id) {
         List<Group> groups = new ArrayList<>();
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             if (id != null) {
@@ -113,7 +113,7 @@ public class GroupDao {
     }
 
     // This method returns a list of students in a group
-    private List<Student> getStudentsByGroupQuery(int groupId, String query) {
+    public List<Student> getStudentsByGroupQuery(int groupId, String query) {
         List<Student> students = new ArrayList<>();
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, groupId);
@@ -127,4 +127,6 @@ public class GroupDao {
         }
         return students;
     }
+
+
 }
