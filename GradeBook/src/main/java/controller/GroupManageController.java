@@ -49,7 +49,7 @@ public class GroupManageController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/AddNewGroup.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
+            Stage stage = getStage();
             stage.setTitle("Add New Group");
             stage.setScene(scene);
 
@@ -61,6 +61,10 @@ public class GroupManageController {
         }
     }
 
+    protected  Stage getStage() {
+        return new Stage();
+    }
+
     // This method is called when the user clicks the "Delete Group" button, it deletes the selected group
     @FXML
     void deleteGroupInfo(MouseEvent event) {
@@ -69,16 +73,24 @@ public class GroupManageController {
             showError("Selection error", "Please select a group to delete.");
             return;
         }
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("Delete Group");
-        alert.setContentText("Are you sure you want to delete this group?");
+//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//        alert.setTitle("Confirmation Dialog");
+//        alert.setHeaderText("Delete Group");
+//        alert.setContentText("Are you sure you want to delete this group?");
 
-        if (alert.showAndWait().get() == ButtonType.OK) {
+        if (getConfirmation() == ButtonType.OK) {
             if (groupDao.removeGroup(selectedGroup.getId())) {
                 groupInfoList.remove(selectedGroup);
             }
         }
+    }
+
+    protected ButtonType getConfirmation() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("Delete Group");
+        alert.setContentText("Are you sure you want to delete this group?");
+        return alert.showAndWait().orElse(ButtonType.CANCEL);
     }
 
     // This method is called when the user clicks the "Modify Group" button, it opens the ModifyGroupInfo.fxml file
@@ -91,7 +103,7 @@ public class GroupManageController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ModifyGroupInfo.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
+            Stage stage = getStage();
             stage.setTitle("Modify Group");
             stage.setScene(scene);
 
@@ -127,7 +139,7 @@ public class GroupManageController {
     }
 
     // This method is shown when an error occurs
-    private void showError(String title, String message) {
+    protected void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
