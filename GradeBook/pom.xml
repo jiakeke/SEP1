@@ -21,7 +21,12 @@
         <dependency> <groupId>org.openjfx</groupId> <artifactId>javafx-fxml</artifactId> <version>21.0.1</version> </dependency>
         <dependency> <groupId>org.openjfx</groupId> <artifactId>javafx-base</artifactId> <version>21.0.1</version> </dependency>
         <dependency> <groupId>com.itextpdf</groupId> <artifactId>itextpdf</artifactId> <version>5.5.13.3</version> </dependency>
-
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>17.0.2</version>
+            <classifier>win</classifier>
+        </dependency>
         <!-- database -->
         <dependency> <groupId>org.mariadb.jdbc</groupId> <artifactId>mariadb-java-client</artifactId> <version>3.1.2</version> </dependency>
         <dependency> <groupId>com.h2database</groupId> <artifactId>h2</artifactId> <version>2.2.220</version> <scope>test</scope> </dependency>
