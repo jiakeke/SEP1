@@ -15,6 +15,10 @@ import java.sql.SQLException;
 public class UserDAO {
     static Connection conn = MariaDbConnection.getConnection();
 
+    public static void setConnection(Connection conn) {
+        UserDAO.conn = conn;
+    }
+
     public static void registerUser(User user) throws SQLException, NoSuchAlgorithmException {
         if (user.getUsername().isEmpty() || user.getPassword().isEmpty()) {
             throw new IllegalArgumentException("Username and password cannot be empty");
