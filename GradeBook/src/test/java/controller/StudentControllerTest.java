@@ -135,6 +135,7 @@ package controller;
 
 import application.GradeBookView;
 import dao.StudentDAO;
+import dao.UserDAO;
 import javafx.scene.control.Button;
 import model.Student;
 import org.junit.jupiter.api.*;
@@ -173,6 +174,7 @@ class StudentControllerTest extends ApplicationTest {
         Class.forName("org.h2.Driver");
         conn = DriverManager.getConnection("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1", "sa", "");
         StudentDAO.setConnection(conn);
+        UserDAO.setConnection(conn);
         System.out.println("H2 数据库已初始化：" + conn.getMetaData().getURL());
         try (Statement stmt = conn.createStatement()) {
             stmt.execute("CREATE TABLE IF NOT EXISTS students ("
@@ -185,6 +187,8 @@ class StudentControllerTest extends ApplicationTest {
                     + "id INT AUTO_INCREMENT PRIMARY KEY, "
                     + "username VARCHAR(255) NOT NULL, "
                     + "password VARCHAR(255) NOT NULL)");
+
+            stmt.execute("INSERT INTO users (username, password) VALUES ('admin', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f')");
         }
 
         StudentDAO.registerStudent(new Student(0, "Alice", "alice@example.com", "123456"));
@@ -197,6 +201,7 @@ class StudentControllerTest extends ApplicationTest {
         if (conn.isClosed()) {
             conn = DriverManager.getConnection("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1", "sa", "");
             StudentDAO.setConnection(conn);
+            UserDAO.setConnection(conn);
         }
 
         clickOn("#usernameField").write("admin");

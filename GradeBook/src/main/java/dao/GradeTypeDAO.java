@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GradeTypeDAO {
-    private static final Connection conn = MariaDbConnection.getConnection();
+    private static Connection conn = MariaDbConnection.getConnection();
+
+    public static void setConnection(Connection conn) {
+        GradeTypeDAO.conn = conn;
+    }
 
     // Insert data
     public static void registerGradeType(GradeType gradeType) throws SQLException {
@@ -99,12 +103,16 @@ public class GradeTypeDAO {
 
     // get total weight by group
     public static double getTotalWeightByGroup(int groupId) throws SQLException {
-        String query = "SELECT SUM(weight) FROM grade_types WHERE group_id = ?";
+        String query = "SELECT SUM(weight) AS total_weight FROM grade_types WHERE group_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, groupId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getDouble(1);
+                    double total = rs.getDouble("total_weight");
+                    if (rs.wasNull()) {
+                        return 0;
+                    }
+                    return total;
                 }
             }
         }
