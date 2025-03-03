@@ -1,12 +1,16 @@
 pipeline {
     agent any
+    environment {
+            MAVEN_HOME = "C:\\Program Files\\maven"
+            PATH = "${env.PATH};${env.MAVEN_HOME}\\bin"
+        }
     stages {
-        stage('checking') {
+        stage('Checking') {
             steps {
                 git branch: 'main', url: 'https://github.com/jiakeke/SEP1.git'
             }
         }
-        stage('build') {
+        stage('Build') {
             steps {
                 bat 'mvn -f GradeBook/pom.xml clean install'
             }
