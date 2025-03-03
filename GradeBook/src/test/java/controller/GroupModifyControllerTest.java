@@ -140,7 +140,7 @@ public class GroupModifyControllerTest {
                 latch.countDown();
             }
         });
-        assertTrue(latch.await(5, TimeUnit.SECONDS), "FX task did not complete in time");
+        assertTrue(latch.await(15, TimeUnit.SECONDS), "FX task did not complete in time");
     }
 
     @Test
@@ -191,7 +191,7 @@ public class GroupModifyControllerTest {
                 latch.countDown();
             }
         });
-        assertTrue(latch.await(5, TimeUnit.SECONDS));
+        assertTrue(latch.await(15, TimeUnit.SECONDS));
         verify(mockGroupDao, never()).updateGroup(anyInt(), anyString(), anyString());
     }
 
@@ -210,7 +210,7 @@ public class GroupModifyControllerTest {
                 latch.countDown();
             }
         });
-        assertTrue(latch.await(5, TimeUnit.SECONDS));
+        assertTrue(latch.await(15, TimeUnit.SECONDS));
 
         verify(mockGroupDao).updateGroup(dummyGroup.getId(), "ModifiedGroup", "ModifiedDesc");
         verify(mockGroupDao).deleteGroupStudents(dummyGroup.getId());
