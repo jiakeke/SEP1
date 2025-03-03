@@ -8,13 +8,13 @@ pipeline {
         }
         stage('build') {
             steps {
-                bat 'mvn -f GradeBook/pom.xml clean install'
+                sh 'mvn -f GradeBook/pom.xml clean install'
             }
         }
 
         stage('Test & Coverage') {
             steps {
-                bat 'mvn -f GradeBook/pom.xml test jacoco:report' // Run tests and generate a JaCoCo coverage report
+                sh 'mvn -f GradeBook/pom.xml test jacoco:report' // Run tests and generate a JaCoCo coverage report
             }
 
             post {
