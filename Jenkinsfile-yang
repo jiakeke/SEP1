@@ -25,7 +25,7 @@ pipeline {
 
         stage('Build Jar') {
             steps {
-                bat 'mvn -f GradeBook/pom.xml -DskipTests'
+                bat 'mvn -f GradeBook/pom.xml clean install -DskipTests'
             }
         }
 
