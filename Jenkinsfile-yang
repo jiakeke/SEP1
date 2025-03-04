@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    environment {
+        // 数据库配置（如果你不需要这块，也可以删掉）
+        DB_HOST = 'localhost'
+        DB_PORT = '6033'
+        DB_NAME = 'gradebook'
+        DB_USER = 'grade_admin'
+        DB_PASS = credentials('DB_PASS_CREDENTIAL_ID')  // Jenkins凭据获取数据库密码
+
+        // EXE打包相关
+        APP_NAME = "GradeBook"
+        MAIN_CLASS = "Main"   // 根据你真实的Main类修改
+        ICON_PATH = "GradeBook/src/main/resources/app-icon.ico"  // 图标路径
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/jiakeke/SEP1.git'
+            }
+        }
+
+        stage('Build Jar') {
+            steps {
+                bat 'mvn -f GradeBook/pom.xml clean package -DskipTests'
+            }
+        }
+
+        stage('Package EXE') {
+            steps {
+            bat '''
+                if exist build-output (
+                    rmdir /s /q build-output
+                )
+            '''
+                bat """
+                                    jpackage --input GradeBook/target --name ${APP_NAME} --main-jar gradebook.jar --main-class Main --type app-image --icon ${ICON_PATH} --java-options "--enable-preview" --output build-output
+                                """
+            }
+        }
+
+        stage('Archive EXE') {
+            steps {
+                archiveArtifacts artifacts: 'GradeBook/target/*.exe', allowEmptyArchive: true
+            }
+        }
+   
+    }
+}

@@ -1,24 +1,20 @@
 pipeline {
     agent any
-    environment {
-            MAVEN_HOME = "C:\\Program Files\\maven"
-            PATH = "${env.PATH};${env.MAVEN_HOME}\\bin"
-        }
     stages {
-        stage('Checking') {
+        stage('checking') {
             steps {
                 git branch: 'main', url: 'https://github.com/jiakeke/SEP1.git'
             }
         }
-        stage('Build') {
+        stage('build') {
             steps {
-                bat 'mvn -f GradeBook/pom.xml clean install'
+                sh 'mvn -f GradeBook/pom.xml clean install'
             }
         }
 
         stage('Test & Coverage') {
             steps {
-                bat 'mvn -f GradeBook/pom.xml test jacoco:report' // Run tests and generate a JaCoCo coverage report
+                sh 'mvn -f GradeBook/pom.xml test jacoco:report' // Run tests and generate a JaCoCo coverage report
             }
 
             post {

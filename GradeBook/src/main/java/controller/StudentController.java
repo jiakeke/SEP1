@@ -19,15 +19,16 @@ import java.util.List;
 
 public class StudentController {
     private GradeBookView view;
+    Stage studentsStage = new Stage();
 
     public StudentController(GradeBookView view) {
         this.view = view;
+        this.studentsStage.setTitle("Students");
+
     }
 
     // Handle open students
     public void handleOpenStudents(ActionEvent open) {
-        Stage stage = new Stage();
-        stage.setTitle("Students");
 
         // Search bar
         TextField searchField = new TextField();
@@ -108,8 +109,8 @@ public class StudentController {
         layout.setPadding(new Insets(20, 20, 20, 20));
         Scene scene = new Scene(layout, 600, 500);
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-        stage.setScene(scene);
-        stage.show();
+        studentsStage.setScene(scene);
+        studentsStage.show();
     }
 
     // Load students from database
@@ -230,19 +231,12 @@ public class StudentController {
 
     // Delete student
     void handleDeleteStudent(Student student, TableView<Student> studentTable) {
-//        if (student == null) {
-//            showAlert("Error", "Please select a student to delete.");
-//            return;
-//        }
 
-        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmation.setTitle("Confirm Delete");
-        confirmation.setHeaderText(null);
-        confirmation.setContentText("Are you sure you want to delete " + student.getName() + "?");
-        confirmation.getDialogPane().setId("delete-confirmation");
 
-        confirmation.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
+        ConfirmDialog dialog = new ConfirmDialog(studentsStage, "Are you sure you want to delete this student?");
+
+        dialog.showAndWait().thenAccept(confirmed -> {
+            if (confirmed) {
                 try {
                     StudentDAO.deleteStudent(student.getId());
                     loadStudents(studentTable);
@@ -250,8 +244,11 @@ public class StudentController {
                     e.printStackTrace();
                     showAlert("Database Error", "Failed to delete student.");
                 }
+            } else {
+                System.out.println("Deletion cancelled");
             }
         });
+
     }
 
     // Show alert dialog

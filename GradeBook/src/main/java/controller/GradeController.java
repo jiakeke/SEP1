@@ -1,32 +1,36 @@
 package controller;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.pdf.*;
 import dao.GradeDAO;
-import dao.StudentDAO;
 import dao.GradeTypeDAO;
+import dao.StudentDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import model.Grade;
-import model.Student;
 import model.GradeType;
+import model.Student;
 
+import java.awt.*;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import java.util.*;
 
 public class GradeController {
 
@@ -35,9 +39,11 @@ public class GradeController {
 
     private static int currentGroupId;
     private static Stage stage;
+    private static String currentGroupName;
 
-    public static void showGradeEditor(int groupId) {
+    public static void showGradeEditor(int groupId, String groupName) {
         currentGroupId = groupId;
+        currentGroupName = groupName;
         stage = new Stage();
         initializeUI();
         loadGradeData();
@@ -52,8 +58,8 @@ public class GradeController {
         HBox buttonContainer = new HBox(exportButton);
         buttonContainer.setAlignment(Pos.CENTER);
 
-        exportButton.setOnAction(e -> exportToPDF());
-
+//        exportButton.setOnAction(e -> exportToPDF());
+        exportButton.setOnAction(e -> exportToPDFFromTable());
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(20, 20, 20, 20));
         layout.getChildren().addAll(gradeTable, buttonContainer);
@@ -184,34 +190,147 @@ public class GradeController {
 //        }
 //    }
 
-    private static void exportToPDF() {
+    public static void exportToPDFFromTable() {
+        if (gradeTable == null || gradeTable.getColumns().isEmpty()) {
+            showError("Export Failed", "No data to export.");
+            return;
+        }
+
+        // set default file name
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String defaultFileName = "Group_" + currentGroupName + "_Table_Report_" + timestamp + ".pdf";
+
+        // user selects folder
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select Folder to Save PDF");
+        File selectedDirectory = directoryChooser.showDialog(null);
+
+        if (selectedDirectory == null) {
+            showError("Export Failed", "No folder selected.");
+            return;
+        }
+
+        String filePath = new File(selectedDirectory, defaultFileName).getAbsolutePath();
+
         try {
-            List<Grade> grades = GradeDAO.showGradesByGroupId(currentGroupId);
-            Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("Group_" + currentGroupId + "_Report.pdf"));
+            Document document = new Document(PageSize.A4, 30, 30, 30, 30);  // 设置页边距
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
+
+            writer.setPageEvent(createPageEvent());
             document.open();
 
-            document.add(new Paragraph("Grade Report for Group " + currentGroupId, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18)));
+            addDocumentHeader(document, currentGroupName);
 
-            PdfPTable table = new PdfPTable(3);
-            table.addCell("Grade ID");
-            table.addCell("Student ID");
-            table.addCell("Grade");
-
-            for (Grade g : grades) {
-                table.addCell(String.valueOf(g.getId()));
-                table.addCell(String.valueOf(g.getStudentId()));
-                table.addCell(String.valueOf(g.getGrade()));
-            }
-
+            PdfPTable table = createPdfTableFromTableView(gradeTable);
             document.add(table);
+
             document.close();
 
-            showInfo("Export Success", "PDF report generated successfully!");
+            Desktop.getDesktop().open(new File(filePath));
+
+            showInfo("Export Success", "PDF report generated successfully:\n" + filePath);
+
         } catch (Exception e) {
-            showError("Export Failed", "Failed to generate PDF: " + e.getMessage());
+            e.printStackTrace();
+            showError("Export Failed", "Failed to generate PDF: " + e.getClass().getSimpleName() + " - " + e.getMessage());
         }
     }
+
+
+    // this method is used to create a footer for the pdf
+    public static PdfPageEventHelper createPageEvent() {
+        return new PdfPageEventHelper() {
+            Font footerFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
+
+            @Override
+            public void onEndPage(PdfWriter writer, Document document) {
+                PdfContentByte canvas = writer.getDirectContent();
+
+                ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT,
+                        new Phrase("metropolia.fi", footerFont),
+                        document.left(), document.top() + 20, 0);
+
+                ColumnText.showTextAligned(canvas, Element.ALIGN_CENTER,
+                        new Phrase(String.format("Page %d", writer.getPageNumber()), footerFont),
+                        (document.right() + document.left()) / 2, document.bottom() - 20, 0);
+            }
+        };
+    }
+
+    // this method is used to add a header to the pdf
+    public static void addDocumentHeader(Document document, String groupName) throws DocumentException {
+        Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+        document.add(new Paragraph("Grade Report: " + groupName, titleFont));
+        document.add(Chunk.NEWLINE);
+
+        String exportTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        Font timeFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
+        document.add(new Paragraph("Exported on: " + exportTime, timeFont));
+        document.add(Chunk.NEWLINE);
+    }
+
+    // this method is used to create a pdf table from a JavaFX TableView
+    public static PdfPTable createPdfTableFromTableView(TableView<Map<String, Object>> tableView) throws DocumentException {
+        int columnCount = tableView.getColumns().size();
+        PdfPTable table = new PdfPTable(columnCount);
+        table.setWidthPercentage(100);
+        table.setHeaderRows(1);
+
+        float[] columnWidths = new float[columnCount];
+        Arrays.fill(columnWidths, 1f);
+        table.setWidths(columnWidths);
+
+        // 表头（灰底+加粗+居中）
+        Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+        for (TableColumn<Map<String, Object>, ?> column : tableView.getColumns()) {
+            PdfPCell headerCell = new PdfPCell(new Phrase(column.getText(), headerFont));
+            headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerCell.setPadding(8);
+            headerCell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            table.addCell(headerCell);
+        }
+
+        // 数据行
+        for (Map<String, Object> row : tableView.getItems()) {
+            for (TableColumn<Map<String, Object>, ?> column : tableView.getColumns()) {
+                String columnName = column.getText();
+                Object cellValue = getCellValueIgnoreCase(row, columnName);
+                String cellText = formatCellValue(cellValue);
+                PdfPCell cell = new PdfPCell(new Phrase(cellText));
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setPadding(5);
+                table.addCell(cell);
+            }
+        }
+        return table;
+    }
+
+    // this method is used to get a cell value from a row map, ignoring case
+    public static Object getCellValueIgnoreCase(Map<String, Object> row, String columnName) {
+        Object cellValue = row.get(columnName);
+        if (cellValue != null) {
+            return cellValue;
+        }
+        for (String key : row.keySet()) {
+            if (key.equalsIgnoreCase(columnName)) {
+                return row.get(key);
+            }
+        }
+        return null;
+    }
+
+    // this method is used to format a cell value as a string
+    public static String formatCellValue(Object value) {
+        if (value == null) {
+            return "";
+        }
+        if (value instanceof Number) {
+            return String.format("%.2f", ((Number) value).doubleValue());
+        }
+        return value.toString();
+    }
+
+
 
     private static void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

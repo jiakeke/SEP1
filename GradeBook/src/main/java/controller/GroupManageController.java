@@ -135,7 +135,7 @@ public class GroupManageController {
             showError("Selection error", "Please select a Group first.");
             return;
         }
-        GradeController.showGradeEditor(selectedGroup.getId());
+        GradeController.showGradeEditor(selectedGroup.getId(), selectedGroup.getName());
     }
 
     // This method is shown when an error occurs
