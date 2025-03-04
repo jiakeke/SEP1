@@ -30,7 +30,11 @@ pipeline {
 
         stage('Package EXE') {
             steps {
-            bat 'rmdir /s /q build-output'
+            bat '''
+                if exist build-output (
+                    rmdir /s /q build-output
+                )
+            '''
                 bat """
                     jpackage ^
                     --input GradeBook/target ^
