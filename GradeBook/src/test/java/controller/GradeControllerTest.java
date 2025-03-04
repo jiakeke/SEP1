@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 class GradeControllerTest {
 
     /**
-     * 测试：getCellValueIgnoreCase
+     * testGetCellValueIgnoreCase
      */
     @Test
     void testGetCellValueIgnoreCase() {
@@ -29,7 +29,7 @@ class GradeControllerTest {
     }
 
     /**
-     * 测试：formatCellValue
+     * testFormatCellValue
      */
     @Test
     void testFormatCellValue() {
@@ -40,7 +40,7 @@ class GradeControllerTest {
     }
 
     /**
-     * 测试：createPageEvent
+     * testCreatePageEvent
      */
     @Test
     void testCreatePageEvent() {
@@ -49,8 +49,8 @@ class GradeControllerTest {
     }
 
     /**
-     * 测试：addDocumentHeader
-     * 这里不需要真的创建PDF，只需mock Document对象，确认add()调用就行
+     *
+     * here we are testing the addDocumentHeader method
      */
     @Test
     void testAddDocumentHeader() throws DocumentException {

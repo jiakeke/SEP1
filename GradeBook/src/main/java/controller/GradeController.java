@@ -196,11 +196,11 @@ public class GradeController {
             return;
         }
 
-        // 生成时间戳
+        // set default file name
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String defaultFileName = "Group_" + currentGroupName + "_Table_Report_" + timestamp + ".pdf";
 
-        // 使用系统级文件夹选择器
+        // user selects folder
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select Folder to Save PDF");
         File selectedDirectory = directoryChooser.showDialog(null);
@@ -237,7 +237,7 @@ public class GradeController {
     }
 
 
-    // ✅ 【方便测试】页眉页脚独立方法
+    // this method is used to create a footer for the pdf
     public static PdfPageEventHelper createPageEvent() {
         return new PdfPageEventHelper() {
             Font footerFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
@@ -257,7 +257,7 @@ public class GradeController {
         };
     }
 
-    // ✅ 【方便测试】标题+时间独立方法
+    // this method is used to add a header to the pdf
     public static void addDocumentHeader(Document document, String groupName) throws DocumentException {
         Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
         document.add(new Paragraph("Grade Report: " + groupName, titleFont));
@@ -269,7 +269,7 @@ public class GradeController {
         document.add(Chunk.NEWLINE);
     }
 
-    // ✅ 【方便测试】表格生成核心逻辑拆出来
+    // this method is used to create a pdf table from a JavaFX TableView
     public static PdfPTable createPdfTableFromTableView(TableView<Map<String, Object>> tableView) throws DocumentException {
         int columnCount = tableView.getColumns().size();
         PdfPTable table = new PdfPTable(columnCount);
@@ -305,7 +305,7 @@ public class GradeController {
         return table;
     }
 
-    // ✅ 这个方法不用改，和你原来的一样（保留方便测试）
+    // this method is used to get a cell value from a row map, ignoring case
     public static Object getCellValueIgnoreCase(Map<String, Object> row, String columnName) {
         Object cellValue = row.get(columnName);
         if (cellValue != null) {
@@ -319,7 +319,7 @@ public class GradeController {
         return null;
     }
 
-    // ✅ 这个方法也保持不变
+    // this method is used to format a cell value as a string
     public static String formatCellValue(Object value) {
         if (value == null) {
             return "";
