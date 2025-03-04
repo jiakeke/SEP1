@@ -1,9 +1,9 @@
 pipeline {
     agent any
-    environment {
-            MAVEN_HOME = "C:\\Program Files\\maven"
-            PATH = "${env.PATH};${env.MAVEN_HOME}\\bin"
-        }
+    // environment {
+    //         MAVEN_HOME = "C:\\Program Files\\maven"
+    //         PATH = "${env.PATH};${env.MAVEN_HOME}\\bin"
+    //     }
     stages {
         stage('Checking') {
             steps {
