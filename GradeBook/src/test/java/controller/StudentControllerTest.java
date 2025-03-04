@@ -133,15 +133,22 @@
 
 package controller;
 
+import static javafx.scene.input.KeyCode.*;
+import javafx.application.Platform;
 import application.GradeBookView;
 import dao.StudentDAO;
 import dao.UserDAO;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.PasswordField;
 import model.Student;
 import org.junit.jupiter.api.*;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.control.TableViewMatchers;
+import java.util.Locale;
+import javafx.stage.Window;
+import javafx.scene.input.MouseButton;
 
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
@@ -162,8 +169,10 @@ class StudentControllerTest extends ApplicationTest {
     private StudentController studentController;
     private static Connection conn;
 
+
     @Override
     public void start(Stage stage) {
+        Locale.setDefault(new Locale("en", "US"));
         gradeBookView = new GradeBookView();
         studentController = new StudentController(gradeBookView);
         gradeBookView.start(stage);
@@ -191,9 +200,19 @@ class StudentControllerTest extends ApplicationTest {
             stmt.execute("INSERT INTO users (username, password) VALUES ('admin', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f')");
         }
 
-        StudentDAO.registerStudent(new Student(0, "Alice", "alice@example.com", "123456"));
+        StudentDAO.registerStudent(new Student(0, "BigAlice", "alice@example.com", "123456"));
         StudentDAO.registerStudent(new Student(0, "Bob", "bob@example.com", "654321"));
         StudentDAO.registerStudent(new Student(0, "Charlie", "charlie@example.com", "111222"));
+    }
+
+    void submit(String fieldId) {
+        Button button = lookup(fieldId).query();
+        interact(() -> button.fire());
+    }
+
+    void setText(String fieldId, String text) {
+        TextField textField = lookup(fieldId).query();
+        interact(() -> textField.setText(text));
     }
 
     @BeforeEach
@@ -204,91 +223,88 @@ class StudentControllerTest extends ApplicationTest {
             UserDAO.setConnection(conn);
         }
 
-        clickOn("#usernameField").write("admin");
-        clickOn("#passwordField").write("password123");
-        clickOn("#loginButton");
+        TextField usernameField = lookup("#usernameField").query();
+        PasswordField passwordField = lookup("#passwordField").query();
+        interact(() -> usernameField.setText("admin"));
+        interact(() -> passwordField.setText("password123"));
+
+        submit("#loginButton");
 
         verifyThat("#studentsButton", hasText("Students"));
     }
 
     @Test
     void testHandleAddStudent() {
-        clickOn("#studentsButton");
+        submit("#studentsButton");
 
-        clickOn("#add-button");
+        submit("#add-button");
 
-        clickOn("#name-field").write("Lucy");
-        clickOn("#email-field").write("lucy@example.com");
-        clickOn("#phone-field").write("111222");
+        setText("#name-field", "Lucy");
+        setText("#email-field", "lucy@example.com");
+        setText("#phone-field", "111222");
 
-        clickOn("#submit-button");
+        submit("#submit-button");
 
         verifyThat("#studentTable", TableViewMatchers.containsRow("Lucy", "lucy@example.com", "111222"));
     }
 
     @Test
     void testHandleSearch() {
-        clickOn("#studentsButton");
+        submit("#studentsButton");
 
-        clickOn("#search-field").write("Alice");
+        setText("#search-field", "BigAlice");
 
-        clickOn("#search-button");
+        submit("#search-button");
 
         verifyThat("#studentTable", TableViewMatchers.hasNumRows(1));
-        verifyThat("#studentTable", TableViewMatchers.containsRow("Alice", "alice@example.com", "123456"));
+        verifyThat("#studentTable", TableViewMatchers.containsRow("BigAlice", "alice@example.com", "123456"));
     }
 
     @Test
     void testHandleModifyStudent() {
-        clickOn("#studentsButton");
+        submit("#studentsButton");
 
         interact(() -> {
             TableView<Student> studentTable = lookup("#studentTable").query();
             studentTable.getSelectionModel().selectFirst();
         });
         clickOn();
-        clickOn("#modify-button");
+        submit("#modify-button");
 
         doubleClickOn("#name-field").eraseText(7).write("Charlie Modified");
         doubleClickOn("#email-field").eraseText(19).write("modified@example.com");
         doubleClickOn("#phone-field").eraseText(6).write("987654");
 
-        clickOn("#save-button");
+        submit("#save-button");
 
         verifyThat("#studentTable", TableViewMatchers.containsRow("Charlie Modified", "modified@example.com", "987654"));
     }
 
     @Test
     void testHandleDeleteStudent() {
-        clickOn("#studentsButton");
+        submit("#studentsButton");
+
+        int initialRowCount = lookup("#studentTable").queryTableView().getItems().size();
+
 
         interact(() -> {
             TableView<Student> studentTable = lookup("#studentTable").query();
             studentTable.getSelectionModel().selectFirst();
+            studentController.handleDeleteStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable);
         });
 
-        int initialRowCount = lookup("#studentTable").queryTableView().getItems().size();
-
-        clickOn();
-
-        clickOn("#delete-button");
-
-        Button cancelButton = lookup(".button").match(hasText("取消")).queryButton();
-        clickOn(cancelButton);
+        submit("#confirmCancelButton");
 
         verifyThat("#studentTable", TableViewMatchers.hasNumRows(initialRowCount));
 
         interact(() -> {
             TableView<Student> studentTable = lookup("#studentTable").query();
             studentTable.getSelectionModel().selectFirst();
+            studentController.handleDeleteStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable);
+            type(ENTER);
         });
 
-        clickOn();
-
-        clickOn("#delete-button");
-
-        Button okButton = lookup(".button").match(hasText("确定")).queryButton();
-        clickOn(okButton);
+        submit("#confirmOkButton");
 
         verifyThat("#studentTable", TableViewMatchers.hasNumRows(initialRowCount - 1));
     }
@@ -296,11 +312,11 @@ class StudentControllerTest extends ApplicationTest {
     @Test
     void testLoadStudentsWithDBError() {
         try {
-            clickOn("#studentsButton");
-            clickOn("#refresh-button");
+            submit("#studentsButton");
+            submit("#refresh-button");
 
             conn.close();
-            clickOn("#refresh-button");
+            submit("#refresh-button");
 
             assertTrue(lookup(".alert").tryQuery().isPresent(), "No alert is shown.");
 
@@ -314,16 +330,16 @@ class StudentControllerTest extends ApplicationTest {
     @Test
     void testAddStudentWithDBError() {
 
-        clickOn("#studentsButton");
+        submit("#studentsButton");
 
-        clickOn("#add-button");
+        submit("#add-button");
 
-        clickOn("#name-field").write("Lucy");
-        clickOn("#email-field").write("lucy@example.com");
-        clickOn("#phone-field").write("111222");
+        setText("#name-field", "Lucy");
+        setText("#email-field", "lucy@example.com");
+        setText("#phone-field", "111222");
         try {
             conn.close();
-            clickOn("#submit-button");
+            submit("#submit-button");
 
             assertTrue(lookup(".alert").tryQuery().isPresent(), "No alert is shown.");
 
@@ -336,12 +352,12 @@ class StudentControllerTest extends ApplicationTest {
     @Test
     void testHandleSearchWithDBError() {
         try {
-            clickOn("#studentsButton");
+            submit("#studentsButton");
 
-            clickOn("#search-field").write("Alice");
+            setText("#search-field", "Alice");
 
             conn.close();
-            clickOn("#search-button");
+            submit("#search-button");
 
             assertTrue(lookup(".alert").tryQuery().isPresent(), "No alert is shown.");
 
@@ -354,21 +370,21 @@ class StudentControllerTest extends ApplicationTest {
     @Test
     void testHandleModifyStudentWithDBError() {
         try {
-            clickOn("#studentsButton");
+            submit("#studentsButton");
 
             interact(() -> {
                 TableView<Student> studentTable = lookup("#studentTable").query();
                 studentTable.getSelectionModel().selectFirst();
             });
             clickOn();
-            clickOn("#modify-button");
+            submit("#modify-button");
 
             doubleClickOn("#name-field").eraseText(9).write("Charlie Modified");
             doubleClickOn("#email-field").eraseText(19).write("modified@example.com");
             doubleClickOn("#phone-field").eraseText(6).write("987654");
 
             conn.close();
-            clickOn("#save-button");
+            submit("#save-button");
 
             assertTrue(lookup(".alert").tryQuery().isPresent(), "No alert is shown.");
 
@@ -381,20 +397,17 @@ class StudentControllerTest extends ApplicationTest {
     @Test
     void testHandleDeleteStudentWithDBError() {
         try {
-            clickOn("#studentsButton");
+            submit("#studentsButton");
 
             interact(() -> {
                 TableView<Student> studentTable = lookup("#studentTable").query();
                 studentTable.getSelectionModel().selectFirst();
             });
 
-            clickOn();
-
-            clickOn("#delete-button");
-
-            Button okButton = lookup(".button").match(hasText("确定")).queryButton();
+            submit("#delete-button");
             conn.close();
-            clickOn(okButton);
+            submit("#confirmOkButton");
+
 
             assertTrue(lookup(".alert").tryQuery().isPresent(), "No alert is shown.");
 
