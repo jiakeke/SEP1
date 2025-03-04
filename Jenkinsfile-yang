@@ -36,16 +36,8 @@ pipeline {
                 )
             '''
                 bat """
-                    jpackage ^
-                    --input GradeBook/target ^
-                    --name ${APP_NAME} ^
-                    --main-jar gradebook.jar ^
-                    --main-class ${MAIN_CLASS} ^
-                    --type app-image ^
-                    --icon ${ICON_PATH} ^
-                    --java-options "--enable-preview" ^
-                    --output build-output
-                """
+                                    jpackage --input GradeBook/target --name ${APP_NAME} --main-jar gradebook.jar --main-class Main --type app-image --icon ${ICON_PATH} --java-options "--enable-preview" --output build-output
+                                """
             }
         }
 
