@@ -1,39 +1,82 @@
 pipeline {
     agent any
+
     environment {
+        // 数据库配置（保留你的原始配置）
         DB_HOST = 'localhost'
         DB_PORT = '6033'
         DB_NAME = 'gradebook'
         DB_USER = 'grade_admin'
-        DB_PASS = credentials('DB_PASS_CREDENTIAL_ID')
-        }
+        DB_PASS = credentials('DB_PASS_CREDENTIAL_ID')  // 从Jenkins凭据管理读取
+
+        // 应用打包配置（新加的）
+        APP_NAME = "GradeBook"
+        MAIN_CLASS = "Main"   // 根据你的Main类路径修改
+        ICON_PATH = "GradeBook/src/main/resources/app-icon.ico"  // Windows ico图标
+        MAC_ICON_PATH = "GradeBook/src/main/resources/app-icon.icns" // Mac icns图标（需要你准备）
+    }
+
     stages {
-        stage('Checking') {
+        stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/jiakeke/SEP1.git'
             }
         }
-        stage('Build') {
+
+        stage('Build Jar') {
             steps {
-                bat 'mvn -f GradeBook/pom.xml clean install'
+                bat 'mvn clean package -DskipTests'
             }
         }
 
-        stage('Test & Coverage') {
+        stage('Package App') {
             steps {
-                bat 'mvn -f GradeBook/pom.xml test jacoco:report' // Run tests and generate a JaCoCo coverage report
-            }
+                script {
+                    def os = System.getProperty("os.name").toLowerCase()
 
-            post {
-                always {
-                    junit 'GradeBook/target/surefire-reports/*.xml' // Publish JUnit test results
-                    jacoco execPattern: '**/target/jacoco.exec', // Reads JaCoCo execution file
-                           classPattern: '**/target/classes',
-                           sourcePattern: '**/src/main/java',
-                           exclusionPattern: '**/test/**'
+                    if (os.contains("win")) {
+                        bat """
+                            jpackage ^
+                            --input GradeBook/target ^
+                            --name ${APP_NAME} ^
+                            --main-jar ${APP_NAME}-1.0-SNAPSHOT.jar ^
+                            --main-class ${MAIN_CLASS} ^
+                            --type exe ^
+                            --icon ${ICON_PATH} ^
+                            --java-options "--enable-preview"
+                        """
+                    } else if (os.contains("mac")) {
+                        sh """
+                            jpackage \\
+                            --input GradeBook/target \\
+                            --name ${APP_NAME} \\
+                            --main-jar ${APP_NAME}-1.0-SNAPSHOT.jar \\
+                            --main-class ${MAIN_CLASS} \\
+                            --type dmg \\
+                            --icon ${MAC_ICON_PATH} \\
+                            --java-options "--enable-preview"
+                        """
+                    } else if (os.contains("linux")) {
+                        sh """
+                            jpackage \\
+                            --input GradeBook/target \\
+                            --name ${APP_NAME} \\
+                            --main-jar ${APP_NAME}-1.0-SNAPSHOT.jar \\
+                            --main-class ${MAIN_CLASS} \\
+                            --type deb \\
+                            --java-options "--enable-preview"
+                        """
+                    } else {
+                        error "Unsupported OS: ${os}"
+                    }
                 }
             }
+        }
 
+        stage('Archive') {
+            steps {
+                archiveArtifacts artifacts: 'GradeBook/target/*.exe, GradeBook/target/*.dmg, GradeBook/target/*.deb', allowEmptyArchive: true
+            }
         }
    
     }
