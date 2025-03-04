@@ -160,6 +160,10 @@ public class StudentController {
                 String email = emailField.getText();
                 String phone = phoneField.getText();
 
+                if (!validateStudentInput(name, email, phone)) {
+                    return;
+                }
+
                 Student newStudent = new Student(0, name, email, phone);
                 StudentDAO.registerStudent(newStudent);
                 loadStudents(studentTable);
@@ -205,9 +209,16 @@ public class StudentController {
         saveButton.setId("save-button");
         saveButton.setOnAction(event -> {
             try {
-                student.setName(nameField.getText());
-                student.setEmail(emailField.getText());
-                student.setPhone(phoneField.getText());
+                String name = nameField.getText();
+                String email = emailField.getText();
+                String phone = phoneField.getText();
+                student.setName(name);
+                student.setEmail(email);
+                student.setPhone(phone);
+
+                if (!validateStudentInput(name, email, phone)) {
+                    return;
+                }
 
                 StudentDAO.updateStudent(student);
                 loadStudents(studentTable);
@@ -249,6 +260,35 @@ public class StudentController {
             }
         });
 
+    }
+
+    private boolean validateStudentInput(String name, String email, String phone) {
+        if (name == null || name.trim().isEmpty()) {
+            showAlert("Invalid Name", "Name cannot be empty.");
+            return false;
+        }
+
+        if (!isValidEmail(email)) {
+            showAlert("Invalid Email", "Please enter a valid email address.");
+            return false;
+        }
+
+        if (!isValidPhoneNumber(phone)) {
+            showAlert("Invalid Phone Number", "Please enter a valid phone number (digits only, 7-15 characters).");
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        return email.matches(emailRegex);
+    }
+
+    private boolean isValidPhoneNumber(String phone) {
+        String phoneRegex = "^\\d{7,15}$";
+        return phone.matches(phoneRegex);
     }
 
     // Show alert dialog
