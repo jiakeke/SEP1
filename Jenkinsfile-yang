@@ -36,7 +36,7 @@ pipeline {
                     --name ${APP_NAME} ^
                     --main-jar gradebook.jar ^
                     --main-class ${MAIN_CLASS} ^
-                    --type exe ^
+                    --type app-image ^
                     --icon ${ICON_PATH} ^
                     --java-options "--enable-preview"
                 """
