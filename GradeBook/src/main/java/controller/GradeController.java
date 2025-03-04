@@ -1,6 +1,7 @@
 package controller;
 
 import com.itextpdf.text.*;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.pdf.*;
 import dao.GradeDAO;
 import dao.GradeTypeDAO;
@@ -17,11 +18,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import model.Grade;
 import model.GradeType;
 import model.Student;
 
+import java.awt.*;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -186,108 +190,127 @@ public class GradeController {
 //        }
 //    }
 
-    private static void exportToPDFFromTable() {
+    public static void exportToPDFFromTable() {
         if (gradeTable == null || gradeTable.getColumns().isEmpty()) {
             showError("Export Failed", "No data to export.");
             return;
         }
 
-        String fileName = "Group_" + currentGroupName + "_Table_Report.pdf";
+        // 生成时间戳
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String defaultFileName = "Group_" + currentGroupName + "_Table_Report_" + timestamp + ".pdf";
+
+        // 使用系统级文件夹选择器
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select Folder to Save PDF");
+        File selectedDirectory = directoryChooser.showDialog(null);
+
+        if (selectedDirectory == null) {
+            showError("Export Failed", "No folder selected.");
+            return;
+        }
+
+        String filePath = new File(selectedDirectory, defaultFileName).getAbsolutePath();
 
         try {
-            Document document = new Document(PageSize.A4, 30, 30, 30, 30);  // 设置页边距，避免贴边
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(fileName));
+            Document document = new Document(PageSize.A4, 30, 30, 30, 30);  // 设置页边距
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
 
-            // 设置页眉页脚事件
-            writer.setPageEvent(new PdfPageEventHelper() {
-                Font footerFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
-
-                @Override
-                public void onEndPage(PdfWriter writer, Document document) {
-                    PdfContentByte canvas = writer.getDirectContent();
-
-                    // 页眉（左上角）
-                    ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT,
-                            new Phrase("metropolia.fi", footerFont),
-                            document.left(), document.top() + 20, 0);
-
-                    // 页脚（底部居中页码）
-                    ColumnText.showTextAligned(canvas, Element.ALIGN_CENTER,
-                            new Phrase(String.format("Page %d", writer.getPageNumber()), footerFont),
-                            (document.right() + document.left()) / 2, document.bottom() - 20, 0);
-                }
-            });
-
+            writer.setPageEvent(createPageEvent());
             document.open();
 
-            // 添加标题
-            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
-            document.add(new Paragraph("Grade Report: " + currentGroupName, titleFont));
-            document.add(Chunk.NEWLINE);
+            addDocumentHeader(document, currentGroupName);
 
-            // 添加导出时间
-            String exportTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-            Font timeFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
-            document.add(new Paragraph("Exported on: " + exportTime, timeFont));
-            document.add(Chunk.NEWLINE);
-
-            // 获取列数和列宽
-            int columnCount = gradeTable.getColumns().size();
-            PdfPTable table = new PdfPTable(columnCount);
-            table.setWidthPercentage(100);
-            table.setHeaderRows(1);
-
-            // 设置均等列宽
-            float[] columnWidths = new float[columnCount];
-            Arrays.fill(columnWidths, 1f);
-            table.setWidths(columnWidths);
-
-            // 生成表头
-            Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-            for (TableColumn<Map<String, Object>, ?> column : gradeTable.getColumns()) {
-                PdfPCell headerCell = new PdfPCell(new Phrase(column.getText(), headerFont));
-                headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                headerCell.setPadding(8);
-                headerCell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-                table.addCell(headerCell);
-            }
-
-            // 遍历表格数据，生成每行
-            for (Map<String, Object> row : gradeTable.getItems()) {
-                for (TableColumn<Map<String, Object>, ?> column : gradeTable.getColumns()) {
-                    String columnName = column.getText();
-
-                    // 这里用忽略大小写的方式获取单元格数据
-                    Object cellValue = getCellValueIgnoreCase(row, columnName);
-
-                    String cellText = formatCellValue(cellValue);
-                    PdfPCell cell = new PdfPCell(new Phrase(cellText));
-                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    cell.setPadding(5);
-                    table.addCell(cell);
-                }
-            }
-
-            // 加入表格并关闭文档
+            PdfPTable table = createPdfTableFromTableView(gradeTable);
             document.add(table);
+
             document.close();
 
-            showInfo("Export Success", "PDF report generated successfully: " + fileName);
+            Desktop.getDesktop().open(new File(filePath));
+
+            showInfo("Export Success", "PDF report generated successfully:\n" + filePath);
+
         } catch (Exception e) {
             e.printStackTrace();
             showError("Export Failed", "Failed to generate PDF: " + e.getClass().getSimpleName() + " - " + e.getMessage());
         }
     }
 
-    /**
-     * 忽略大小写获取Map的值
-     */
-    private static Object getCellValueIgnoreCase(Map<String, Object> row, String columnName) {
+
+    // ✅ 【方便测试】页眉页脚独立方法
+    public static PdfPageEventHelper createPageEvent() {
+        return new PdfPageEventHelper() {
+            Font footerFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
+
+            @Override
+            public void onEndPage(PdfWriter writer, Document document) {
+                PdfContentByte canvas = writer.getDirectContent();
+
+                ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT,
+                        new Phrase("metropolia.fi", footerFont),
+                        document.left(), document.top() + 20, 0);
+
+                ColumnText.showTextAligned(canvas, Element.ALIGN_CENTER,
+                        new Phrase(String.format("Page %d", writer.getPageNumber()), footerFont),
+                        (document.right() + document.left()) / 2, document.bottom() - 20, 0);
+            }
+        };
+    }
+
+    // ✅ 【方便测试】标题+时间独立方法
+    public static void addDocumentHeader(Document document, String groupName) throws DocumentException {
+        Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+        document.add(new Paragraph("Grade Report: " + groupName, titleFont));
+        document.add(Chunk.NEWLINE);
+
+        String exportTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        Font timeFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
+        document.add(new Paragraph("Exported on: " + exportTime, timeFont));
+        document.add(Chunk.NEWLINE);
+    }
+
+    // ✅ 【方便测试】表格生成核心逻辑拆出来
+    public static PdfPTable createPdfTableFromTableView(TableView<Map<String, Object>> tableView) throws DocumentException {
+        int columnCount = tableView.getColumns().size();
+        PdfPTable table = new PdfPTable(columnCount);
+        table.setWidthPercentage(100);
+        table.setHeaderRows(1);
+
+        float[] columnWidths = new float[columnCount];
+        Arrays.fill(columnWidths, 1f);
+        table.setWidths(columnWidths);
+
+        // 表头（灰底+加粗+居中）
+        Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+        for (TableColumn<Map<String, Object>, ?> column : tableView.getColumns()) {
+            PdfPCell headerCell = new PdfPCell(new Phrase(column.getText(), headerFont));
+            headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            headerCell.setPadding(8);
+            headerCell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            table.addCell(headerCell);
+        }
+
+        // 数据行
+        for (Map<String, Object> row : tableView.getItems()) {
+            for (TableColumn<Map<String, Object>, ?> column : tableView.getColumns()) {
+                String columnName = column.getText();
+                Object cellValue = getCellValueIgnoreCase(row, columnName);
+                String cellText = formatCellValue(cellValue);
+                PdfPCell cell = new PdfPCell(new Phrase(cellText));
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setPadding(5);
+                table.addCell(cell);
+            }
+        }
+        return table;
+    }
+
+    // ✅ 这个方法不用改，和你原来的一样（保留方便测试）
+    public static Object getCellValueIgnoreCase(Map<String, Object> row, String columnName) {
         Object cellValue = row.get(columnName);
         if (cellValue != null) {
             return cellValue;
         }
-
         for (String key : row.keySet()) {
             if (key.equalsIgnoreCase(columnName)) {
                 return row.get(key);
@@ -296,10 +319,8 @@ public class GradeController {
         return null;
     }
 
-    /**
-     * 格式化单元格内容
-     */
-    private static String formatCellValue(Object value) {
+    // ✅ 这个方法也保持不变
+    public static String formatCellValue(Object value) {
         if (value == null) {
             return "";
         }
@@ -308,6 +329,7 @@ public class GradeController {
         }
         return value.toString();
     }
+
 
 
     private static void showError(String title, String message) {
