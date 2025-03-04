@@ -43,7 +43,7 @@ pipeline {
                     --main-class ${MAIN_CLASS} ^
                     --type app-image ^
                     --icon ${ICON_PATH} ^
-                    --java-options "--enable-preview"
+                    --java-options "--enable-preview" ^
                     --output build-output
                 """
             }
