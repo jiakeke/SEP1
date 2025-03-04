@@ -274,7 +274,7 @@ public class StudentController {
         }
 
         if (!isValidPhoneNumber(phone)) {
-            showAlert("Invalid Phone Number", "Please enter a valid phone number (digits only, 7-15 characters).");
+            showAlert("Invalid Phone Number", "Please enter a valid phone number (digits only, 6-15 characters).");
             return false;
         }
 
@@ -287,7 +287,7 @@ public class StudentController {
     }
 
     private boolean isValidPhoneNumber(String phone) {
-        String phoneRegex = "^\\d{7,15}$";
+        String phoneRegex = "^\\d{6,15}$";
         return phone.matches(phoneRegex);
     }
 
