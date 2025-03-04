@@ -271,9 +271,9 @@ class StudentControllerTest extends ApplicationTest {
         clickOn();
         submit("#modify-button");
 
-        doubleClickOn("#name-field").eraseText(7).write("Charlie Modified");
-        doubleClickOn("#email-field").eraseText(19).write("modified@example.com");
-        doubleClickOn("#phone-field").eraseText(6).write("987654");
+        setText("#name-field", "Charlie Modified");
+        setText("#email-field", "modified@example.com");
+        setText("#phone-field", "987654");
 
         submit("#save-button");
 
@@ -379,9 +379,9 @@ class StudentControllerTest extends ApplicationTest {
             clickOn();
             submit("#modify-button");
 
-            doubleClickOn("#name-field").eraseText(9).write("Charlie Modified");
-            doubleClickOn("#email-field").eraseText(19).write("modified@example.com");
-            doubleClickOn("#phone-field").eraseText(6).write("987654");
+            setText("#name-field", "Charlie Modified");
+            setText("#email-field", "modified@example.com");
+            setText("#phone-field", "987654");
 
             conn.close();
             submit("#save-button");
