@@ -30,6 +30,7 @@ pipeline {
 
         stage('Package EXE') {
             steps {
+            bat 'rmdir /s /q build-output'
                 bat """
                     jpackage ^
                     --input GradeBook/target ^
@@ -39,6 +40,7 @@ pipeline {
                     --type app-image ^
                     --icon ${ICON_PATH} ^
                     --java-options "--enable-preview"
+                    --output build-output
                 """
             }
         }
