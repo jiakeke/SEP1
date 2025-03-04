@@ -154,6 +154,39 @@ public class GradeController {
                 tableData.add(row);
             }
 
+            // Calculate average grades
+            if (!students.isEmpty()) {
+                Map<String, Object> avgRow = new HashMap<>();
+                avgRow.put("name", "Average");
+
+                for (GradeType gt : gradeTypes) {
+                    double sum = 0;
+                    int count = 0;
+
+                    for (Map<String, Object> row : tableData) {
+                        Object gradeObj = row.get(gt.getName());
+                        if (gradeObj instanceof Double) {
+                            sum += (Double) gradeObj;
+                            count++;
+                        }
+                    }
+
+                    double avg = count > 0 ? sum / count : 0.0;
+                    avgRow.put(gt.getName(), avg);
+                }
+
+                double totalSum = 0;
+                for (Map<String, Object> row : tableData) {
+                    Object totalObj = row.get("total");
+                    if (totalObj instanceof Double) {
+                        totalSum += (Double) totalObj;
+                    }
+                }
+                avgRow.put("total", students.size() > 0 ? totalSum / students.size() : 0.0);
+
+                tableData.add(avgRow);
+            }
+
             gradeTable.setItems(tableData);
             gradeTable.setEditable(true);
 
