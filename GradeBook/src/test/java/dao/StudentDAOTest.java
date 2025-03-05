@@ -15,17 +15,30 @@ class StudentDAOTest {
         Class.forName("org.h2.Driver");
         conn = DriverManager.getConnection("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1", "sa", "");
 
-        // Use H2 in-memory database to create a table
         StudentDAO.setConnection(conn);
+        GradeDAO.setConnection(conn);
 
         try (Statement stmt = conn.createStatement()) {
-            String createTable = "CREATE TABLE IF NOT EXISTS students (" +
+            stmt.execute("CREATE TABLE IF NOT EXISTS students (" +
                     "id INT AUTO_INCREMENT PRIMARY KEY, " +
                     "name VARCHAR(255), " +
                     "email VARCHAR(255), " +
-                    "phone VARCHAR(20)" +
-                    ")";
-            stmt.execute(createTable);
+                    "phone VARCHAR(20))");
+
+            stmt.execute("CREATE TABLE IF NOT EXISTS grades (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                    "student_id INT, " +
+                    "group_id INT, " +
+                    "grade_type_id INT, " +
+                    "grade DOUBLE NOT NULL, " +
+                    "FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE)");
+
+            stmt.execute("CREATE TABLE IF NOT EXISTS group_students (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                    "student_id INT, " +
+                    "group_id INT, " +
+                    "FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE)");
+
         }
     }
 
