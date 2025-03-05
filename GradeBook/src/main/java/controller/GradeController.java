@@ -150,7 +150,7 @@ public class GradeController {
                     row.put(gt.getName(), gradeValue);
                     total += gradeValue * (gt.getWeight() / 100.0);
                 }
-                row.put("total", total);
+                row.put("total", Double.parseDouble(String.format("%.2f", total)));
                 tableData.add(row);
             }
 
