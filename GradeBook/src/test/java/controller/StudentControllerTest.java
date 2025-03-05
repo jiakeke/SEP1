@@ -197,6 +197,20 @@ class StudentControllerTest extends ApplicationTest {
                     + "username VARCHAR(255) NOT NULL, "
                     + "password VARCHAR(255) NOT NULL)");
 
+            stmt.execute("CREATE TABLE IF NOT EXISTS grades ("
+                    + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                    + "student_id INT, "
+                    + "group_id INT, "
+                    + "grade_type_id INT, "
+                    + "grade DOUBLE NOT NULL, "
+                    + "FOREIGN KEY (student_id) REFERENCES students(id))");
+
+            stmt.execute("CREATE TABLE IF NOT EXISTS group_students ("
+                    + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                    + "student_id INT, "
+                    + "group_id INT, "
+                    + "FOREIGN KEY (student_id) REFERENCES students(id))");
+
             stmt.execute("INSERT INTO users (username, password) VALUES ('admin', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f')");
         }
 
