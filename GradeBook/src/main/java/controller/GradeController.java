@@ -172,7 +172,7 @@ public class GradeController {
                     }
 
                     double avg = count > 0 ? sum / count : 0.0;
-                    avgRow.put(gt.getName(), avg);
+                    avgRow.put(gt.getName(), Double.parseDouble(String.format("%.2f", avg)));
                 }
 
                 double totalSum = 0;
@@ -182,7 +182,7 @@ public class GradeController {
                         totalSum += (Double) totalObj;
                     }
                 }
-                avgRow.put("total", students.size() > 0 ? totalSum / students.size() : 0.0);
+                avgRow.put("total", Double.parseDouble(String.format("%.2f", students.size() > 0 ? totalSum / students.size() : 0.0)));
 
                 tableData.add(avgRow);
             }
