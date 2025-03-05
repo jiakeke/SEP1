@@ -36,12 +36,34 @@ public class StudentDAO {
     }
 
     public static void deleteStudent(int id) throws SQLException {
-        String query = "DELETE FROM students WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
+        try (PreparedStatement deleteGradesStmt = conn.prepareStatement("DELETE FROM grades WHERE student_id = ?");
+             PreparedStatement deleteGroupStudentsStmt = conn.prepareStatement("DELETE FROM group_students WHERE student_id = ?");
+             PreparedStatement deleteStudentStmt = conn.prepareStatement("DELETE FROM students WHERE id = ?")) {
+
+            conn.setAutoCommit(false); // Open transaction mode
+
+            // Delete records in the grades table for the student
+            deleteGradesStmt.setInt(1, id);
+            deleteGradesStmt.executeUpdate();
+
+            // Delete records in the group_students table for the student
+            deleteGroupStudentsStmt.setInt(1, id);
+            deleteGroupStudentsStmt.executeUpdate();
+
+            // Delete the student record
+            deleteStudentStmt.setInt(1, id);
+            deleteStudentStmt.executeUpdate();
+
+            conn.commit(); // Commit the transaction
+
+        } catch (SQLException e) {
+            conn.rollback(); // Roll back the transaction if an exception occurs
+            throw e;
+        } finally {
+            conn.setAutoCommit(true); // Close transaction mode
         }
     }
+
 
     public static List<Student> showAllStudents() throws SQLException {
         List<Student> students = new ArrayList<>();
