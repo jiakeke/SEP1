@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GradeDAO {
-    private static final Connection conn = MariaDbConnection.getConnection();
+    private static Connection conn = MariaDbConnection.getConnection();
+
+    public static void setConnection(Connection conn) {
+        GradeDAO.conn = conn;
+    }
 
     // Insert data
     public static void registerGrade(Grade grade) throws SQLException {
