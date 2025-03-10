@@ -34,7 +34,7 @@ interaction.
 ![Project Sequence Diagram](docs/dia_sequence.jpg "Project Sequence Diagram")
 
 ### Activity Diagram
-![Project Activity Diagram](docs/dia_activitys.jpg "Project Activity Diagram")
+![Project Activity Diagram](docs/dia_activities.jpg "Project Activity Diagram")
 
 ### Class Diagram
 ![Project Class Diagram](docs/dia_class.jpg "Project Class Diagram")
