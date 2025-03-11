@@ -39,6 +39,9 @@ interaction.
 ### Class Diagram
 ![Project Class Diagram](docs/dia_class.jpg "Project Class Diagram")
 
+### Deployment Diagram
+![Project Deployment Diagram](docs/dia_deployment.jpg "Project Deployment Diagram")
+
 ## Database
 - Put all the database modification into database.sql
 
