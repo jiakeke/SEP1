@@ -47,7 +47,7 @@ public class GroupManageController {
     @FXML
     void addNewGroup(MouseEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/AddNewGroup.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/addNewGroup.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
             Stage stage = getStage();
             stage.setTitle("Add New Group");
@@ -101,7 +101,7 @@ public class GroupManageController {
             return;
         }
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ModifyGroupInfo.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/modifyGroupInfo.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
             Stage stage = getStage();
             stage.setTitle("Modify Group");

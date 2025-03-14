@@ -11,7 +11,7 @@ public class GroupManageView extends Application {
     public void start(Stage primaryStage) {
         try {
             // Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Group.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/group.fxml"));
             Scene scene = new Scene(loader.load());
             primaryStage.setTitle("Group Manage");
             primaryStage.setScene(scene);

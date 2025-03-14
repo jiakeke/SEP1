@@ -49,3 +49,14 @@ RUN mvn clean package -DskipTests
 
 CMD ["java", "--module-path", "/opt/javafx/javafx-sdk-23.0.2/lib", "--add-modules", "javafx.controls,javafx.fxml", "-Djava.library.path=/opt/javafx/javafx-sdk-23.0.2/lib", "-Dprism.order=sw", "-jar", "target/gradebook.jar"]
 ```
+
+## Build Docker Image
+```bash
+docker build -t gradebook .
+```
+
+## Run Docker Container
+```bash
+docker run -e DISPLAY=host.docker.internal:0 -v /tmp/.X11-unix:/tmp/.X11-unix gradebook
+```
+
