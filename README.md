@@ -20,7 +20,7 @@ interaction.
 - [Design](docs/Design.md)
 
 ## Docker
-![Docker Setup](docs/DockerSetup.md "Docker Setup")
+[Docker Setup](docs/DockerSetup.md)
 
 ## Diagrams
 
