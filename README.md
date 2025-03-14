@@ -19,6 +19,9 @@ interaction.
 - [User Stories](docs/UserStories.md)
 - [Design](docs/Design.md)
 
+## Docker
+![Docker Setup](docs/DockerSetup.md "Docker Setup")
+
 ## Diagrams
 
 ### Project Modelling Diagram
