@@ -2,6 +2,8 @@
 
 ## Teacher’s Gradebook and Report Card System
 
+## Team 3
+
 ## Team Members
 - Jia Ke
 - Wang Qingyun
