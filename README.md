@@ -20,7 +20,7 @@ interaction.
 - [Design](docs/Design.md)
 
 ## Docker
-[Docker Setup](docs/DockerSetup.md)
+[Use XQuartz on Mac to run JavaFX GUI in docker](docs/DockerSetup.md)
 
 ## Diagrams
 
