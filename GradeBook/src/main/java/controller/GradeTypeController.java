@@ -1,5 +1,6 @@
 package controller;
 
+import application.GradeBookView;
 import dao.GradeTypeDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,13 +26,13 @@ public class GradeTypeController {
 
     private static int currentGroupId;
     private static Stage stage;
+    private static GradeBookView rootview;
 
-    public static void showGradeTypeEditor(int groupId) {
+    public static void showGradeTypeEditor(GradeBookView view, int groupId) {
+        rootview = view;
         currentGroupId = groupId;
-        stage = new Stage();
         initializeUI();
         loadGradeTypes();
-        stage.show();
     }
 
     private static void initializeUI() {
@@ -75,11 +76,7 @@ public class GradeTypeController {
         layout.setPadding(new Insets(20, 20, 20, 20));
         layout.getChildren().addAll(gradeTypeTable, nameField, weightField, buttonSet);
 
-        // Scene
-        Scene scene = new Scene(layout, 400, 400);
-        scene.getStylesheets().add(GradeTypeController.class.getResource("/styles.css").toExternalForm());
-        stage.setTitle("Grade Type Editor");
-        stage.setScene(scene);
+        rootview.getRootPane().setCenter(layout);
     }
 
     // Load GradeType

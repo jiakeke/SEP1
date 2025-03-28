@@ -1,5 +1,6 @@
 package controller;
 
+import application.GradeBookView;
 import dao.GroupDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +15,11 @@ import model.Student;
 
 
 public class AddNewGroupController {
+    private GradeBookView view;
+
+    public AddNewGroupController(GradeBookView view) {
+        this.view = view;
+    }
 
     @FXML
     private Button creatBtn;
@@ -44,13 +50,6 @@ public class AddNewGroupController {
     private GroupDao groupDao = new GroupDao();
     private ObservableList<Student> unselectedStudents = FXCollections.observableArrayList();
     private ObservableList<Student> selectedStudents = FXCollections.observableArrayList();
-
-    private GroupManageController groupManageController = new GroupManageController();
-
-    //
-    public void setGroupManageController(GroupManageController groupManageController) {
-        this.groupManageController = groupManageController;
-    }
 
     //initialize the table view with the students
     @FXML
@@ -93,10 +92,7 @@ public class AddNewGroupController {
             }
         }
 
-        creatBtn.getScene().getWindow().hide();
-        if (groupManageController != null) {
-            groupManageController.initialize();
-        }
+        this.view.openGroups();
     }
 
     //move a student to the selected list
@@ -217,7 +213,4 @@ public class AddNewGroupController {
         this.selectedStudents = selectedStudents;
     }
 
-    public GroupManageController getGroupManageController() {
-        return groupManageController;
-    }
 }

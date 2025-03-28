@@ -30,6 +30,8 @@ public class StudentController {
     // Handle open students
     public void handleOpenStudents(ActionEvent open) {
 
+        Label titleLabel = new Label("Students");
+        titleLabel.getStyleClass().add("page-title");
         // Search bar
         TextField searchField = new TextField();
         searchField.setPromptText("Search by name");
@@ -67,25 +69,6 @@ public class StudentController {
             row.setId("student-row");
             ContextMenu contextMenu = new ContextMenu();
             contextMenu.setId("context-menu");
-//
-//            // Modify option
-//            MenuItem editItem = new MenuItem("🖊 Modify");
-//            editItem.setId("edit-item");
-//            editItem.setOnAction(event -> handleModifyStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
-//
-//            // Delete option
-//            MenuItem deleteItem = new MenuItem(" 🗑 Delete");
-//            deleteItem.setId("delete-item");
-//            deleteItem.setOnAction(event -> handleDeleteStudent(studentTable.getSelectionModel().getSelectedItem(), studentTable));
-//
-//            contextMenu.getItems().addAll(editItem, deleteItem);
-//
-//            // Show context menu on right-click
-//            row.setOnMouseClicked(event -> {
-//                if (event.getButton() == MouseButton.SECONDARY && (!row.isEmpty())) {
-//                    contextMenu.show(row, event.getScreenX(), event.getScreenY());
-//                }
-//            });
             return row;
         });
 
@@ -105,12 +88,9 @@ public class StudentController {
         searchButtonContainer.setAlignment(Pos.CENTER);
         HBox buttons = new HBox(15, refreshButton, addStudentButton, modifyStudentButton, deleteStudentButton);
         buttons.setAlignment(Pos.CENTER);
-        VBox layout = new VBox(10, searchField, searchButtonContainer, studentTable, buttons);
+        VBox layout = new VBox(10, titleLabel, searchField, searchButtonContainer, studentTable, buttons);
         layout.setPadding(new Insets(20, 20, 20, 20));
-        Scene scene = new Scene(layout, 600, 500);
-        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-        studentsStage.setScene(scene);
-        studentsStage.show();
+        view.getRootPane().setCenter(layout);
     }
 
     // Load students from database
@@ -137,8 +117,8 @@ public class StudentController {
 
     // Add a new student
     void handleAddStudent(TableView<Student> studentTable) {
-        Stage addStage = new Stage();
-        addStage.setTitle("Add New Student");
+        Label titleLabel = new Label("Add New Student");
+        titleLabel.getStyleClass().add("page-title");
 
         TextField nameField = new TextField();
         nameField.setId("name-field");
@@ -167,7 +147,8 @@ public class StudentController {
                 Student newStudent = new Student(0, name, email, phone);
                 StudentDAO.registerStudent(newStudent);
                 loadStudents(studentTable);
-                addStage.close();
+                //addStage.close();
+                handleOpenStudents(new ActionEvent());
             } catch (SQLException e) {
                 e.printStackTrace();
                 showAlert("Database Error", "Failed to add student.");
@@ -177,23 +158,15 @@ public class StudentController {
         submitButton.getStyleClass().add("submit-button");
         HBox submitButtonContainer = new HBox(submitButton);
         submitButtonContainer.setAlignment(Pos.CENTER);
-        VBox layout = new VBox(10, nameField, emailField, phoneField, submitButtonContainer);
+        VBox layout = new VBox(10, titleLabel, nameField, emailField, phoneField, submitButtonContainer);
         layout.setPadding(new Insets(20, 20, 20, 20));
-        Scene scene = new Scene(layout, 400, 300);
-        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-        addStage.setScene(scene);
-        addStage.show();
+        view.getRootPane().setCenter(layout);
     }
 
     // Modify student
     private void handleModifyStudent(Student student, TableView<Student> studentTable) {
-//        if (student == null) {
-//            showAlert("Error", "Please select a student to modify.");
-//            return;
-//        }
-
-        Stage editStage = new Stage();
-        editStage.setTitle("Modify Student");
+        Label titleLabel = new Label("Modify Student");
+        titleLabel.getStyleClass().add("page-title");
 
         TextField nameField = new TextField(student.getName());
         nameField.setId("name-field");
@@ -222,7 +195,8 @@ public class StudentController {
 
                 StudentDAO.updateStudent(student);
                 loadStudents(studentTable);
-                editStage.close();
+                //editStage.close();
+                handleOpenStudents(new ActionEvent());
             } catch (SQLException e) {
                 e.printStackTrace();
                 showAlert("Database Error", "Failed to update student.");
@@ -232,12 +206,9 @@ public class StudentController {
         saveButton.getStyleClass().add("save-button");
         HBox saveButtonContainer = new HBox(saveButton);
         saveButtonContainer.setAlignment(Pos.CENTER);
-        VBox layout = new VBox(10, nameField, emailField, phoneField, saveButtonContainer);
+        VBox layout = new VBox(10, titleLabel, nameField, emailField, phoneField, saveButtonContainer);
         layout.setPadding(new Insets(20, 20, 20, 20));
-        Scene scene = new Scene(layout, 400, 300);
-        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-        editStage.setScene(scene);
-        editStage.show();
+        view.getRootPane().setCenter(layout);
     }
 
     // Delete student

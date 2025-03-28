@@ -1,5 +1,6 @@
 package controller;
 
+import application.GradeBookView;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.pdf.*;
@@ -40,14 +41,14 @@ public class GradeController {
     private static int currentGroupId;
     private static Stage stage;
     private static String currentGroupName;
+    private static GradeBookView rootview;
 
-    public static void showGradeEditor(int groupId, String groupName) {
+    public static void showGradeEditor(GradeBookView view, int groupId, String groupName) {
+        rootview = view;
         currentGroupId = groupId;
         currentGroupName = groupName;
-        stage = new Stage();
         initializeUI();
         loadGradeData();
-        stage.show();
     }
 
     private static void initializeUI() {
@@ -64,10 +65,7 @@ public class GradeController {
         layout.setPadding(new Insets(20, 20, 20, 20));
         layout.getChildren().addAll(gradeTable, buttonContainer);
 
-        Scene scene = new Scene(layout, 800, 600);
-        scene.getStylesheets().add(GradeController.class.getResource("/styles.css").toExternalForm());
-        stage.setTitle("Grade Management");
-        stage.setScene(scene);
+        rootview.getRootPane().setCenter(layout);
     }
 
     private static void loadGradeData() {

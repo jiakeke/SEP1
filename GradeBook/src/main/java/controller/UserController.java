@@ -3,6 +3,7 @@ package controller;
 import application.GradeBookView;
 import dao.UserDAO;
 import javafx.event.ActionEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.User;
 
@@ -53,7 +54,8 @@ public class UserController {
             System.out.println("User registered successfully!");
             if (UserDAO.loginUser(username, password)) {
                 System.out.println("Login successful!");
-                view.showSystemInterface((Stage) view.getRegisterButton().getScene().getWindow());
+                //view.showSystemInterface((Stage) view.getRegisterButton().getScene().getWindow());
+                view.showSystemInterface();
             }
         } catch (SQLException | NoSuchAlgorithmException ex) {
             ex.printStackTrace();
@@ -66,7 +68,7 @@ public class UserController {
         try {
             if (UserDAO.loginUser(username, password)) {
                 System.out.println("Login successful!");
-                view.showSystemInterface((Stage) view.getLoginButton().getScene().getWindow());
+                view.showSystemInterface();
             } else {
                 view.setErrorLabel("Invalid username or password.");
                 return;

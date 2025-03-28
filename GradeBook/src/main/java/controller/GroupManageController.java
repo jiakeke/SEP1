@@ -1,5 +1,6 @@
 package controller;
 
+import application.GradeBookView;
 import dao.GroupDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +17,11 @@ import javafx.stage.Stage;
 import model.Group;
 
 public class GroupManageController {
+    private GradeBookView view;
+
+    public GroupManageController(GradeBookView view) {
+        this.view = view;
+    }
 
     @FXML
     private TableView<Group> GroupsInfo;
@@ -48,14 +54,10 @@ public class GroupManageController {
     void addNewGroup(MouseEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/addNewGroup.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = getStage();
-            stage.setTitle("Add New Group");
-            stage.setScene(scene);
-
+            fxmlLoader.setController(new AddNewGroupController(this.view));
             AddNewGroupController controller = fxmlLoader.getController();
-            controller.setGroupManageController(this);
-            stage.show();
+            //stage.show();
+            this.view.getRootPane().setCenter(fxmlLoader.load());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,10 +75,6 @@ public class GroupManageController {
             showError("Selection error", "Please select a group to delete.");
             return;
         }
-//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//        alert.setTitle("Confirmation Dialog");
-//        alert.setHeaderText("Delete Group");
-//        alert.setContentText("Are you sure you want to delete this group?");
 
         if (getConfirmation() == ButtonType.OK) {
             if (groupDao.removeGroup(selectedGroup.getId())) {
@@ -102,15 +100,8 @@ public class GroupManageController {
         }
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/modifyGroupInfo.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = getStage();
-            stage.setTitle("Modify Group");
-            stage.setScene(scene);
-
-            GroupModifyController controller = fxmlLoader.getController();
-            controller.setGroupManageController(this, selectedGroup);
-
-            stage.show();
+            fxmlLoader.setController(new GroupModifyController(this.view, selectedGroup));
+            this.view.getRootPane().setCenter(fxmlLoader.load());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -124,7 +115,7 @@ public class GroupManageController {
             showError("Select error", "Please select a group to add grade type");
             return;
         }
-        GradeTypeController.showGradeTypeEditor(selectedGroup.getId());
+        GradeTypeController.showGradeTypeEditor(this.view, selectedGroup.getId());
     }
 
     // This method is called when the user clicks the "View Grade" button
@@ -135,7 +126,7 @@ public class GroupManageController {
             showError("Selection error", "Please select a Group first.");
             return;
         }
-        GradeController.showGradeEditor(selectedGroup.getId(), selectedGroup.getName());
+        GradeController.showGradeEditor(this.view, selectedGroup.getId(), selectedGroup.getName());
     }
 
     // This method is shown when an error occurs

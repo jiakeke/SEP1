@@ -1,22 +1,22 @@
 package application;
 
+import controller.GroupManageController;
 import controller.StudentController;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
-import javafx.scene.layout.VBox;
 
 import javafx.event.ActionEvent;
-import javafx.scene.layout.HBox;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 
 import controller.UserController;
+
+import java.io.IOException;
 
 public class GradeBookView extends Application {
     private Text errorLabel;
@@ -25,6 +25,7 @@ public class GradeBookView extends Application {
     private Button registerButton;
     private Button loginButton;
     private Scene scene;
+    private BorderPane root;
 
     @Override
     public void start(Stage primaryStage) {
@@ -86,12 +87,22 @@ public class GradeBookView extends Application {
         borderPane.getStyleClass().add("border-pane");
 
         // Create a StackPane to add padding around the BorderPane
-        StackPane root = new StackPane();
-        root.setPadding(new Insets(40)); // Padding outside the border
-        root.getChildren().add(borderPane);
+        root = new BorderPane();
+        Button enLang = new Button("EN");
+        Button zhLang = new Button("ZH");
+        Button jpLang = new Button("JP");
+        HBox langBox = new HBox(10);
+        langBox.setAlignment(Pos.TOP_RIGHT);
+        langBox.getChildren().addAll(enLang, zhLang, jpLang);
+        root.setTop(langBox);
+
+        StackPane loginPane = new StackPane();
+        loginPane.setPadding(new Insets(200)); // Padding outside the border
+        loginPane.getChildren().add(borderPane);
+        root.setCenter(loginPane);
 
         // Create a scene with a larger size
-        scene = new Scene(root, 400, 300);
+        scene = new Scene(root, 800, 600);
         scene.getStylesheets().add("styles.css");
 
         primaryStage.setScene(scene);
@@ -123,10 +134,16 @@ public class GradeBookView extends Application {
         return loginButton;
     }
 
-    public void showSystemInterface(Stage primaryStage) {
-        Label welcomeLabel = new Label("Welcome to Grade Book!");
+    public BorderPane getRootPane() {
+        return root;
+    }
+
+    public void showSystemInterface() {
+        Label swLabel = new Label("Grade Book!");
+        swLabel.getStyleClass().add("page-title");
+        VBox vbox = new VBox(10, swLabel);
+        Label welcomeLabel = new Label("Welcome!");
         welcomeLabel.getStyleClass().add("page-title");
-        VBox vbox = new VBox(10, welcomeLabel);
 
         Button studentsButton = new Button("Students");
         studentsButton.setId("studentsButton");
@@ -135,44 +152,32 @@ public class GradeBookView extends Application {
         studentsButton.getStyleClass().add("big-button");
         groupsButton.getStyleClass().add("big-button");
 
-        HBox hbox = new HBox(20); // 20px spacing between buttons
-        hbox.setAlignment(Pos.CENTER);
-        hbox.getChildren().addAll(studentsButton, groupsButton);
-
-        vbox.getChildren().add(hbox);
+        vbox.getChildren().addAll(studentsButton, groupsButton);
 
         studentsButton.setOnAction(e -> openStudents());
         groupsButton.setOnAction(e -> openGroups());
+        root.setLeft(vbox);
+        root.setCenter(welcomeLabel);
 
-        Scene scene = new Scene(vbox, 800, 600);
-        scene.getStylesheets().add("styles.css");
-        primaryStage.setScene(scene);
     }
 
-//    private void openStudents() {
-//        Stage stage = new Stage();
-//        stage.setTitle("Students");
-//        VBox layout = new VBox(10);
-//        Scene scene = new Scene(layout, 800, 600);
-//        stage.setScene(scene);
-//        stage.show();
-//    }
     private void openStudents() {
         StudentController studentController = new StudentController(this);
         studentController.handleOpenStudents(new ActionEvent());
     }
 
 
-    private void openGroups() {
-//        Stage stage = new Stage();
-//        stage.setTitle("Groups");
-//        VBox layout = new VBox(10);
-//        Scene scene = new Scene(layout, 800, 600);
-//        stage.setScene(scene);
-//        stage.show();
-        GroupManageView groupManageView = new GroupManageView();
-        Stage stage = new Stage();
-        groupManageView.start(stage);
+    public void openGroups() {
+        //GroupManageView groupManageView = new GroupManageView();
+        //Stage stage = new Stage();
+        //groupManageView.start(root);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/group.fxml"));
+            loader.setController(new GroupManageController(this));
+            root.setCenter(loader.load());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

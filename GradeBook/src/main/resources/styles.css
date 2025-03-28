@@ -1,13 +1,13 @@
 .big-button {
-    -fx-font-size: 26px;
+    -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-padding: 30 30 30 30;
+    -fx-padding: 3 3 3 3;
 }
 
 .page-title {
     -fx-font-weight: bold;
-    -fx-font-size: 30px;
-    -fx-padding: 20 20 20 20;
+    -fx-font-size: 20px;
+    -fx-padding: 2 2 2 2;
 }
 
 .search-button {

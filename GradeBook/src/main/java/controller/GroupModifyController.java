@@ -1,5 +1,6 @@
 package controller;
 
+import application.GradeBookView;
 import dao.GroupDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +15,14 @@ import model.Student;
 
 
 public class GroupModifyController {
+    private GradeBookView view;
+    private Group group;
+
+
+    public GroupModifyController(GradeBookView view, Group group) {
+        this.view = view;
+        this.group = group;
+    }
 
     @FXML
     private TextField groupDes;
@@ -42,23 +51,14 @@ public class GroupModifyController {
     @FXML
     private TableColumn<Student, String> unselectedName;
 
-    private Group group;
-
     private GroupDao groupDao = new GroupDao();
     private ObservableList<Student> unselectedStudents = FXCollections.observableArrayList();
     private ObservableList<Student> selectedStudents = FXCollections.observableArrayList();
 
-    private GroupManageController groupManageController = new GroupManageController();
-
-    // This method sets the groupManageController and group
-    public void setGroupManageController(GroupManageController groupManageController, Group group) {
-        this.groupManageController = groupManageController;
-        this.group = group;
-        loadGroupDetails();
-    }
+    private GroupManageController groupManageController = new GroupManageController(this.view);
 
     // This method loads the group details
-    public void loadGroupDetails() {
+    public void initialize() {
         selectedId.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("id"));
         selectedName.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
         unselectedId.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("id"));
@@ -119,8 +119,7 @@ public class GroupModifyController {
             groupDao.addStudentToGroup(group.getId(), student.getId());
         }
 
-        groupManageController.initialize();
-        saveBtn.getScene().getWindow().hide();
+        this.view.openGroups();
     }
 
     public TextField getGroupDes() {
@@ -231,7 +230,4 @@ public class GroupModifyController {
         return groupManageController;
     }
 
-    public void setGroupManageController(GroupManageController groupManageController) {
-        this.groupManageController = groupManageController;
-    }
 }
