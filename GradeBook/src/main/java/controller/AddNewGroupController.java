@@ -13,12 +13,16 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import model.Student;
 
+import java.util.ResourceBundle;
+
 
 public class AddNewGroupController {
     private GradeBookView view;
+    private final ResourceBundle bundle;
 
-    public AddNewGroupController(GradeBookView view) {
+    public AddNewGroupController(GradeBookView view, ResourceBundle bundle) {
         this.view = view;
+        this.bundle = bundle;
     }
 
     @FXML
@@ -74,7 +78,7 @@ public class AddNewGroupController {
     @FXML
     void createNewGroup(MouseEvent event) {
         if (groupName.getText().isEmpty() || groupDes.getText().isEmpty()) {
-            System.out.println("Please fill in all fields");
+            System.out.println(bundle.getString("groupNameEmpty"));
             return;
         }
 
@@ -84,7 +88,7 @@ public class AddNewGroupController {
             int groupId = groupDao.getAllGroups().stream()
                     .filter(group -> group.getName().equals(groupName.getText()))
                     .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Group not found"))
+                    .orElseThrow(() -> new RuntimeException(bundle.getString("groupNotFound")))
                     .getId();
 
             for (Student student : selectedStudents) {

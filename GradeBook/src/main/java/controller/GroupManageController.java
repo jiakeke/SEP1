@@ -16,11 +16,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import model.Group;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 public class GroupManageController {
     private GradeBookView view;
+    private final ResourceBundle bundle;
 
-    public GroupManageController(GradeBookView view) {
+    public GroupManageController(GradeBookView view, ResourceBundle bundle) {
         this.view = view;
+        this.bundle = bundle;
     }
 
     @FXML
@@ -53,8 +58,11 @@ public class GroupManageController {
     @FXML
     void addNewGroup(MouseEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/addNewGroup.fxml"));
-            fxmlLoader.setController(new AddNewGroupController(this.view));
+            Locale locale=new Locale(view.getCurrentLang());
+            ResourceBundle bundle= ResourceBundle.getBundle("messages", locale);
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/addNewGroup.fxml"),bundle);
+            fxmlLoader.setController(new AddNewGroupController(this.view, bundle));
             AddNewGroupController controller = fxmlLoader.getController();
             //stage.show();
             this.view.getRootPane().setCenter(fxmlLoader.load());
@@ -99,8 +107,8 @@ public class GroupManageController {
             return;
         }
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/modifyGroupInfo.fxml"));
-            fxmlLoader.setController(new GroupModifyController(this.view, selectedGroup));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/modifyGroupInfo.fxml"),bundle);
+            fxmlLoader.setController(new GroupModifyController(this.view, selectedGroup, bundle));
             this.view.getRootPane().setCenter(fxmlLoader.load());
         } catch (Exception e) {
             e.printStackTrace();

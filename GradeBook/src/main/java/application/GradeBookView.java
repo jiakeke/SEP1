@@ -17,6 +17,8 @@ import javafx.geometry.Insets;
 import controller.UserController;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class GradeBookView extends Application {
     private Text errorLabel;
@@ -26,6 +28,8 @@ public class GradeBookView extends Application {
     private Button loginButton;
     private Scene scene;
     private BorderPane root;
+    private String currentLang = "en";
+    private ResourceBundle bundle;
 
     @Override
     public void start(Stage primaryStage) {
@@ -91,6 +95,9 @@ public class GradeBookView extends Application {
         Button enLang = new Button("EN");
         Button zhLang = new Button("ZH");
         Button jpLang = new Button("JP");
+        enLang.setOnAction(e -> setLang("en"));
+        zhLang.setOnAction(e -> setLang("zh"));
+        jpLang.setOnAction(e -> setLang("ja"));
         HBox langBox = new HBox(10);
         langBox.setAlignment(Pos.TOP_RIGHT);
         langBox.getChildren().addAll(enLang, zhLang, jpLang);
@@ -117,6 +124,16 @@ public class GradeBookView extends Application {
     public void setErrorLabel(String message) {
         errorLabel.setText(message);
     }
+    public void setLang(String lang) {
+        this.currentLang = lang;
+        this.bundle= ResourceBundle.getBundle("messages", new Locale(lang));
+        System.out.println("Language set to: " + lang.toUpperCase());
+
+        //todo refresh the UI with the new language
+    }
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
 
     public TextField getUsernameField() {
         return usernameField;
@@ -136,6 +153,9 @@ public class GradeBookView extends Application {
 
     public BorderPane getRootPane() {
         return root;
+    }
+    public String getCurrentLang(){
+        return currentLang;
     }
 
     public void showSystemInterface() {
@@ -172,8 +192,8 @@ public class GradeBookView extends Application {
         //Stage stage = new Stage();
         //groupManageView.start(root);
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/group.fxml"));
-            loader.setController(new GroupManageController(this));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/group.fxml"),getBundle());
+            loader.setController(new GroupManageController(this,getBundle()));
             root.setCenter(loader.load());
         } catch (Exception e) {
             e.printStackTrace();
