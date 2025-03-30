@@ -5,13 +5,11 @@ import dao.GroupDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import model.Group;
 import model.Student;
+import util.LangContext;
 
 import java.util.ResourceBundle;
 
@@ -19,7 +17,7 @@ import java.util.ResourceBundle;
 public class GroupModifyController {
     private GradeBookView view;
     private Group group;
-    private final ResourceBundle bundle;
+    private  ResourceBundle bundle;
 
 
     public GroupModifyController(GradeBookView view, Group group, ResourceBundle bundle) {
@@ -37,6 +35,15 @@ public class GroupModifyController {
 
     @FXML
     private Button saveBtn;
+
+    @FXML
+    private Label allStudentsLabel;
+
+    @FXML
+    private Label selectedStudentsLabel;
+
+    @FXML
+    private Label topLabel;
 
     @FXML
     private TableColumn<Student, Integer> selectedId;
@@ -64,6 +71,11 @@ public class GroupModifyController {
 
     // This method loads the group details
     public void initialize() {
+        LangContext.currentLang.addListener((obs, oldlang, newLang)->{
+            this.bundle=LangContext.getBundle();
+            updateTexts();
+        });
+
         selectedId.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("id"));
         selectedName.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
         unselectedId.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("id"));
@@ -80,6 +92,17 @@ public class GroupModifyController {
 
         unSelectedStudentsList.setItems(unselectedStudents);
         selectedStudentList.setItems(selectedStudents);
+    }
+
+    private void updateTexts() {
+        saveBtn.setText(bundle.getString("save"));
+        allStudentsLabel.setText(bundle.getString("allStudents"));
+        selectedStudentsLabel.setText(bundle.getString("selectedStudents"));
+        topLabel.setText(bundle.getString("groupEdit"));
+        unselectedName.setText(bundle.getString("name"));
+        selectedName.setText(bundle.getString("name"));
+
+
     }
 
     // This method refreshes the table view

@@ -15,10 +15,10 @@
                 onMouseClicked="#createNewGroup"
                 style="-fx-background-color: #4CAF50; -fx-border-color: #388E3C; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-text-fill: white;"
                 text="%create"/>
-        <Label layoutX="98.0" layoutY="93.0"
+        <Label fx:id="allStudentslabel" layoutX="98.0" layoutY="93.0"
                style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333333; -fx-alignment: center;"
                text="%allStudents"/>
-        <Label layoutX="321.0" layoutY="93.0"
+        <Label fx:id="selectedStudentslabel" layoutX="321.0" layoutY="93.0"
                style="-fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: #333333; -fx-font-size: 12px;"
                text="%selectedStudents"/>
         <TableView fx:id="unSelectedStudentsList" layoutX="35.0" layoutY="122.0"
