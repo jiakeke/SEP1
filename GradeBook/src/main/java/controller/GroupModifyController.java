@@ -13,15 +13,20 @@ import javafx.scene.input.MouseEvent;
 import model.Group;
 import model.Student;
 
+import java.util.ResourceBundle;
+
 
 public class GroupModifyController {
     private GradeBookView view;
     private Group group;
+    private final ResourceBundle bundle;
 
 
-    public GroupModifyController(GradeBookView view, Group group) {
+    public GroupModifyController(GradeBookView view, Group group, ResourceBundle bundle) {
+        this.bundle = bundle;
         this.view = view;
         this.group = group;
+        this.groupManageController= new GroupManageController(view, bundle);
     }
 
     @FXML
@@ -55,7 +60,7 @@ public class GroupModifyController {
     private ObservableList<Student> unselectedStudents = FXCollections.observableArrayList();
     private ObservableList<Student> selectedStudents = FXCollections.observableArrayList();
 
-    private GroupManageController groupManageController = new GroupManageController(this.view);
+    private GroupManageController groupManageController ;
 
     // This method loads the group details
     public void initialize() {
