@@ -7,26 +7,41 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import model.Group;
+import util.LangContext;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class GroupManageController {
     private GradeBookView view;
-    private final ResourceBundle bundle;
+    private  ResourceBundle bundle;
 
     public GroupManageController(GradeBookView view, ResourceBundle bundle) {
         this.view = view;
         this.bundle = bundle;
     }
+    @FXML
+    private Button addNewGroupBtn;
+
+    @FXML
+    private Button deleteGroupBtn;
+
+    @FXML
+    private Button modifyGroupBtn;
+
+    @FXML
+    private Button typesBtn;
+
+    @FXML
+    private Button gradesBtn;
+
+    @FXML
+    private Label mainLabel;
 
     @FXML
     private TableView<Group> GroupsInfo;
@@ -45,6 +60,11 @@ public class GroupManageController {
     // This method is called when the FXML file is loaded, it initializes the table view with the groups
     @FXML
     public void initialize() {
+        LangContext.currentLang.addListener((obs,oldlang,newLang)->{
+            this.bundle=LangContext.getBundle();
+            updateTexts();
+        });
+        
         groupInfoList.clear();
         groupsNameclu.setCellValueFactory(new PropertyValueFactory<>("name"));
         groupsDesClu.setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -52,6 +72,17 @@ public class GroupManageController {
             groupInfoList.add(group);
         });
         GroupsInfo.setItems(groupInfoList);
+    }
+
+    private void updateTexts() {
+        addNewGroupBtn.setText(bundle.getString("new"));
+        deleteGroupBtn.setText(bundle.getString("delete"));
+        modifyGroupBtn.setText(bundle.getString("modify"));
+        typesBtn.setText(bundle.getString("types"));
+        gradesBtn.setText(bundle.getString("grades"));
+        mainLabel.setText(bundle.getString("mainLabel"));
+        groupsNameclu.setText(bundle.getString("groupName"));
+        groupsDesClu.setText(bundle.getString("groupDescription"));
     }
 
     // This method is called when the user clicks the "Add New Group" button, it opens the AddNewGroup.fxml file

@@ -5,20 +5,18 @@ import dao.GroupDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import model.Student;
+import util.LangContext;
 
 import java.util.ResourceBundle;
 
 
 public class AddNewGroupController {
     private GradeBookView view;
-    private final ResourceBundle bundle;
+    private  ResourceBundle bundle;
 
     public AddNewGroupController(GradeBookView view, ResourceBundle bundle) {
         this.view = view;
@@ -51,6 +49,12 @@ public class AddNewGroupController {
     @FXML
     private TableView<Student> unSelectedStudentsList;
 
+    @FXML
+    private Label allStudentslabel;
+
+    @FXML
+    private Label selectedStudentslabel;
+
     private GroupDao groupDao = new GroupDao();
     private ObservableList<Student> unselectedStudents = FXCollections.observableArrayList();
     private ObservableList<Student> selectedStudents = FXCollections.observableArrayList();
@@ -58,6 +62,11 @@ public class AddNewGroupController {
     //initialize the table view with the students
     @FXML
     public void initialize() {
+        LangContext.currentLang.addListener((obs, oldlang, newLang)->{
+            this.bundle=LangContext.getBundle();
+            updateTexts();
+        });
+
         unSelectedId.setCellValueFactory(new PropertyValueFactory<>("id"));
         unSelectedName.setCellValueFactory(new PropertyValueFactory<>("name"));
         selectedId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -66,6 +75,16 @@ public class AddNewGroupController {
         unselectedStudents.addAll(groupDao.getStudentsNotInGroup(0));
         unSelectedStudentsList.setItems(unselectedStudents);
         selectedStudentsList.setItems(selectedStudents);
+    }
+
+    private void updateTexts() {
+        creatBtn.setText(bundle.getString("create"));
+        groupName.setPromptText(bundle.getString("groupName"));
+        groupDes.setPromptText(bundle.getString("groupDescription"));
+        selectedName.setText(bundle.getString("name"));
+        unSelectedName.setText(bundle.getString("name"));
+        allStudentslabel.setText(bundle.getString("allStudents"));
+        selectedStudentslabel.setText(bundle.getString("selectedStudents"));
     }
 
     //refresh the table view

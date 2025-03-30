@@ -15,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 
 import controller.UserController;
+import util.LangContext;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -96,9 +97,9 @@ public class GradeBookView extends Application {
         Button enLang = new Button("EN");
         Button zhLang = new Button("ZH");
         Button jpLang = new Button("JP");
-        enLang.setOnAction(e -> setLang("en"));
-        zhLang.setOnAction(e -> setLang("zh"));
-        jpLang.setOnAction(e -> setLang("ja"));
+        enLang.setOnAction(e -> LangContext.setLang("en"));
+        zhLang.setOnAction(e -> LangContext.setLang("zh"));
+        jpLang.setOnAction(e -> LangContext.setLang("ja"));
         HBox langBox = new HBox(10);
         langBox.setAlignment(Pos.TOP_RIGHT);
         langBox.getChildren().addAll(enLang, zhLang, jpLang);

@@ -5,7 +5,7 @@
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
       prefWidth="497.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Button layoutX="49.0" layoutY="306.0" mnemonicParsing="false" onMouseClicked="#addNewGroup" prefHeight="37.0"
+        <Button fx:id="addNewGroupBtn" layoutX="49.0" layoutY="306.0" mnemonicParsing="false" onMouseClicked="#addNewGroup" prefHeight="37.0"
                 prefWidth="71.0"
                 style="-fx-background-color: #4CAF50; -fx-border-color: #388E3C; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-text-fill: white;"
                 text="%new"/>
@@ -17,21 +17,21 @@
                 <TableColumn fx:id="groupsDesClu" prefWidth="150.0" text="%groupDescription"/>
             </columns>
         </TableView>
-        <Button layoutX="133.0" layoutY="306.0" mnemonicParsing="false" onMouseClicked="#modifyGroupInfo"
+        <Button fx:id="modifyGroupBtn" layoutX="133.0" layoutY="306.0" mnemonicParsing="false" onMouseClicked="#modifyGroupInfo"
                 prefHeight="37.0" prefWidth="71.0"
                 style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-background-color: #2196F3; -fx-border-color: #1976D2;"
                 text="%modify"/>
-        <Button layoutX="219.0" layoutY="306.0" mnemonicParsing="false" onMouseClicked="#deleteGroupInfo"
+        <Button fx:id="deleteGroupBtn" layoutX="219.0" layoutY="306.0" mnemonicParsing="false" onMouseClicked="#deleteGroupInfo"
                 prefHeight="37.0" prefWidth="71.0"
                 style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-background-color: #F44336; -fx-border-color: #D32F2F;"
                 text="%delete"/>
-        <Label layoutX="118.0" layoutY="14.0" prefHeight="36.0" prefWidth="270.0"
+        <Label fx:id="mainLabel" layoutX="118.0" layoutY="14.0" prefHeight="36.0" prefWidth="270.0"
                style="-fx-font-size: 24px; -fx-font-weight: bold;" text="%mainLabel"/>
-        <Button layoutX="302.0" layoutY="306.0" mnemonicParsing="false" onMouseClicked="#addGradeType" prefHeight="37.0"
+        <Button fx:id="typesBtn" layoutX="302.0" layoutY="306.0" mnemonicParsing="false" onMouseClicked="#addGradeType" prefHeight="37.0"
                 prefWidth="71.0"
                 style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-background-color: #FFA500; -fx-border-color: #D17A00;"
                 text="%types"/>
-        <Button layoutX="384.0" layoutY="306.0" mnemonicParsing="false" onMouseClicked="#viewGrade" prefHeight="37.0"
+        <Button fx:id="gradesBtn" layoutX="384.0" layoutY="306.0" mnemonicParsing="false" onMouseClicked="#viewGrade" prefHeight="37.0"
                 prefWidth="71.0"
                 style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-background-color: #6A5ACD; -fx-border-color: #4B0082;"
                 text="%grades"/>
