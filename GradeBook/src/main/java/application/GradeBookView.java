@@ -23,6 +23,9 @@ import java.util.ResourceBundle;
 
 public class GradeBookView extends Application {
     private Text errorLabel;
+    private Label loginLabel;
+    private Label username;
+    private Label password;
     private TextField usernameField;
     private PasswordField passwordField;
     private Button registerButton;
@@ -36,10 +39,14 @@ public class GradeBookView extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Grade Book");
         setLang(currentLang);
+        LangContext.currentLang.addListener((obs,oldlang,newLang)->{
+            this.bundle=LangContext.getBundle();
+            updateTexts();
+        });
         errorLabel = new Text();
         errorLabel.getStyleClass().add("error-message");
 
-        Label loginLabel = new Label("Login or Register!");
+        loginLabel = new Label(bundle.getString("loginOrRegister"));
         loginLabel.getStyleClass().add("label");
 
         // Create the form layout
@@ -54,7 +61,7 @@ public class GradeBookView extends Application {
         grid.add(loginLabel, 0, 2, 2, 1);
 
         // Add form fields
-        Label username = new Label("Username:");
+        username = new Label(bundle.getString("userName"));
         username.getStyleClass().add("label");
         grid.add(username, 0, 3);
 
@@ -63,7 +70,7 @@ public class GradeBookView extends Application {
         //usernameField.setPromptText("Username");
         grid.add(usernameField, 1, 3);
 
-        Label password = new Label("Password:");
+        password = new Label(bundle.getString("password"));
         password.getStyleClass().add("label");
         grid.add(password, 0, 4);
 
@@ -73,9 +80,9 @@ public class GradeBookView extends Application {
         grid.add(passwordField, 1, 4);
 
         // Buttons
-        loginButton = new Button("Login");
+        loginButton = new Button(bundle.getString("login"));
         loginButton.setId("loginButton");
-        registerButton = new Button("Register");
+        registerButton = new Button(bundle.getString("register"));
         registerButton.setId("registerButton");
 
         // Create HBox for buttons
@@ -94,9 +101,9 @@ public class GradeBookView extends Application {
 
         // Create a StackPane to add padding around the BorderPane
         root = new BorderPane();
-        Button enLang = new Button("EN");
-        Button zhLang = new Button("ZH");
-        Button jpLang = new Button("JP");
+        Button enLang = new Button("English");
+        Button zhLang = new Button("中文");
+        Button jpLang = new Button("日本語");
         enLang.setOnAction(e -> LangContext.setLang("en"));
         zhLang.setOnAction(e -> LangContext.setLang("zh"));
         jpLang.setOnAction(e -> LangContext.setLang("ja"));
@@ -121,6 +128,14 @@ public class GradeBookView extends Application {
         UserController controller = new UserController(this);
         registerButton.setOnAction(controller::handleRegister);
         loginButton.setOnAction(controller::handleLogin);
+    }
+
+    private void updateTexts() {
+        loginLabel.setText(bundle.getString("loginOrRegister"));
+        username.setText(bundle.getString("userName"));
+        password.setText(bundle.getString("password"));
+        registerButton.setText(bundle.getString("register"));
+        loginButton.setText(bundle.getString("login"));
     }
 
     public void setErrorLabel(String message) {
@@ -201,5 +216,6 @@ public class GradeBookView extends Application {
             e.printStackTrace();
         }
     }
+
 
 }
