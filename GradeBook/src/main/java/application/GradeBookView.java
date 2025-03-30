@@ -34,6 +34,7 @@ public class GradeBookView extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Grade Book");
+        setLang(currentLang);
         errorLabel = new Text();
         errorLabel.getStyleClass().add("error-message");
 
