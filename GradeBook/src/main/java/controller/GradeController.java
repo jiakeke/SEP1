@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import model.Grade;
 import model.GradeType;
 import model.Student;
+import util.LangContext;
 
 import java.awt.*;
 import java.io.File;
@@ -42,19 +43,28 @@ public class GradeController {
     private static Stage stage;
     private static String currentGroupName;
     private static GradeBookView rootview;
+    private static TableColumn<Map<String, Object>, String> nameColumn;
+    private static TableColumn<Map<String, Object>, Double> totalColumn;
+    private static Map<String, Object> avgRow;
+    private static ResourceBundle bundle = LangContext.getBundle();
 
     public static void showGradeEditor(GradeBookView view, int groupId, String groupName) {
         rootview = view;
         currentGroupId = groupId;
         currentGroupName = groupName;
-        initializeUI();
+        initializeUI(LangContext.getBundle());
         loadGradeData();
+
+        LangContext.currentLang.addListener((obs, oldlang, newLang)->{
+            bundle=LangContext.getBundle();
+            updateTexts();
+        });
     }
 
-    private static void initializeUI() {
+    private static void initializeUI(ResourceBundle bundle) {
         gradeTable = new TableView<>();
 
-        exportButton = new Button("Export to PDF");
+        exportButton = new Button(bundle.getString("export"));
         exportButton.getStyleClass().add("export-button");
         HBox buttonContainer = new HBox(exportButton);
         buttonContainer.setAlignment(Pos.CENTER);
@@ -84,7 +94,7 @@ public class GradeController {
             List<Grade> grades = GradeDAO.showGradesByGroupId(currentGroupId);
             gradeTable.getColumns().clear();
 
-            TableColumn<Map<String, Object>, String> nameColumn = new TableColumn<>("Name");
+            nameColumn = new TableColumn<>(bundle.getString("name"));
             nameColumn.setCellValueFactory(cellData ->
                     new javafx.beans.property.SimpleStringProperty((String) cellData.getValue().get("name"))
             );
@@ -125,7 +135,7 @@ public class GradeController {
                 gradeColumns.put(gt.getId(), gradeColumn);
             }
 
-            TableColumn<Map<String, Object>, Double> totalColumn = new TableColumn<>("Total");
+            totalColumn = new TableColumn<>(bundle.getString("total"));
             totalColumn.setCellValueFactory(cellData ->
                     new javafx.beans.property.SimpleDoubleProperty((Double) cellData.getValue().getOrDefault("total", 0.0)).asObject()
             );
@@ -154,8 +164,8 @@ public class GradeController {
 
             // Calculate average grades
             if (!students.isEmpty()) {
-                Map<String, Object> avgRow = new HashMap<>();
-                avgRow.put("name", "Average");
+                avgRow = new HashMap<>();
+                avgRow.put("name", bundle.getString("average"));
 
                 for (GradeType gt : gradeTypes) {
                     double sum = 0;
@@ -220,6 +230,15 @@ public class GradeController {
 //            showError("Database error", "Unable to delete grade: " + e.getMessage());
 //        }
 //    }
+
+    private static void updateTexts() {
+        exportButton.setText(bundle.getString("export"));
+        nameColumn.setText(bundle.getString("name"));
+        totalColumn.setText(bundle.getString("total"));
+        avgRow = new HashMap<>();
+        avgRow.put("name", bundle.getString("average"));
+        loadGradeData();
+    }
 
     public static void exportToPDFFromTable() {
         if (gradeTable == null || gradeTable.getColumns().isEmpty()) {

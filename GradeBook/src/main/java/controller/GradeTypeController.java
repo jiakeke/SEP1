@@ -12,13 +12,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.GradeType;
+import util.LangContext;
 
 import java.sql.SQLException;
 import java.util.List;
 
+import java.util.ResourceBundle;
+
 public class GradeTypeController {
 
     private static TableView<GradeType> gradeTypeTable;
+    private static TableColumn<GradeType, String> nameColumn;
+    private static TableColumn<GradeType, Double> weightColumn;
     private static TextField nameField;
     private static TextField weightField;
     private static Button saveButton;
@@ -27,19 +32,25 @@ public class GradeTypeController {
     private static int currentGroupId;
     private static Stage stage;
     private static GradeBookView rootview;
+    private static ResourceBundle bundle;
 
     public static void showGradeTypeEditor(GradeBookView view, int groupId) {
         rootview = view;
         currentGroupId = groupId;
-        initializeUI();
+        initializeUI(LangContext.getBundle());
         loadGradeTypes();
+
+        LangContext.currentLang.addListener((obs, oldlang, newLang)->{
+            bundle=LangContext.getBundle();
+            updateTexts();
+        });
     }
 
-    private static void initializeUI() {
+    private static void initializeUI(ResourceBundle bundle) {
         // Build TableView
         gradeTypeTable = new TableView<>();
-        TableColumn<GradeType, String> nameColumn = new TableColumn<>("Name");
-        TableColumn<GradeType, Double> weightColumn = new TableColumn<>("Weight");
+        nameColumn = new TableColumn<>(bundle.getString("name"));
+        weightColumn = new TableColumn<>(bundle.getString("weight"));
 
         nameColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
         weightColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("weight"));
@@ -55,15 +66,15 @@ public class GradeTypeController {
 
         // TextFields
         nameField = new TextField();
-        nameField.setPromptText("Name of Grade Type");
+        nameField.setPromptText(bundle.getString("grade_type_name"));
 
         weightField = new TextField();
-        weightField.setPromptText("Weight");
+        weightField.setPromptText(bundle.getString("weight"));
 
         // Buttons
-        saveButton = new Button("Save");
+        saveButton = new Button(bundle.getString("save"));
         saveButton.getStyleClass().add("save-button");
-        deleteButton = new Button("Delete");
+        deleteButton = new Button(bundle.getString("delete"));
         deleteButton.getStyleClass().add("delete-button");
 
         saveButton.setOnAction(e -> handleSave());
@@ -145,6 +156,15 @@ public class GradeTypeController {
         } catch (SQLException e) {
             showError("Database error", "Unable to delete grade type" + e.getMessage());
         }
+    }
+
+    private static void updateTexts() {
+        nameColumn.setText(bundle.getString("name"));
+        weightColumn.setText(bundle.getString("weight"));
+        nameField.setPromptText(bundle.getString("grade_type_name"));
+        weightField.setPromptText(bundle.getString("weight"));
+        saveButton.setText(bundle.getString("save"));
+        deleteButton.setText(bundle.getString("delete"));
     }
 
     // Error message
