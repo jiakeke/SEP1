@@ -20,4 +20,5 @@ public class LangContext {
     public static ResourceBundle getBundle(){
         return currentBundle.get();
     }
+
 }

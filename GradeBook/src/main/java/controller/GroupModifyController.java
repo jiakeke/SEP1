@@ -22,14 +22,14 @@ import java.util.ResourceBundle;
 public class GroupModifyController {
     private GradeBookView view;
     private Group group;
-    private  ResourceBundle bundle;
+    private ResourceBundle bundle;
 
 
     public GroupModifyController(GradeBookView view, Group group, ResourceBundle bundle) {
         this.bundle = bundle;
         this.view = view;
         this.group = group;
-        this.groupManageController= new GroupManageController(view, bundle);
+        this.groupManageController = new GroupManageController(view, bundle);
     }
 
     @FXML
@@ -83,12 +83,12 @@ public class GroupModifyController {
     private ObservableList<Student> unselectedStudents = FXCollections.observableArrayList();
     private ObservableList<Student> selectedStudents = FXCollections.observableArrayList();
 
-    private GroupManageController groupManageController ;
+    private GroupManageController groupManageController;
 
     // This method loads the group details
     public void initialize() {
-        LangContext.currentLang.addListener((obs, oldlang, newLang)->{
-            this.bundle=LangContext.getBundle();
+        LangContext.currentLang.addListener((obs, oldlang, newLang) -> {
+            this.bundle = LangContext.getBundle();
             updateTexts();
         });
 
@@ -143,10 +143,20 @@ public class GroupModifyController {
         unselectedId.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("id"));
         unselectedName.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
 
-        Group groupDetails = groupDao.getGroupById(group.getId());
-        if (groupDetails != null) {
-            groupName.setText(groupDetails.getName());
-            groupDes.setText(groupDetails.getDescription());
+        Group groupDetailsEN = groupDao.getGroupById(group.getId(), "en");
+        if (groupDetailsEN != null) {
+            groupName.setText(groupDetailsEN.getName());
+            groupDes.setText(groupDetailsEN.getDescription());
+        }
+        Group groupDetailsCN = groupDao.getGroupById(group.getId(), "zh");
+        if (groupDetailsCN != null) {
+            groupName_cn.setText(groupDetailsCN.getName());
+            groupDes_cn.setText(groupDetailsCN.getDescription());
+        }
+        Group groupDetailsJA = groupDao.getGroupById(group.getId(), "ja");
+        if (groupDetailsJA != null) {
+            groupName_ja.setText(groupDetailsJA.getName());
+            groupDes_ja.setText(groupDetailsJA.getDescription());
         }
 
         unselectedStudents.addAll(groupDao.getStudentsNotInGroup(group.getId()));
@@ -222,7 +232,7 @@ public class GroupModifyController {
             return;
         }
 
-        groupDao.updateGroup(group.getId(), groupName.getText(), groupDes.getText());
+        groupDao.updateGroup(group.getId(), groupName.getText(), groupDes.getText(), view.getCurrentLang());
         groupDao.deleteGroupStudents(group.getId());
 
         for (Student student : selectedStudents) {

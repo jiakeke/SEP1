@@ -13,9 +13,27 @@ public class GroupDao {
     Connection conn = MariaDbConnection.getConnection();
 
     // This method adds a new group to the database
-    public void addGroup(String name, String description) {
-        String insertQuery = "INSERT INTO groups (name, description) VALUES (?, ?)";
-        executeUpdateQuery(insertQuery, name, description);
+    public int createGroup(int createdBy) {
+        String insertGroupQuery = "INSERT INTO groups (created_by) VALUES (?)";
+        int groupId = -1;
+
+        try (PreparedStatement stmt = conn.prepareStatement(insertGroupQuery, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, createdBy);
+            stmt.executeUpdate();
+            var rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                groupId = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return groupId;
+    }
+
+    public void addGroupLocalized(int groupId, String lang, String name, String description) {
+        String insertLocalizedQuery = "INSERT INTO group_localized (group_id, lang, name, description) VALUES (?, ?, ?, ?)";
+        executeUpdateQuery(insertLocalizedQuery, groupId, lang, name, description);
     }
 
     // This method deletes a group from the database
@@ -23,12 +41,14 @@ public class GroupDao {
         String deleteGroupGradesQuery = "DELETE FROM grades WHERE group_id = ?";
         String deleteGroupGradeQuery = "DELETE FROM grade_types WHERE group_id = ?";
         String deleteGroupStudentQuery = "DELETE FROM group_students WHERE group_id = ?";
+        String deleteGroupLocalizedQuery = "DELETE FROM group_localized WHERE group_id = ?";
         String deleteQuery = "DELETE FROM groups WHERE id = ?";
         try {
             conn.setAutoCommit(false);
             executeUpdateQuery(deleteGroupGradesQuery, id);
             executeUpdateQuery(deleteGroupGradeQuery, id);
             executeUpdateQuery(deleteGroupStudentQuery, id);
+            executeUpdateQuery(deleteGroupLocalizedQuery, id);
             executeUpdateQuery(deleteQuery, id);
             conn.commit();
             return true;
@@ -44,15 +64,46 @@ public class GroupDao {
     }
 
     // This method returns all groups from the database
-    public List<Group> getAllGroups() {
-        return getGroupsByQuery("SELECT * FROM groups", null);
+//    public List<Group> getAllGroups() {
+//        return getGroupsByQuery("SELECT * FROM groups", null);
+//    }
+//    public List<Group> getAllGroups(String lang,) {
+//        String query = "SELECT g.id, gl.name, gl.description " +
+//                "FROM groups g JOIN group_localized gl ON g.id = gl.group_id " +
+//                "WHERE gl.lang = ?";
+//        return getGroupsByQuery(query, lang);
+//    }
+    public List<Group> getAllGroupsByUser(String lang, int userId) {
+        String query = "SELECT g.id, gl.name, gl.description " +
+                "FROM groups g JOIN group_localized gl ON g.id = gl.group_id " +
+                "WHERE gl.lang = ? and g.created_by = ?";
+        return getGroupsByQuery(query, lang, userId);
     }
 
     // This method returns a group by its id
-    public Group getGroupById(int id) {
-        List<Group> groups = getGroupsByQuery("SELECT * FROM groups WHERE id = ?", id);
+//    public Group getGroupById(int id) {
+//        List<Group> groups = getGroupsByQuery("SELECT * FROM groups WHERE id = ?", id);
+//        return groups.isEmpty() ? null : groups.get(0);
+//    }
+    public Group getGroupById(int id, String lang) {
+        String query = "SELECT g.id, gl.name, gl.description " +
+                "FROM groups g JOIN group_localized gl ON g.id = gl.group_id " +
+                "WHERE g.id = ? AND gl.lang = ?";
+        List<Group> groups = new ArrayList<>();
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            stmt.setString(2, lang);
+            stmt.execute();
+            var rs = stmt.getResultSet();
+            while (rs.next()) {
+                groups.add(new Group(rs.getInt("id"), rs.getString("name"), rs.getString("description")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return groups.isEmpty() ? null : groups.get(0);
     }
+
 
     // This method returns all students that are not in a group
     public List<Student> getStudentsNotInGroup(int groupId) {
@@ -65,10 +116,12 @@ public class GroupDao {
     }
 
     // This method updates a group
-    public void updateGroup(int id, String name, String description) {
-        String updateQuery = "UPDATE groups SET name = ?, description = ? WHERE id = ?";
-        executeUpdateQuery(updateQuery, name, description, id);
+
+    public void updateGroup(int groupId, String name, String description, String lang) {
+        String updateQuery = "UPDATE group_localized SET name = ?, description = ? WHERE group_id = ? AND lang = ?";
+        executeUpdateQuery(updateQuery, name, description, groupId, lang);
     }
+
 
     // This method deletes all students from a group
     public void deleteGroupStudents(int groupId) {
@@ -95,12 +148,11 @@ public class GroupDao {
     }
 
     // This method returns a list of groups
-    public List<Group> getGroupsByQuery(String query, Integer id) {
+    public List<Group> getGroupsByQuery(String query, String lang,int userId) {
         List<Group> groups = new ArrayList<>();
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            if (id != null) {
-                stmt.setInt(1, id);
-            }
+            stmt.setString(1, lang);
+            stmt.setInt(2, userId);
             stmt.execute();
             var rs = stmt.getResultSet();
             while (rs.next()) {

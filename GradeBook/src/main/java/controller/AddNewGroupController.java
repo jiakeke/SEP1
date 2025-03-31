@@ -184,14 +184,19 @@ public class AddNewGroupController {
             return;
         }
 
-        groupDao.addGroup(groupName.getText(), groupDes.getText());
+//        groupDao.addGroup(groupName.getText(), groupDes.getText(),"en",view.getCurrentUserId());
+//        groupDao.addGroup(groupName_cn.getText(), groupDes_cn.getText(), "zh",view.getCurrentUserId());
+//        groupDao.addGroup(groupName_ja.getText(), groupDes_ja.getText(), "ja",view.getCurrentUserId());
+        int groupId = groupDao.createGroup(view.getCurrentUserId());
+
+        if (groupId != -1) {
+            groupDao.addGroupLocalized(groupId, "en", groupName.getText(), groupDes.getText());
+            groupDao.addGroupLocalized(groupId, "zh", groupName_cn.getText(), groupDes_cn.getText());
+            groupDao.addGroupLocalized(groupId, "ja", groupName_ja.getText(), groupDes_ja.getText());
+        }
 
         if (!selectedStudents.isEmpty()) {
-            int groupId = groupDao.getAllGroups().stream()
-                    .filter(group -> group.getName().equals(groupName.getText()))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException(bundle.getString("groupNotFound")))
-                    .getId();
+
 
             for (Student student : selectedStudents) {
                 groupDao.addStudentToGroup(groupId, student.getId());

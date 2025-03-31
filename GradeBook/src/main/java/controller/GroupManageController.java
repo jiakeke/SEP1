@@ -68,7 +68,7 @@ public class GroupManageController {
         groupInfoList.clear();
         groupsNameclu.setCellValueFactory(new PropertyValueFactory<>("name"));
         groupsDesClu.setCellValueFactory(new PropertyValueFactory<>("description"));
-        groupDao.getAllGroups().forEach(group -> {
+        groupDao.getAllGroupsByUser(LangContext.currentLang.get(),view.getCurrentUserId()).forEach(group -> {
             groupInfoList.add(group);
         });
         GroupsInfo.setItems(groupInfoList);
@@ -83,6 +83,16 @@ public class GroupManageController {
         mainLabel.setText(bundle.getString("mainLabel"));
         groupsNameclu.setText(bundle.getString("groupName"));
         groupsDesClu.setText(bundle.getString("groupDescription"));
+
+        groupInfoList.clear();
+        groupsNameclu.setCellValueFactory(new PropertyValueFactory<>("name"));
+        groupsDesClu.setCellValueFactory(new PropertyValueFactory<>("description"));
+        groupDao.getAllGroupsByUser(LangContext.currentLang.get(),view.getCurrentUserId()).forEach(group -> {
+            groupInfoList.add(group);
+        });
+        System.out.println("GroupManageController: "+view.getCurrentLang());
+        GroupsInfo.setItems(groupInfoList);
+
     }
 
     // This method is called when the user clicks the "Add New Group" button, it opens the AddNewGroup.fxml file
