@@ -25,11 +25,15 @@ public class GradeBookView extends Application {
     private Text errorLabel;
     private Label loginLabel;
     private Label username;
+    private Label swLabel;
     private Label password;
+    private Label welcomeLabel;
     private TextField usernameField;
     private PasswordField passwordField;
     private Button registerButton;
     private Button loginButton;
+    private Button studentsButton;
+    private Button groupsButton;
     private Scene scene;
     private BorderPane root;
     private String currentLang = "en";
@@ -37,11 +41,11 @@ public class GradeBookView extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Grade Book");
         setLang(currentLang);
+        primaryStage.setTitle(bundle.getString("sw"));
         LangContext.currentLang.addListener((obs,oldlang,newLang)->{
             this.bundle=LangContext.getBundle();
-            updateTexts();
+            updateTexts(primaryStage);
         });
         errorLabel = new Text();
         errorLabel.getStyleClass().add("error-message");
@@ -130,12 +134,17 @@ public class GradeBookView extends Application {
         loginButton.setOnAction(controller::handleLogin);
     }
 
-    private void updateTexts() {
+    private void updateTexts(Stage primeryStage) {
+        primeryStage.setTitle(bundle.getString("sw"));
         loginLabel.setText(bundle.getString("loginOrRegister"));
         username.setText(bundle.getString("userName"));
         password.setText(bundle.getString("password"));
         registerButton.setText(bundle.getString("register"));
         loginButton.setText(bundle.getString("login"));
+        swLabel.setText(bundle.getString("sw") + "!");
+        welcomeLabel.setText(bundle.getString("welcome"));
+        studentsButton.setText(bundle.getString("students_button"));
+        groupsButton.setText(bundle.getString("groups_button"));
     }
 
     public void setErrorLabel(String message) {
@@ -176,15 +185,15 @@ public class GradeBookView extends Application {
     }
 
     public void showSystemInterface() {
-        Label swLabel = new Label("Grade Book!");
+        swLabel = new Label(bundle.getString("sw") + "!");
         swLabel.getStyleClass().add("page-title");
         VBox vbox = new VBox(10, swLabel);
-        Label welcomeLabel = new Label("Welcome!");
+        welcomeLabel = new Label(bundle.getString("welcome"));
         welcomeLabel.getStyleClass().add("page-title");
 
-        Button studentsButton = new Button("Students");
+        studentsButton = new Button(bundle.getString("students_button"));
         studentsButton.setId("studentsButton");
-        Button groupsButton = new Button("Groups");
+        groupsButton = new Button(bundle.getString("groups_button"));
 
         studentsButton.getStyleClass().add("big-button");
         groupsButton.getStyleClass().add("big-button");
@@ -199,7 +208,7 @@ public class GradeBookView extends Application {
     }
 
     private void openStudents() {
-        StudentController studentController = new StudentController(this);
+        StudentController studentController = new StudentController(this, getBundle());
         studentController.handleOpenStudents(new ActionEvent());
     }
 
