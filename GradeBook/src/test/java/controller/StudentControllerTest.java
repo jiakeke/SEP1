@@ -174,7 +174,7 @@ class StudentControllerTest extends ApplicationTest {
     public void start(Stage stage) {
         Locale.setDefault(new Locale("en", "US"));
         gradeBookView = new GradeBookView();
-        studentController = new StudentController(gradeBookView);
+        studentController = new StudentController(gradeBookView, null);
         gradeBookView.start(stage);
     }
 

@@ -134,17 +134,18 @@ public class GradeBookView extends Application {
         loginButton.setOnAction(controller::handleLogin);
     }
 
-    private void updateTexts(Stage primeryStage) {
-        primeryStage.setTitle(bundle.getString("sw"));
-        loginLabel.setText(bundle.getString("loginOrRegister"));
-        username.setText(bundle.getString("userName"));
-        password.setText(bundle.getString("password"));
-        registerButton.setText(bundle.getString("register"));
-        loginButton.setText(bundle.getString("login"));
-        swLabel.setText(bundle.getString("sw") + "!");
-        welcomeLabel.setText(bundle.getString("welcome"));
-        studentsButton.setText(bundle.getString("students_button"));
-        groupsButton.setText(bundle.getString("groups_button"));
+    private void updateTexts(Stage primaryStage) {
+        if (bundle == null) return;
+        if (primaryStage != null) primaryStage.setTitle(bundle.getString("sw"));
+        if (loginLabel != null) loginLabel.setText(bundle.getString("loginOrRegister"));
+        if (username != null) username.setText(bundle.getString("userName"));
+        if (password != null) password.setText(bundle.getString("password"));
+        if (registerButton != null) registerButton.setText(bundle.getString("register"));
+        if (loginButton != null) loginButton.setText(bundle.getString("login"));
+        if (swLabel != null) swLabel.setText(bundle.getString("sw") + "!");
+        if (welcomeLabel != null) welcomeLabel.setText(bundle.getString("welcome"));
+        if (studentsButton != null) studentsButton.setText(bundle.getString("students_button"));
+        if (groupsButton != null) groupsButton.setText(bundle.getString("groups_button"));
     }
 
     public void setErrorLabel(String message) {

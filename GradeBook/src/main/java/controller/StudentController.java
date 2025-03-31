@@ -13,6 +13,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Student;
+import util.LangContext;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -20,41 +24,64 @@ import java.util.List;
 public class StudentController {
     private GradeBookView view;
     Stage studentsStage = new Stage();
+    private ResourceBundle bundle;
 
-    public StudentController(GradeBookView view) {
+    private Label titleLabel;
+    private Label subtitleLabel;
+    private Label modifytitleLabel;
+    private TextField searchField;
+    private TextField nameField;
+    private TextField emailField;
+    private TextField phoneField;
+    private Button searchButton;
+    private Button refreshButton;
+    private Button addStudentButton;
+    private Button modifyStudentButton;
+    private Button deleteStudentButton;
+    private Button submitButton;
+    private Button saveButton;
+    private TableColumn<Student, String> nameCol;
+    private TableColumn<Student, String> emailCol;
+    private TableColumn<Student, String> phoneCol;
+
+    public StudentController(GradeBookView view ,ResourceBundle bundle) {
         this.view = view;
+        this.bundle = bundle;
         this.studentsStage.setTitle("Students");
 
+        LangContext.currentLang.addListener((obs, oldlang, newLang)->{
+            this.bundle=LangContext.getBundle();
+            updateTexts();
+        });
     }
 
     // Handle open students
     public void handleOpenStudents(ActionEvent open) {
-
-        Label titleLabel = new Label("Students");
+        titleLabel = new Label(bundle.getString("students_button"));
         titleLabel.getStyleClass().add("page-title");
         // Search bar
-        TextField searchField = new TextField();
-        searchField.setPromptText("Search by name");
+        searchField = new TextField();
+        searchField.setPromptText(bundle.getString("search"));
         searchField.setId("search-field");
-        Button searchButton = new Button("Search");
+        searchButton = new Button(bundle.getString("search_button"));
         searchButton.setId("search-button");
-        Button refreshButton = new Button("Refresh");
+        refreshButton = new Button(bundle.getString("refresh"));
         refreshButton.setId("refresh-button");
-        Button addStudentButton = new Button("Add Student");
+        addStudentButton = new Button(bundle.getString("add_student"));
         addStudentButton.setId("add-button");
-        Button modifyStudentButton = new Button("Modify");
+        modifyStudentButton = new Button(bundle.getString("modify_student"));
         modifyStudentButton.setId("modify-button");
-        Button deleteStudentButton = new Button("Delete");
+        deleteStudentButton = new Button(bundle.getString("delete_student"));
         deleteStudentButton.setId("delete-button");
 
         // Student table
         TableView<Student> studentTable = new TableView<>();
         studentTable.setId("studentTable");
-        TableColumn<Student, String> nameCol = new TableColumn<>("Name");
+        nameCol = new TableColumn<>(bundle.getString("name"));
         nameCol.setId("name-col");
-        TableColumn<Student, String> emailCol = new TableColumn<>("Email");
+        emailCol = new TableColumn<>(bundle.getString("email"));
         emailCol.setId("email-col");
-        TableColumn<Student, String> phoneCol = new TableColumn<>("Phone");
+        phoneCol = new TableColumn<>(bundle.getString("phone"));
         phoneCol.setId("phone-col");
 
         nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getName()));
@@ -93,6 +120,30 @@ public class StudentController {
         view.getRootPane().setCenter(layout);
     }
 
+    private void updateTexts() {
+        if (studentsStage != null) studentsStage.setTitle(bundle.getString("students_button"));
+        if (titleLabel != null) titleLabel.setText(bundle.getString("students_button"));
+        if (subtitleLabel != null) subtitleLabel.setText(bundle.getString("add_new_student"));
+        if (modifytitleLabel != null) modifytitleLabel.setText(bundle.getString("modify_student"));
+
+        if (searchField != null) searchField.setPromptText(bundle.getString("search"));
+        if (nameField != null) nameField.setPromptText(bundle.getString("name"));
+        if (emailField != null) emailField.setPromptText(bundle.getString("email"));
+        if (phoneField != null) phoneField.setPromptText(bundle.getString("phone"));
+
+        if (searchButton != null) searchButton.setText(bundle.getString("search_button"));
+        if (refreshButton != null) refreshButton.setText(bundle.getString("refresh"));
+        if (addStudentButton != null) addStudentButton.setText(bundle.getString("add_student"));
+        if (modifyStudentButton != null) modifyStudentButton.setText(bundle.getString("modify_student"));
+        if (deleteStudentButton != null) deleteStudentButton.setText(bundle.getString("delete_student"));
+        if (submitButton != null) submitButton.setText(bundle.getString("submit"));
+        if (saveButton != null) saveButton.setText(bundle.getString("save"));
+
+        if (nameCol != null) nameCol.setText(bundle.getString("name"));
+        if (emailCol != null) emailCol.setText(bundle.getString("email"));
+        if (phoneCol != null) phoneCol.setText(bundle.getString("phone"));
+    }
+
     // Load students from database
     void loadStudents(TableView<Student> studentTable) {
         try {
@@ -117,22 +168,22 @@ public class StudentController {
 
     // Add a new student
     void handleAddStudent(TableView<Student> studentTable) {
-        Label titleLabel = new Label("Add New Student");
-        titleLabel.getStyleClass().add("page-title");
+        subtitleLabel = new Label(bundle.getString("add_new_student"));
+        subtitleLabel.getStyleClass().add("page-title");
 
-        TextField nameField = new TextField();
+        nameField = new TextField();
         nameField.setId("name-field");
-        nameField.setPromptText("Name");
+        nameField.setPromptText(bundle.getString("name"));
 
-        TextField emailField = new TextField();
+        emailField = new TextField();
         emailField.setId("email-field");
-        emailField.setPromptText("Email");
+        emailField.setPromptText(bundle.getString("email"));
 
-        TextField phoneField = new TextField();
+        phoneField = new TextField();
         phoneField.setId("phone-field");
-        phoneField.setPromptText("Phone");
+        phoneField.setPromptText(bundle.getString("phone"));
 
-        Button submitButton = new Button("Submit");
+        submitButton = new Button(bundle.getString("submit"));
         submitButton.setId("submit-button");
         submitButton.setOnAction(event -> {
             try {
@@ -158,27 +209,27 @@ public class StudentController {
         submitButton.getStyleClass().add("submit-button");
         HBox submitButtonContainer = new HBox(submitButton);
         submitButtonContainer.setAlignment(Pos.CENTER);
-        VBox layout = new VBox(10, titleLabel, nameField, emailField, phoneField, submitButtonContainer);
+        VBox layout = new VBox(10, subtitleLabel, nameField, emailField, phoneField, submitButtonContainer);
         layout.setPadding(new Insets(20, 20, 20, 20));
         view.getRootPane().setCenter(layout);
     }
 
     // Modify student
     private void handleModifyStudent(Student student, TableView<Student> studentTable) {
-        Label titleLabel = new Label("Modify Student");
-        titleLabel.getStyleClass().add("page-title");
+        modifytitleLabel = new Label(bundle.getString("modify_student"));
+        modifytitleLabel.getStyleClass().add("page-title");
 
-        TextField nameField = new TextField(student.getName());
+        nameField = new TextField(student.getName());
         nameField.setId("name-field");
-        nameField.setPromptText("Name");
-        TextField emailField = new TextField(student.getEmail());
+        nameField.setPromptText(bundle.getString("name"));
+        emailField = new TextField(student.getEmail());
         emailField.setId("email-field");
-        emailField.setPromptText("Email");
-        TextField phoneField = new TextField(student.getPhone());
+        emailField.setPromptText(bundle.getString("email"));
+        phoneField = new TextField(student.getPhone());
         phoneField.setId("phone-field");
-        phoneField.setPromptText("Phone");
+        phoneField.setPromptText(bundle.getString("phone"));
 
-        Button saveButton = new Button("Save");
+        saveButton = new Button(bundle.getString("save"));
         saveButton.setId("save-button");
         saveButton.setOnAction(event -> {
             try {
@@ -206,7 +257,7 @@ public class StudentController {
         saveButton.getStyleClass().add("save-button");
         HBox saveButtonContainer = new HBox(saveButton);
         saveButtonContainer.setAlignment(Pos.CENTER);
-        VBox layout = new VBox(10, titleLabel, nameField, emailField, phoneField, saveButtonContainer);
+        VBox layout = new VBox(10, modifytitleLabel, nameField, emailField, phoneField, saveButtonContainer);
         layout.setPadding(new Insets(20, 20, 20, 20));
         view.getRootPane().setCenter(layout);
     }
