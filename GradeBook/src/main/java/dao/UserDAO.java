@@ -32,14 +32,19 @@ public class UserDAO {
         }
     }
 
-    public static boolean loginUser(String username, String password) throws SQLException, NoSuchAlgorithmException {
+    public static Integer loginUser(String username, String password) throws SQLException, NoSuchAlgorithmException {
         String hashedPassword = hashPassword(password);
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, username);
             stmt.setString(2, hashedPassword);
             ResultSet rs = stmt.executeQuery();
-            return rs.next();
+            if (rs.next()) {
+                System.out.println(rs.getInt("id"));
+                return rs.getInt("id"); // 登录成功，返回用户ID
+            } else {
+                return null; // 登录失败
+            }
         }
     }
 
