@@ -44,7 +44,7 @@ public class MariaDbConnection {
 
                 String dbName = System.getenv("DB_NAME");
                 if (dbName == null || dbName.isBlank()) {
-                    dbName = props.getProperty("DB_NAME", "gradebook");
+                    dbName = props.getProperty("DB_NAME", "gradebook_localized");
                 }
 
                 String dbUser = System.getenv("DB_USER");
