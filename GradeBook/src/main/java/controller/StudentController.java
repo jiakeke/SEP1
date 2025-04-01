@@ -124,7 +124,7 @@ public class StudentController {
         if (studentsStage != null) studentsStage.setTitle(bundle.getString("students_button"));
         if (titleLabel != null) titleLabel.setText(bundle.getString("students_button"));
         if (subtitleLabel != null) subtitleLabel.setText(bundle.getString("add_new_student"));
-        if (modifytitleLabel != null) modifytitleLabel.setText(bundle.getString("modify_student"));
+        if (modifytitleLabel != null) modifytitleLabel.setText(bundle.getString("modify_student_title"));
 
         if (searchField != null) searchField.setPromptText(bundle.getString("search"));
         if (nameField != null) nameField.setPromptText(bundle.getString("name"));
@@ -151,7 +151,7 @@ public class StudentController {
             studentTable.getItems().setAll(students);
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Database Error", "Failed to load students from database.");
+            showAlert("database_error", "load_students_fail");
         }
     }
 
@@ -162,7 +162,7 @@ public class StudentController {
             studentTable.getItems().setAll(students);
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Database Error", "Failed to search students.");
+            showAlert("database_error", "search_fail");
         }
     }
 
@@ -202,7 +202,7 @@ public class StudentController {
                 handleOpenStudents(new ActionEvent());
             } catch (SQLException e) {
                 e.printStackTrace();
-                showAlert("Database Error", "Failed to add student.");
+                showAlert("database_error", "add_student_fail");
             }
         });
 
@@ -216,7 +216,7 @@ public class StudentController {
 
     // Modify student
     private void handleModifyStudent(Student student, TableView<Student> studentTable) {
-        modifytitleLabel = new Label(bundle.getString("modify_student"));
+        modifytitleLabel = new Label(bundle.getString("modify_student_title"));
         modifytitleLabel.getStyleClass().add("page-title");
 
         nameField = new TextField(student.getName());
@@ -250,7 +250,7 @@ public class StudentController {
                 handleOpenStudents(new ActionEvent());
             } catch (SQLException e) {
                 e.printStackTrace();
-                showAlert("Database Error", "Failed to update student.");
+                showAlert("database_error", "update_student_fail");
             }
         });
 
@@ -266,7 +266,7 @@ public class StudentController {
     void handleDeleteStudent(Student student, TableView<Student> studentTable) {
 
 
-        ConfirmDialog dialog = new ConfirmDialog(studentsStage, "Are you sure you want to delete this student?");
+        ConfirmDialog dialog = new ConfirmDialog(studentsStage, bundle.getString("delete_student_message"));
 
         dialog.showAndWait().thenAccept(confirmed -> {
             if (confirmed) {
@@ -275,7 +275,7 @@ public class StudentController {
                     loadStudents(studentTable);
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    showAlert("Database Error", "Failed to delete student.");
+                    showAlert("database_error", "delete_student_fail");
                 }
             } else {
                 System.out.println("Deletion cancelled");
@@ -286,17 +286,17 @@ public class StudentController {
 
     private boolean validateStudentInput(String name, String email, String phone) {
         if (name == null || name.trim().isEmpty()) {
-            showAlert("Invalid Name", "Name cannot be empty.");
+            showAlert("invalid_name", "name_empty");
             return false;
         }
 
         if (!isValidEmail(email)) {
-            showAlert("Invalid Email", "Please enter a valid email address.");
+            showAlert("invalid_email", "email_message");
             return false;
         }
 
         if (!isValidPhoneNumber(phone)) {
-            showAlert("Invalid Phone Number", "Please enter a valid phone number (digits only, 6-15 characters).");
+            showAlert("invalid_phone", "phone_message");
             return false;
         }
 
@@ -314,12 +314,13 @@ public class StudentController {
     }
 
     // Show alert dialog
-    public void showAlert(String title, String message) {
-        Platform.runLater(() -> {  // 让 JavaFX 在 UI 线程中执行
+    public void showAlert(String titleKey, String messageKey) {
+        Platform.runLater(() -> {
+            ResourceBundle bundle = LangContext.getBundle();
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(title);
+            alert.setTitle(bundle.getString(titleKey));
             alert.setHeaderText(null);
-            alert.setContentText(message);
+            alert.setContentText(bundle.getString(messageKey));
             alert.showAndWait();
         });
     }
