@@ -84,3 +84,8 @@ CREATE TABLE `grade_type_localized` (
   UNIQUE (`grade_type_id`, `lang`)
 ) ENGINE = InnoDB;
         
+DROP USER IF EXISTS 'grade_admin'@'localhost';
+CREATE USER 'grade_admin'@'localhost' IDENTIFIED BY 'password';
+GRANT SELECT, INSERT, UPDATE, DELETE ON gradebook_localized.* TO 'grade_admin'@'localhost';
+
+FLUSH PRIVILEGES;

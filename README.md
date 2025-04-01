@@ -20,6 +20,7 @@ interaction.
 - [Project Plan](docs/project_plan_group3_v3.pdf)
 - [User Stories](docs/UserStories.md)
 - [Design](docs/Design.md)
+- [Localization](docs/Localization.md)
 
 ## Docker
 [Use XQuartz on Mac to run JavaFX GUI in docker](docs/DockerSetup.md)
