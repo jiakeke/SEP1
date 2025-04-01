@@ -52,7 +52,8 @@ public class UserController {
         try {
             UserDAO.registerUser(user);
             System.out.println("User registered successfully!");
-            if (UserDAO.loginUser(username, password)) {
+            Integer userId = UserDAO.loginUser(username, password);
+            if (userId != null) {
                 System.out.println("Login successful!");
                 //view.showSystemInterface((Stage) view.getRegisterButton().getScene().getWindow());
                 view.showSystemInterface();
@@ -66,8 +67,10 @@ public class UserController {
         String username = view.getUsernameField().getText();
         String password = view.getPasswordField().getText();
         try {
-            if (UserDAO.loginUser(username, password)) {
-                System.out.println("Login successful!");
+            Integer userId = UserDAO.loginUser(username, password);
+            if (userId != null) {
+                System.out.println("Login successful! User ID: " + userId);
+                view.setCurrentUserId(userId);
                 view.showSystemInterface();
             } else {
                 view.setErrorLabel("Invalid username or password.");

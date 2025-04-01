@@ -38,6 +38,8 @@ public class GradeBookView extends Application {
     private BorderPane root;
     private String currentLang = "en";
     private ResourceBundle bundle;
+    private int currentUserId;
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -226,6 +228,12 @@ public class GradeBookView extends Application {
             e.printStackTrace();
         }
     }
+    public void setCurrentUserId(int userId) {
+        this.currentUserId = userId;
+    }
 
+    public int getCurrentUserId() {
+        return currentUserId;
+    }
 
 }
