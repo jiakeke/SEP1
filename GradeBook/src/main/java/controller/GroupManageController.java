@@ -6,7 +6,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -44,12 +43,10 @@ public class GroupManageController {
     private Label mainLabel;
 
     @FXML
-    private TableView<Group> GroupsInfo;
+    private TableView<Group> groupsInfo;
     @FXML
     private TableColumn<Group, String> groupsDesClu;
 
-//    @FXML
-//    private TableColumn<Group, Integer> groupsIdClu;
 
     @FXML
     private TableColumn<Group, String> groupsNameclu;
@@ -68,10 +65,10 @@ public class GroupManageController {
         groupInfoList.clear();
         groupsNameclu.setCellValueFactory(new PropertyValueFactory<>("name"));
         groupsDesClu.setCellValueFactory(new PropertyValueFactory<>("description"));
-        groupDao.getAllGroupsByUser(LangContext.currentLang.get(),view.getCurrentUserId()).forEach(group -> {
-            groupInfoList.add(group);
-        });
-        GroupsInfo.setItems(groupInfoList);
+        groupDao.getAllGroupsByUser(LangContext.currentLang.get(),view.getCurrentUserId()).forEach(group ->
+            groupInfoList.add(group)
+        );
+        groupsInfo.setItems(groupInfoList);
     }
 
     private void updateTexts() {
@@ -87,11 +84,11 @@ public class GroupManageController {
         groupInfoList.clear();
         groupsNameclu.setCellValueFactory(new PropertyValueFactory<>("name"));
         groupsDesClu.setCellValueFactory(new PropertyValueFactory<>("description"));
-        groupDao.getAllGroupsByUser(LangContext.currentLang.get(),view.getCurrentUserId()).forEach(group -> {
-            groupInfoList.add(group);
-        });
+        groupDao.getAllGroupsByUser(LangContext.currentLang.get(),view.getCurrentUserId()).forEach(group ->
+            groupInfoList.add(group)
+        );
         System.out.println("GroupManageController: "+view.getCurrentLang());
-        GroupsInfo.setItems(groupInfoList);
+        groupsInfo.setItems(groupInfoList);
 
     }
 
@@ -100,12 +97,10 @@ public class GroupManageController {
     void addNewGroup(MouseEvent event) {
         try {
             Locale locale=new Locale(view.getCurrentLang());
-            ResourceBundle bundle= ResourceBundle.getBundle("messages", locale);
+            bundle= ResourceBundle.getBundle("messages", locale);
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/addNewGroup.fxml"),bundle);
             fxmlLoader.setController(new AddNewGroupController(this.view, bundle));
-            AddNewGroupController controller = fxmlLoader.getController();
-            //stage.show();
             this.view.getRootPane().setCenter(fxmlLoader.load());
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,16 +114,15 @@ public class GroupManageController {
     // This method is called when the user clicks the "Delete Group" button, it deletes the selected group
     @FXML
     void deleteGroupInfo(MouseEvent event) {
-        Group selectedGroup = GroupsInfo.getSelectionModel().getSelectedItem();
+        Group selectedGroup = groupsInfo.getSelectionModel().getSelectedItem();
         if (selectedGroup == null) {
             showError("Selection error", "Please select a group to delete.");
             return;
         }
 
-        if (getConfirmation() == ButtonType.OK) {
-            if (groupDao.removeGroup(selectedGroup.getId())) {
+        if (getConfirmation() == ButtonType.OK && groupDao.removeGroup(selectedGroup.getId())) {
+
                 groupInfoList.remove(selectedGroup);
-            }
         }
     }
 
@@ -143,7 +137,7 @@ public class GroupManageController {
     // This method is called when the user clicks the "Modify Group" button, it opens the ModifyGroupInfo.fxml file
     @FXML
     void modifyGroupInfo(MouseEvent event) {
-        Group selectedGroup = GroupsInfo.getSelectionModel().getSelectedItem();
+        Group selectedGroup = groupsInfo.getSelectionModel().getSelectedItem();
         if (selectedGroup == null) {
             return;
         }
@@ -159,7 +153,7 @@ public class GroupManageController {
     // This method is called when the user clicks the "Add Grade Type" button
     @FXML
     void addGradeType(MouseEvent event) {
-        Group selectedGroup = GroupsInfo.getSelectionModel().getSelectedItem();
+        Group selectedGroup = groupsInfo.getSelectionModel().getSelectedItem();
         if (selectedGroup == null) {
             showError("Select error", "Please select a group to add grade type");
             return;
@@ -170,7 +164,7 @@ public class GroupManageController {
     // This method is called when the user clicks the "View Grade" button
     @FXML
     void viewGrade(MouseEvent event) {
-        Group selectedGroup = GroupsInfo.getSelectionModel().getSelectedItem();
+        Group selectedGroup = groupsInfo.getSelectionModel().getSelectedItem();
         if (selectedGroup == null) {
             showError("Selection error", "Please select a Group first.");
             return;
@@ -188,11 +182,11 @@ public class GroupManageController {
     }
 
     public TableView<Group> getGroupsInfo() {
-        return GroupsInfo;
+        return groupsInfo;
     }
 
     public void setGroupsInfo(TableView<Group> groupsInfo) {
-        GroupsInfo = groupsInfo;
+        this.groupsInfo = groupsInfo;
     }
 
     public TableColumn<Group, String> getGroupsDesClu() {

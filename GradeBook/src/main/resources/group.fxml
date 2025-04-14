@@ -9,7 +9,7 @@
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="497.0" prefWidth="619.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Button fx:id="addNewGroupBtn" layoutX="40.0" layoutY="394.0" mnemonicParsing="false" onMouseClicked="#addNewGroup" prefHeight="37.0" prefWidth="93.0" style="-fx-background-color: #4CAF50; -fx-border-color: #388E3C; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-text-fill: white;" text="%new" />
-        <TableView fx:id="GroupsInfo" layoutX="85.0" layoutY="124.0" prefHeight="249.0" prefWidth="478.0" style="-fx-background-color: #e0e0ff; -fx-border-color: #9999ff; -fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-width: 4px;">
+        <TableView fx:id="groupsInfo" layoutX="85.0" layoutY="124.0" prefHeight="249.0" prefWidth="478.0" style="-fx-background-color: #e0e0ff; -fx-border-color: #9999ff; -fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-width: 4px;">
             <columns>
                 <TableColumn prefWidth="75.0" text="ID" visible="false" />
                 <TableColumn fx:id="groupsNameclu" prefWidth="100.0" text="%groupName" />

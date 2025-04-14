@@ -60,16 +60,16 @@ public class AddNewGroupController {
     @FXML
     private Label selectedStudentslabel;
     @FXML
-    private TextField groupName_cn;
+    private TextField groupNameCn;
 
     @FXML
-    private TextField groupDes_cn;
+    private TextField groupDesCn;
 
     @FXML
-    private TextField groupName_ja;
+    private TextField groupNameJa;
 
     @FXML
-    private TextField groupDes_ja;
+    private TextField groupDesJa;
 
     private GroupDao groupDao = new GroupDao();
     private ObservableList<Student> unselectedStudents = FXCollections.observableArrayList();
@@ -90,19 +90,19 @@ public class AddNewGroupController {
 
         groupName.setOnKeyReleased(e -> {
             delayNameEn.stop();
-            delayNameEn.setOnFinished(ev -> autoTranslate(groupName.getText(), "en", groupName_cn, "zh", groupName_ja, "ja"));
+            delayNameEn.setOnFinished(ev -> autoTranslate(groupName.getText(), groupNameCn, "zh", groupNameJa, "ja"));
             delayNameEn.playFromStart();
         });
 
-        groupName_cn.setOnKeyReleased(e -> {
+        groupNameCn.setOnKeyReleased(e -> {
             delayNameZh.stop();
-            delayNameZh.setOnFinished(ev -> autoTranslate(groupName_cn.getText(), "zh", groupName, "en", groupName_ja, "ja"));
+            delayNameZh.setOnFinished(ev -> autoTranslate(groupNameCn.getText(), groupName, "en", groupNameJa, "ja"));
             delayNameZh.playFromStart();
         });
 
-        groupName_ja.setOnKeyReleased(e -> {
+        groupNameJa.setOnKeyReleased(e -> {
             delayNameJa.stop();
-            delayNameJa.setOnFinished(ev -> autoTranslate(groupName_ja.getText(), "ja", groupName, "en", groupName_cn, "zh"));
+            delayNameJa.setOnFinished(ev -> autoTranslate(groupNameJa.getText(), groupName, "en", groupNameCn, "zh"));
             delayNameJa.playFromStart();
         });
 
@@ -113,19 +113,19 @@ public class AddNewGroupController {
 
         groupDes.setOnKeyReleased(e -> {
             delayDesEn.stop();
-            delayDesEn.setOnFinished(ev -> autoTranslate(groupDes.getText(), "en", groupDes_cn, "zh", groupDes_ja, "ja"));
+            delayDesEn.setOnFinished(ev -> autoTranslate(groupDes.getText(), groupDesCn, "zh", groupDesJa, "ja"));
             delayDesEn.playFromStart();
         });
 
-        groupDes_cn.setOnKeyReleased(e -> {
+        groupDesCn.setOnKeyReleased(e -> {
             delayDesZh.stop();
-            delayDesZh.setOnFinished(ev -> autoTranslate(groupDes_cn.getText(), "zh", groupDes, "en", groupDes_ja, "ja"));
+            delayDesZh.setOnFinished(ev -> autoTranslate(groupDesCn.getText(), groupDes, "en", groupDesJa, "ja"));
             delayDesZh.playFromStart();
         });
 
-        groupDes_ja.setOnKeyReleased(e -> {
+        groupDesJa.setOnKeyReleased(e -> {
             delayDesJa.stop();
-            delayDesJa.setOnFinished(ev -> autoTranslate(groupDes_ja.getText(), "ja", groupDes, "en", groupDes_cn, "zh"));
+            delayDesJa.setOnFinished(ev -> autoTranslate(groupDesJa.getText(), groupDes, "en", groupDesCn, "zh"));
             delayDesJa.playFromStart();
         });
 
@@ -139,7 +139,7 @@ public class AddNewGroupController {
         selectedStudentsList.setItems(selectedStudents);
     }
 
-    private void autoTranslate(String sourceText, String sourceLang,
+    private void autoTranslate(String sourceText,
                                TextField target1, String target1Lang,
                                TextField target2, String target2Lang) {
         if (sourceText == null || sourceText.isBlank()) return;
@@ -183,16 +183,13 @@ public class AddNewGroupController {
             System.out.println(bundle.getString("groupNameEmpty"));
             return;
         }
-
-//        groupDao.addGroup(groupName.getText(), groupDes.getText(),"en",view.getCurrentUserId());
-//        groupDao.addGroup(groupName_cn.getText(), groupDes_cn.getText(), "zh",view.getCurrentUserId());
-//        groupDao.addGroup(groupName_ja.getText(), groupDes_ja.getText(), "ja",view.getCurrentUserId());
+        
         int groupId = groupDao.createGroup(view.getCurrentUserId());
 
         if (groupId != -1) {
             groupDao.addGroupLocalized(groupId, "en", groupName.getText(), groupDes.getText());
-            groupDao.addGroupLocalized(groupId, "zh", groupName_cn.getText(), groupDes_cn.getText());
-            groupDao.addGroupLocalized(groupId, "ja", groupName_ja.getText(), groupDes_ja.getText());
+            groupDao.addGroupLocalized(groupId, "zh", groupNameCn.getText(), groupDesCn.getText());
+            groupDao.addGroupLocalized(groupId, "ja", groupNameJa.getText(), groupDesJa.getText());
         }
 
         if (!selectedStudents.isEmpty()) {

@@ -32,10 +32,10 @@
                 <TableColumn fx:id="selectedName" prefWidth="100.0" text="%name" />
             </columns>
         </TableView>
-      <TextField fx:id="groupName_cn" layoutX="98.0" layoutY="116.0" />
-      <TextField fx:id="groupDes_cn" layoutX="357.0" layoutY="116.0" />
-      <TextField fx:id="groupName_ja" layoutX="99.0" layoutY="150.0" />
-      <TextField fx:id="groupDes_ja" layoutX="357.0" layoutY="150.0" />
+      <TextField fx:id="groupNameCn" layoutX="98.0" layoutY="116.0" />
+      <TextField fx:id="groupDesCn" layoutX="357.0" layoutY="116.0" />
+      <TextField fx:id="groupNameJa" layoutX="99.0" layoutY="150.0" />
+      <TextField fx:id="groupDesJa" layoutX="357.0" layoutY="150.0" />
       <Label layoutX="48.0" layoutY="68.0" text="EN" />
       <Label layoutX="44.0" layoutY="120.0" text="中文" />
       <Label layoutX="38.0" layoutY="154.0" text="日本語" />
