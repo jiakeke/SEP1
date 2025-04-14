@@ -3,19 +3,15 @@ package controller;
 import application.GradeBookView;
 import dao.StudentDAO;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Student;
 import util.LangContext;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import java.sql.SQLException;
@@ -56,7 +52,7 @@ public class StudentController {
     }
 
     // Handle open students
-    public void handleOpenStudents(ActionEvent open) {
+    public void handleOpenStudents() {
         titleLabel = new Label(bundle.getString("students_button"));
         titleLabel.getStyleClass().add("page-title");
         // Search bar
@@ -120,29 +116,39 @@ public class StudentController {
         view.getRootPane().setCenter(layout);
     }
 
+    private void setTextIfNotNull(Labeled node, String key) {
+        if (node != null) node.setText(bundle.getString(key));
+    }
+
+    private void setPromptIfNotNull(TextInputControl node, String key) {
+        if (node != null) node.setPromptText(bundle.getString(key));
+    }
+
     private void updateTexts() {
-        if (studentsStage != null) studentsStage.setTitle(bundle.getString("students_button"));
-        if (titleLabel != null) titleLabel.setText(bundle.getString("students_button"));
-        if (subtitleLabel != null) subtitleLabel.setText(bundle.getString("add_new_student"));
-        if (modifytitleLabel != null) modifytitleLabel.setText(bundle.getString("modify_student_title"));
+        if (studentsStage != null) studentsStage.setTitle(bundle.getString("students"));
 
-        if (searchField != null) searchField.setPromptText(bundle.getString("search"));
-        if (nameField != null) nameField.setPromptText(bundle.getString("name"));
-        if (emailField != null) emailField.setPromptText(bundle.getString("email"));
-        if (phoneField != null) phoneField.setPromptText(bundle.getString("phone"));
+        setTextIfNotNull(titleLabel, "students_button");
+        setTextIfNotNull(subtitleLabel, "add_new_student");
+        setTextIfNotNull(modifytitleLabel, "modify_student_title");
 
-        if (searchButton != null) searchButton.setText(bundle.getString("search_button"));
-        if (refreshButton != null) refreshButton.setText(bundle.getString("refresh"));
-        if (addStudentButton != null) addStudentButton.setText(bundle.getString("add_student"));
-        if (modifyStudentButton != null) modifyStudentButton.setText(bundle.getString("modify_student"));
-        if (deleteStudentButton != null) deleteStudentButton.setText(bundle.getString("delete_student"));
-        if (submitButton != null) submitButton.setText(bundle.getString("submit"));
-        if (saveButton != null) saveButton.setText(bundle.getString("save"));
+        setPromptIfNotNull(searchField, "search");
+        setPromptIfNotNull(nameField, "name");
+        setPromptIfNotNull(emailField, "email");
+        setPromptIfNotNull(phoneField, "phone");
+
+        setTextIfNotNull(searchButton, "search_button");
+        setTextIfNotNull(refreshButton, "refresh");
+        setTextIfNotNull(addStudentButton, "add_student");
+        setTextIfNotNull(modifyStudentButton, "modify_student");
+        setTextIfNotNull(deleteStudentButton, "delete_student");
+        setTextIfNotNull(submitButton, "submit");
+        setTextIfNotNull(saveButton, "save");
 
         if (nameCol != null) nameCol.setText(bundle.getString("name"));
         if (emailCol != null) emailCol.setText(bundle.getString("email"));
         if (phoneCol != null) phoneCol.setText(bundle.getString("phone"));
     }
+
 
     // Load students from database
     void loadStudents(TableView<Student> studentTable) {
@@ -198,8 +204,8 @@ public class StudentController {
                 Student newStudent = new Student(0, name, email, phone);
                 StudentDAO.registerStudent(newStudent);
                 loadStudents(studentTable);
-                //addStage.close();
-                handleOpenStudents(new ActionEvent());
+
+                handleOpenStudents();
             } catch (SQLException e) {
                 e.printStackTrace();
                 showAlert("database_error", "add_student_fail");
@@ -246,8 +252,8 @@ public class StudentController {
 
                 StudentDAO.updateStudent(student);
                 loadStudents(studentTable);
-                //editStage.close();
-                handleOpenStudents(new ActionEvent());
+
+                handleOpenStudents();
             } catch (SQLException e) {
                 e.printStackTrace();
                 showAlert("database_error", "update_student_fail");
