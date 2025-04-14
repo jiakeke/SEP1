@@ -26,10 +26,10 @@
                 <TableColumn fx:id="selectedName" prefWidth="100.0" text="%name" />
             </columns>
         </TableView>
-      <TextField fx:id="groupName_cn" layoutX="65.0" layoutY="102.0" />
-      <TextField fx:id="groupDes_cn" layoutX="341.0" layoutY="102.0" />
-      <TextField fx:id="groupName_ja" layoutX="65.0" layoutY="141.0" />
-      <TextField fx:id="groupDes_ja" layoutX="341.0" layoutY="141.0" />
+      <TextField fx:id="groupNameCn" layoutX="65.0" layoutY="102.0" />
+      <TextField fx:id="groupDesCn" layoutX="341.0" layoutY="102.0" />
+      <TextField fx:id="groupNameJa" layoutX="65.0" layoutY="141.0" />
+      <TextField fx:id="groupDesJa" layoutX="341.0" layoutY="141.0" />
       <Label layoutX="22.0" layoutY="59.0" text="EN" />
       <Label layoutX="22.0" layoutY="106.0" text="中文" />
       <Label layoutX="22.0" layoutY="145.0" text="日本語" />
