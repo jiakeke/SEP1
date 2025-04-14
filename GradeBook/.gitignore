@@ -37,3 +37,7 @@ build/
 
 ### VIM ###
 *.swp
+
+### SonarQube ###
+sonar-project.properties
+/.scannerwork
