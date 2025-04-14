@@ -37,3 +37,6 @@ build/
 
 ### VIM ###
 *.swp
+src/main/resources/config.properties
+src/main/resources/db.properties
+sonar-project.properties

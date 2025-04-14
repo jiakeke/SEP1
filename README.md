@@ -32,6 +32,9 @@ interaction.
 - [See More](docs/Diagrams.md)
 
 
+## SonarQube
+- [SonarQube](docs/SonarQube.md)
+
 ## Database
 - Put all the database modification into database.sql
 

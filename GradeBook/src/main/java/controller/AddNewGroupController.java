@@ -17,11 +17,15 @@ import util.LangContext;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 
 public class AddNewGroupController {
     private GradeBookView view;
     private  ResourceBundle bundle;
+    private static final Logger logger = LoggerFactory.getLogger(AddNewGroupController.class);
 
     public AddNewGroupController(GradeBookView view, ResourceBundle bundle) {
         this.view = view;
@@ -154,7 +158,7 @@ public class AddNewGroupController {
                     target2.setText(translated2);
                 });
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Translation failed", e);
             }
         }).start();
     }

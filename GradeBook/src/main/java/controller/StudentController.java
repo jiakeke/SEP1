@@ -21,10 +21,14 @@ import java.util.ResourceBundle;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class StudentController {
     private GradeBookView view;
     Stage studentsStage = new Stage();
     private ResourceBundle bundle;
+    private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     private Label titleLabel;
     private Label subtitleLabel;
@@ -150,7 +154,7 @@ public class StudentController {
             List<Student> students = StudentDAO.showAllStudents();
             studentTable.getItems().setAll(students);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to load students", e);
             showAlert("database_error", "load_students_fail");
         }
     }
@@ -161,7 +165,7 @@ public class StudentController {
             List<Student> students = StudentDAO.searchStudentByName(name);
             studentTable.getItems().setAll(students);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to search students", e);
             showAlert("database_error", "search_fail");
         }
     }
@@ -201,7 +205,7 @@ public class StudentController {
                 //addStage.close();
                 handleOpenStudents(new ActionEvent());
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error("Failed to add student", e);
                 showAlert("database_error", "add_student_fail");
             }
         });
@@ -249,7 +253,7 @@ public class StudentController {
                 //editStage.close();
                 handleOpenStudents(new ActionEvent());
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.error("Failed to update student", e);
                 showAlert("database_error", "update_student_fail");
             }
         });
@@ -274,7 +278,7 @@ public class StudentController {
                     StudentDAO.deleteStudent(student.getId());
                     loadStudents(studentTable);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    logger.error("Failed to delete student", e);
                     showAlert("database_error", "delete_student_fail");
                 }
             } else {

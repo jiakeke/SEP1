@@ -16,9 +16,14 @@ import util.LangContext;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 public class GroupManageController {
     private GradeBookView view;
     private  ResourceBundle bundle;
+    private static final Logger logger = LoggerFactory.getLogger(GroupManageController.class);
 
     public GroupManageController(GradeBookView view, ResourceBundle bundle) {
         this.view = view;
@@ -103,7 +108,7 @@ public class GroupManageController {
             fxmlLoader.setController(new AddNewGroupController(this.view, bundle));
             this.view.getRootPane().setCenter(fxmlLoader.load());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error loading AddNewGroup.fxml", e);
         }
     }
 
@@ -146,7 +151,7 @@ public class GroupManageController {
             fxmlLoader.setController(new GroupModifyController(this.view, selectedGroup, bundle));
             this.view.getRootPane().setCenter(fxmlLoader.load());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error loading ModifyGroupInfo.fxml", e);
         }
     }
 

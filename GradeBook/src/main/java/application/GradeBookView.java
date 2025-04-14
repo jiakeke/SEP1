@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GradeBookView extends Application {
     private Text errorLabel;
     private Label loginLabel;
@@ -39,6 +42,7 @@ public class GradeBookView extends Application {
     private String currentLang = "en";
     private ResourceBundle bundle;
     private int currentUserId;
+    private static final Logger logger = LoggerFactory.getLogger(GradeBookView.class);
 
 
     @Override
@@ -225,7 +229,7 @@ public class GradeBookView extends Application {
             loader.setController(new GroupManageController(this,getBundle()));
             root.setCenter(loader.load());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to load group.fxml", e);
         }
     }
     public void setCurrentUserId(int userId) {

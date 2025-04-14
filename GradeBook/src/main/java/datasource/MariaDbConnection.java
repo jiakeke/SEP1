@@ -7,21 +7,25 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MariaDbConnection {
 
     private static Connection conn = null;
+    private static final Logger logger = LoggerFactory.getLogger(MariaDbConnection.class);
 
     // 加载db.properties文件（从classpath读取，即src/main/resources）
     private static Properties loadDbProperties() {
         Properties props = new Properties();
         try (InputStream input = MariaDbConnection.class.getClassLoader().getResourceAsStream("db.properties")) {
             if (input == null) {
-                System.out.println("db.properties not found in classpath, will rely on environment variables or defaults.");
+                logger.warn("db.properties not found in classpath, will rely on environment variables or defaults.");
                 return props;  // 返回空的props，后续走默认值或环境变量
             }
             props.load(input);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to load db.properties", e);
         }
         return props;
     }
@@ -60,12 +64,11 @@ public class MariaDbConnection {
                 // 组装JDBC URL
                 String url = String.format("jdbc:mariadb://%s:%s/%s", dbHost, dbPort, dbName);
 
-                System.out.println("Connecting to: " + url);  // 方便排查日志
+                logger.debug("Connecting to: " + url);
                 conn = DriverManager.getConnection(url, dbUser, dbPass);
 
             } catch (SQLException e) {
-                System.out.println("Database connection failed.");
-                e.printStackTrace();
+                logger.error("Database connection failed", e);
             }
         }
         return conn;
@@ -78,7 +81,7 @@ public class MariaDbConnection {
                 conn = null;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to close database connection", e);
         }
     }
 }
