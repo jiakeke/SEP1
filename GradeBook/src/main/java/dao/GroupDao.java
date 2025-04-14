@@ -9,8 +9,12 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GroupDao {
     Connection conn = MariaDbConnection.getConnection();
+    private static final Logger logger = LoggerFactory.getLogger(GroupDao.class);
 
     // This method adds a new group to the database
     public int createGroup(int createdBy) {
@@ -25,7 +29,7 @@ public class GroupDao {
                 groupId = rs.getInt(1);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error creating group", e);
         }
 
         return groupId;
@@ -53,26 +57,16 @@ public class GroupDao {
             conn.commit();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error removing group", e);
             try {
                 conn.rollback();
             } catch (Exception rollbackEx) {
-                rollbackEx.printStackTrace();
+                logger.error("Error rolling back transaction", rollbackEx);
             }
             return false;
         }
     }
 
-    // This method returns all groups from the database
-//    public List<Group> getAllGroups() {
-//        return getGroupsByQuery("SELECT * FROM groups", null);
-//    }
-//    public List<Group> getAllGroups(String lang,) {
-//        String query = "SELECT g.id, gl.name, gl.description " +
-//                "FROM groups g JOIN group_localized gl ON g.id = gl.group_id " +
-//                "WHERE gl.lang = ?";
-//        return getGroupsByQuery(query, lang);
-//    }
     public List<Group> getAllGroupsByUser(String lang, int userId) {
         String query = "SELECT g.id, gl.name, gl.description " +
                 "FROM groups g JOIN group_localized gl ON g.id = gl.group_id " +
@@ -80,11 +74,6 @@ public class GroupDao {
         return getGroupsByQuery(query, lang, userId);
     }
 
-    // This method returns a group by its id
-//    public Group getGroupById(int id) {
-//        List<Group> groups = getGroupsByQuery("SELECT * FROM groups WHERE id = ?", id);
-//        return groups.isEmpty() ? null : groups.get(0);
-//    }
     public Group getGroupById(int id, String lang) {
         String query = "SELECT g.id, gl.name, gl.description " +
                 "FROM groups g JOIN group_localized gl ON g.id = gl.group_id " +
@@ -99,7 +88,7 @@ public class GroupDao {
                 groups.add(new Group(rs.getInt("id"), rs.getString("name"), rs.getString("description")));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error getting group by id", e);
         }
         return groups.isEmpty() ? null : groups.get(0);
     }
@@ -143,7 +132,7 @@ public class GroupDao {
             }
             stmt.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error executing update query", e);
         }
     }
 
@@ -159,7 +148,7 @@ public class GroupDao {
                 groups.add(new Group(rs.getInt("id"), rs.getString("name"), rs.getString("description")));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error getting groups by query", e);
         }
         return groups;
     }
@@ -175,7 +164,7 @@ public class GroupDao {
                 students.add(new Student(rs.getInt("id"), rs.getString("name")));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error getting students by group query", e);
         }
         return students;
     }

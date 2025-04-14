@@ -5,7 +5,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GroupManageView extends Application {
+    private static final Logger logger = LoggerFactory.getLogger(GroupManageView.class);
 
     @Override
     public void start(Stage primaryStage) {
@@ -18,7 +22,7 @@ public class GroupManageView extends Application {
             primaryStage.show();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to load FXML file", e);
         }
     }
 

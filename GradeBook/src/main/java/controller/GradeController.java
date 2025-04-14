@@ -34,10 +34,14 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GradeController {
 
     private static TableView<Map<String, Object>> gradeTable;
     private static Button exportButton;
+    private static final Logger logger = LoggerFactory.getLogger(GradeController.class);
 
     private static int currentGroupId;
     private static Stage stage;
@@ -281,7 +285,7 @@ public class GradeController {
             showInfo("Export Success", "PDF report generated successfully:\n" + filePath);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to generate PDF", e);
             showError("Export Failed", "Failed to generate PDF: " + e.getClass().getSimpleName() + " - " + e.getMessage());
         }
     }

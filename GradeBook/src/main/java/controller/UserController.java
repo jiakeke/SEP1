@@ -10,8 +10,12 @@ import model.User;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class UserController {
     private GradeBookView view;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public UserController(GradeBookView view) {
         this.view = view;
@@ -59,7 +63,7 @@ public class UserController {
                 view.showSystemInterface();
             }
         } catch (SQLException | NoSuchAlgorithmException ex) {
-            ex.printStackTrace();
+            logger.error("Error during user registration", ex);
         }
     }
 
@@ -78,7 +82,7 @@ public class UserController {
                 //System.out.println("Invalid username or password.");
             }
         } catch (SQLException | NoSuchAlgorithmException ex) {
-            ex.printStackTrace();
+            logger.error("Error during user login", ex);
         }
     }
 }

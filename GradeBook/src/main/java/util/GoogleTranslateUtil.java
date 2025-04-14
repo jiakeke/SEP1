@@ -14,8 +14,12 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GoogleTranslateUtil {
     private  static final String API_KEY;
+    private static final Logger logger = LoggerFactory.getLogger(GoogleTranslateUtil.class);
 
     static {
         String key="";
@@ -27,10 +31,10 @@ public class GoogleTranslateUtil {
                 key=prop.getProperty("google.api.key","");
 
             }else {
-                System.out.println("config.properties not found in classpath");
+                logger.warn("config.properties not found in classpath");
             }
         }catch (IOException e){
-            e.printStackTrace();
+            logger.error("Failed to load config.properties", e);
         }
         API_KEY=key;
     }
@@ -64,7 +68,7 @@ public class GoogleTranslateUtil {
             System.out.println("日文：" + translate(text, "ja"));
             System.out.println("英文：" + translate(text, "en"));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error during translation", e);
         }
     }
 }
