@@ -51,6 +51,10 @@ public class GradeController {
     private static Map<String, Object> avgRow;
     private static ResourceBundle bundle = LangContext.getBundle();
 
+    private GradeController() {
+        // Private constructor to prevent instantiation
+    }
+
     public static void showGradeEditor(GradeBookView view, int groupId, String groupName) {
         rootview = view;
         currentGroupId = groupId;
@@ -72,7 +76,6 @@ public class GradeController {
         HBox buttonContainer = new HBox(exportButton);
         buttonContainer.setAlignment(Pos.CENTER);
 
-//        exportButton.setOnAction(e -> exportToPDF());
         exportButton.setOnAction(e -> exportToPDFFromTable());
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(20, 20, 20, 20));
@@ -214,25 +217,6 @@ public class GradeController {
             showError("Database error", "Unable to update grade: " + e.getMessage());
         }
     }
-
-//    private static void handleDelete() {
-//        Map<String, Object> selectedRow = gradeTable.getSelectionModel().getSelectedItem();
-//        if (selectedRow == null) {
-//            showError("Selection error", "Please select a grade to delete.");
-//            return;
-//        }
-//
-//        int studentId = (int) selectedRow.get("studentId");
-//        int gradeTypeId = 1;
-//        double gradeValue = (double) selectedRow.getOrDefault("total", 0.0);
-//
-//        try {
-//            GradeDAO.deleteGradeByStudentAndType(studentId, currentGroupId, gradeTypeId);
-//            loadGradeData();
-//        } catch (SQLException e) {
-//            showError("Database error", "Unable to delete grade: " + e.getMessage());
-//        }
-//    }
 
     private static void updateTexts() {
         exportButton.setText(bundle.getString("export"));

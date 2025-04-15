@@ -55,11 +55,10 @@ public class UserController {
         User user = new User(0, username, password);
         try {
             UserDAO.registerUser(user);
-            System.out.println("User registered successfully!");
+            logger.info("User registered successfully");
             Integer userId = UserDAO.loginUser(username, password);
             if (userId != null) {
-                System.out.println("Login successful!");
-                //view.showSystemInterface((Stage) view.getRegisterButton().getScene().getWindow());
+                logger.info("User logged in successfully");
                 view.showSystemInterface();
             }
         } catch (SQLException | NoSuchAlgorithmException ex) {
@@ -73,13 +72,11 @@ public class UserController {
         try {
             Integer userId = UserDAO.loginUser(username, password);
             if (userId != null) {
-                System.out.println("Login successful! User ID: " + userId);
+                logger.info("Login successful! User ID: " + userId);
                 view.setCurrentUserId(userId);
                 view.showSystemInterface();
             } else {
                 view.setErrorLabel("Invalid username or password.");
-                return;
-                //System.out.println("Invalid username or password.");
             }
         } catch (SQLException | NoSuchAlgorithmException ex) {
             logger.error("Error during user login", ex);

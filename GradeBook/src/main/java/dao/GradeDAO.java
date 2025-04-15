@@ -9,9 +9,19 @@ import java.util.List;
 
 public class GradeDAO {
     private static Connection conn = MariaDbConnection.getConnection();
+    private static final String COL_ID = "id";
+    private static final String COL_GRADE = "grade";
+    private static final String COL_STUDENT_ID = "student_id";
+    private static final String COL_GROUP_ID = "group_id";
+    private static final String COL_GRADE_TYPE_ID = "grade_type_id";
+
 
     public static void setConnection(Connection conn) {
         GradeDAO.conn = conn;
+    }
+
+    private GradeDAO() {
+        // Private constructor to prevent instantiation
     }
 
     // Insert data
@@ -83,16 +93,16 @@ public class GradeDAO {
     // check all Grade
     public static List<Grade> showAllGrades() throws SQLException {
         List<Grade> grades = new ArrayList<>();
-        String query = "SELECT * FROM grades";
+        String query = "SELECT id, grade, student_id, group_id, grade_type_id FROM grades";
         try (PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 grades.add(new Grade(
-                        rs.getInt("id"),
-                        rs.getDouble("grade"),
-                        rs.getInt("student_id"),
-                        rs.getInt("group_id"),
-                        rs.getInt("grade_type_id")
+                    rs.getInt(COL_ID),
+                    rs.getDouble(COL_GRADE),
+                    rs.getInt(COL_STUDENT_ID),
+                    rs.getInt(COL_GROUP_ID),
+                    rs.getInt(COL_GRADE_TYPE_ID)
                 ));
             }
         }
@@ -102,17 +112,17 @@ public class GradeDAO {
     // check all Grade by student id
     public static List<Grade> showGradesByStudentId(int studentId) throws SQLException {
         List<Grade> grades = new ArrayList<>();
-        String query = "SELECT * FROM grades WHERE student_id = ?";
+        String query = "SELECT id, grade, student_id, group_id, grade_type_id FROM grades WHERE student_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, studentId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     grades.add(new Grade(
-                            rs.getInt("id"),
-                            rs.getDouble("grade"),
-                            rs.getInt("student_id"),
-                            rs.getInt("group_id"),
-                            rs.getInt("grade_type_id")
+                        rs.getInt(COL_ID),
+                        rs.getDouble(COL_GRADE),
+                        rs.getInt(COL_STUDENT_ID),
+                        rs.getInt(COL_GROUP_ID),
+                        rs.getInt(COL_GRADE_TYPE_ID)
                     ));
                 }
             }
@@ -123,17 +133,17 @@ public class GradeDAO {
     // check all Grade by group id
     public static List<Grade> showGradesByGroupId(int groupId) throws SQLException {
         List<Grade> grades = new ArrayList<>();
-        String query = "SELECT * FROM grades WHERE group_id = ?";
+        String query = "SELECT id, grade, student_id, group_id, grade_type_id FROM grades WHERE group_id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, groupId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     grades.add(new Grade(
-                            rs.getInt("id"),
-                            rs.getDouble("grade"),
-                            rs.getInt("student_id"),
-                            rs.getInt("group_id"),
-                            rs.getInt("grade_type_id")
+                        rs.getInt(COL_ID),
+                        rs.getDouble(COL_GRADE),
+                        rs.getInt(COL_STUDENT_ID),
+                        rs.getInt(COL_GROUP_ID),
+                        rs.getInt(COL_GRADE_TYPE_ID)
                     ));
                 }
             }

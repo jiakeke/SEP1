@@ -77,7 +77,6 @@ public class GradeBookView extends Application {
 
         usernameField = new TextField();
         usernameField.setId("usernameField");
-        //usernameField.setPromptText("Username");
         grid.add(usernameField, 1, 3);
 
         password = new Label(bundle.getString("password"));
@@ -86,7 +85,6 @@ public class GradeBookView extends Application {
 
         passwordField = new PasswordField();
         passwordField.setId("passwordField");
-        //passwordField.setPromptText("Password");
         grid.add(passwordField, 1, 4);
 
         // Buttons
@@ -160,7 +158,7 @@ public class GradeBookView extends Application {
     public void setLang(String lang) {
         this.currentLang = lang;
         this.bundle= ResourceBundle.getBundle("messages", new Locale(lang));
-        System.out.println("Language set to: " + lang.toUpperCase());
+        logger.info("Language set to: " + lang.toUpperCase());
 
     }
     public ResourceBundle getBundle() {
@@ -220,9 +218,6 @@ public class GradeBookView extends Application {
 
 
     public void openGroups() {
-        //GroupManageView groupManageView = new GroupManageView();
-        //Stage stage = new Stage();
-        //groupManageView.start(root);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/group.fxml"),getBundle());
             loader.setController(new GroupManageController(this,getBundle()));

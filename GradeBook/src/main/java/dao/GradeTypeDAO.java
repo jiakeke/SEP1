@@ -10,6 +10,10 @@ import java.util.List;
 public class GradeTypeDAO {
     private static Connection conn = MariaDbConnection.getConnection();
 
+    private GradeTypeDAO() {
+        // Private constructor to prevent instantiation
+    }
+
     public static void setConnection(Connection conn) {
         GradeTypeDAO.conn = conn;
     }
@@ -61,7 +65,7 @@ public class GradeTypeDAO {
 
     // check all GradeType
     public static List<GradeType> showAllGradeTypes() throws SQLException {
-        String query = "SELECT * FROM grade_types";
+        String query = "SELECT id, name, weight, group_id FROM grade_types";
         List<GradeType> gradeTypes = new ArrayList<>();
 
         try (PreparedStatement stmt = conn.prepareStatement(query);
@@ -81,7 +85,7 @@ public class GradeTypeDAO {
 
     // check GradeType by groupId
     public static List<GradeType> showGradeTypesByGroupId(int groupId) throws SQLException {
-        String query = "SELECT * FROM grade_types WHERE group_id = ?";
+        String query = "SELECT id, name, weight, group_id FROM grade_types WHERE group_id = ?";
         List<GradeType> gradeTypes = new ArrayList<>();
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
