@@ -32,8 +32,14 @@ interaction.
 - [See More](docs/Diagrams.md)
 
 
+## Code Review
+- [Code Review](docs/CodeReview.md)
+
 ## SonarQube
 - [SonarQube](docs/SonarQube.md)
+
+## Logging
+- [Logger](docs/Logging.md)
 
 ## Database
 - Put all the database modification into database.sql

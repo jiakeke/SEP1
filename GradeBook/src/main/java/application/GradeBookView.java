@@ -162,7 +162,6 @@ public class GradeBookView extends Application {
         this.bundle= ResourceBundle.getBundle("messages", new Locale(lang));
         System.out.println("Language set to: " + lang.toUpperCase());
 
-        //todo refresh the UI with the new language
     }
     public ResourceBundle getBundle() {
         return bundle;
