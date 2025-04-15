@@ -1,11 +1,11 @@
 # 📋 Code Review Report
 
-> **Project Name**:  Teacher’s Gradebook and Report Card System
+> **Project Name**:  Teacher’s Gradebook and Report Card System  
 > **Branch**: `main`  
 > **Commit**: `fa68e64e4be188beac30dc8a67499fa3565a05e9`  
-> **Review Date**:  Sprint 6
-> **Reviewer**: Jia Ke, Wang Qingyun, Yang Yang
-> **Tools**: SonarQube (v9.x), Java 17
+> **Review Date**:  Sprint 6  
+> **Reviewer**: Jia Ke, Wang Qingyun, Yang Yang  
+> **Tools**: SonarQube (v9.x), Java 17  
 
 ---
 
