@@ -11,7 +11,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -158,7 +157,7 @@ public class GradeController {
                             .filter(g -> g.getStudentId() == student.getId() && g.getGradeTypeId() == gt.getId())
                             .findFirst();
 
-                    double gradeValue = gradeOpt.map(Grade::getGrade).orElse(0.0);
+                    double gradeValue = gradeOpt.map(Grade::getMark).orElse(0.0);
                     row.put(gt.getName(), gradeValue);
                     total += gradeValue * (gt.getWeight() / 100.0);
                 }

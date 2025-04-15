@@ -22,7 +22,7 @@ public class GradeDAO {
 
         String query = "INSERT INTO grades (grade, student_id, group_id, grade_type_id) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setDouble(1, grade.getGrade());
+            stmt.setDouble(1, grade.getMark());
             stmt.setInt(2, grade.getStudentId());
             stmt.setInt(3, grade.getGroupId());
             stmt.setInt(4, grade.getGradeTypeId());
@@ -38,7 +38,7 @@ public class GradeDAO {
 
         String query = "UPDATE grades SET grade = ?, student_id = ?, group_id = ?, grade_type_id = ? WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setDouble(1, grade.getGrade());
+            stmt.setDouble(1, grade.getMark());
             stmt.setInt(2, grade.getStudentId());
             stmt.setInt(3, grade.getGroupId());
             stmt.setInt(4, grade.getGradeTypeId());

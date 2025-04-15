@@ -15,6 +15,10 @@ public class MariaDbConnection {
     private static Connection conn = null;
     private static final Logger logger = LoggerFactory.getLogger(MariaDbConnection.class);
 
+    private MariaDbConnection() {
+        // private constructor to prevent instantiation
+    }
+
     // 加载db.properties文件（从classpath读取，即src/main/resources）
     private static Properties loadDbProperties() {
         Properties props = new Properties();
@@ -36,30 +40,11 @@ public class MariaDbConnection {
                 Properties props = loadDbProperties();
 
                 // 优先读取环境变量，找不到再从db.properties取，最后兜底默认值
-                String dbHost = System.getenv("DB_HOST");
-                if (dbHost == null || dbHost.isBlank()) {
-                    dbHost = props.getProperty("DB_HOST", "localhost");
-                }
-
-                String dbPort = System.getenv("DB_PORT");
-                if (dbPort == null || dbPort.isBlank()) {
-                    dbPort = props.getProperty("DB_PORT", "3306");
-                }
-
-                String dbName = System.getenv("DB_NAME");
-                if (dbName == null || dbName.isBlank()) {
-                    dbName = props.getProperty("DB_NAME", "gradebook_localized");
-                }
-
-                String dbUser = System.getenv("DB_USER");
-                if (dbUser == null || dbUser.isBlank()) {
-                    dbUser = props.getProperty("DB_USER", "grade_admin");
-                }
-
-                String dbPass = System.getenv("DB_PASS");
-                if (dbPass == null || dbPass.isBlank()) {
-                    dbPass = props.getProperty("DB_PASS", "password");
-                }
+                String dbHost = getValue("DB_HOST", props, "localhost");
+                String dbPort = getValue("DB_PORT", props, "3306");
+                String dbName = getValue("DB_NAME", props, "gradebook_localized");
+                String dbUser = getValue("DB_USER", props, "grade_admin");
+                String dbPass = getValue("DB_PASS", props, "password");
 
                 // 组装JDBC URL
                 String url = String.format("jdbc:mariadb://%s:%s/%s", dbHost, dbPort, dbName);
@@ -72,6 +57,14 @@ public class MariaDbConnection {
             }
         }
         return conn;
+    }
+
+    private static String getValue(String key, Properties props, String defaultValue) {
+        String value = System.getenv(key);
+        if (value == null || value.isBlank()) {
+            value = props.getProperty(key, defaultValue);
+        }
+        return value;
     }
 
     public static void terminate() {

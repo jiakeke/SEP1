@@ -1,6 +1,5 @@
 package dao;
 
-import datasource.MariaDbConnection;
 import model.Grade;
 import org.junit.jupiter.api.*;
 
@@ -51,7 +50,7 @@ class GradeDAOTest {
         GradeDAO.registerGrade(grade);
         List<Grade> grades = GradeDAO.showAllGrades();
         assertEquals(1, grades.size());
-        assertEquals(95.0, grades.get(0).getGrade());
+        assertEquals(95.0, grades.get(0).getMark());
     }
 
     @Test
@@ -66,7 +65,7 @@ class GradeDAOTest {
         GradeDAO.updateGrade(updatedGrade);
 
         List<Grade> updatedGrades = GradeDAO.showAllGrades();
-        assertEquals(92.5, updatedGrades.get(0).getGrade());
+        assertEquals(92.5, updatedGrades.get(0).getMark());
     }
 
     @Test
@@ -90,7 +89,7 @@ class GradeDAOTest {
         GradeDAO.registerGrade(new Grade(0, 85.0, 2, 1, 1));
         List<Grade> student1Grades = GradeDAO.showGradesByStudentId(1);
         assertEquals(1, student1Grades.size());
-        assertEquals(90.0, student1Grades.get(0).getGrade());
+        assertEquals(90.0, student1Grades.get(0).getMark());
     }
 
     @AfterAll

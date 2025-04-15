@@ -57,16 +57,15 @@ public class GoogleTranslateUtil {
         String jsonResponse = response.toString();
         JSONObject jsonObject = new JSONObject(jsonResponse);
         JSONArray translations = jsonObject.getJSONObject("data").getJSONArray("translations");
-        String translatedText = translations.getJSONObject(0).getString("translatedText");
-        return translatedText;
+        return translations.getJSONObject(0).getString("translatedText");
     }
 
     public static void main(String[] args) {
         try {
             String text = "Welcome to the Grade Book!";
-            System.out.println("中文：" + translate(text, "zh"));
-            System.out.println("日文：" + translate(text, "ja"));
-            System.out.println("英文：" + translate(text, "en"));
+            logger.info("中文：" + translate(text, "zh"));
+            logger.info("日文：" + translate(text, "ja"));
+            logger.info("英文：" + translate(text, "en"));
         } catch (IOException e) {
             logger.error("Error during translation", e);
         }

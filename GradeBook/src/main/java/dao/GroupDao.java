@@ -21,7 +21,7 @@ public class GroupDao {
         String insertGroupQuery = "INSERT INTO groups (created_by) VALUES (?)";
         int groupId = -1;
 
-        try (PreparedStatement stmt = conn.prepareStatement(insertGroupQuery, PreparedStatement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = conn.prepareStatement(insertGroupQuery, java.sql.Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, createdBy);
             stmt.executeUpdate();
             var rs = stmt.getGeneratedKeys();

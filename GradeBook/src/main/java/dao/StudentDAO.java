@@ -10,6 +10,10 @@ import java.util.List;
 public class StudentDAO {
     private static Connection conn = MariaDbConnection.getConnection();
 
+    // Private constructor to prevent instantiation
+    private StudentDAO() {
+    }
+
     public static void setConnection(Connection conn) {
         StudentDAO.conn = conn;
     }
@@ -67,7 +71,7 @@ public class StudentDAO {
 
     public static List<Student> showAllStudents() throws SQLException {
         List<Student> students = new ArrayList<>();
-        String query = "SELECT * FROM students";
+        String query = "SELECT id, name, email, phone FROM students";
         try (PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
@@ -84,7 +88,7 @@ public class StudentDAO {
 
     public static List<Student> searchStudentByName(String name) throws SQLException {
         List<Student> students = new ArrayList<>();
-        String query = "SELECT * FROM students WHERE name LIKE ?";
+        String query = "SELECT id, name, email, phone FROM students WHERE name LIKE ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, "%" + name + "%");
             ResultSet rs = stmt.executeQuery();

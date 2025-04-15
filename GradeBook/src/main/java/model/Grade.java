@@ -2,14 +2,14 @@ package model;
 
 public class Grade {
     private int id;
-    private double grade;
+    private double mark;
     private int studentId;
     private int groupId;
     private int gradeTypeId;
 
-    public Grade(int id, double grade, int studentId, int groupId, int gradeTypeId) {
+    public Grade(int id, double mark, int studentId, int groupId, int gradeTypeId) {
         this.id = id;
-        this.grade = grade;
+        this.mark = mark;
         this.studentId = studentId;
         this.groupId = groupId;
         this.gradeTypeId = gradeTypeId;
@@ -19,8 +19,8 @@ public class Grade {
         return id;
     }
 
-    public double getGrade() {
-        return grade;
+    public double getMark() {
+        return mark;
     }
 
     public int getStudentId() {
@@ -39,8 +39,8 @@ public class Grade {
         this.id = id;
     }
 
-    public void setGrade(double grade) {
-        this.grade = grade;
+    public void setMark(double mark) {
+        this.mark = mark;
     }
 
     public void setStudentId(int studentId) {

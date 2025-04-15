@@ -9,6 +9,9 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class LangContext {
+    private LangContext() {
+        // Prevent instantiation
+    }
     public static final StringProperty currentLang=new SimpleStringProperty("en");
     public static final ObjectProperty<ResourceBundle> currentBundle=
             new SimpleObjectProperty<>(ResourceBundle.getBundle("messages",new Locale("en")));
