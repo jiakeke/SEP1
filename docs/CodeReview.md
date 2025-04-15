@@ -60,8 +60,10 @@
 - 🔗 [SonarQube Dashboard](http://localhost:9000/dashboard?id=gradebook&codeScope=overall)
 - 📸 Screenshots
 
-- ![SonarQube Dashboard Before](sonarqube_dashboard_before.jpg "SonarQube Dashboard Before")
-- ![SonarQube Dashboard Now](sonarqube_dashboard_now.jpg "SonarQube Dashboard Now")
+- SonarQube Dashboard Before
+![SonarQube Dashboard Before](sonarqube_dashboard_before.jpg "SonarQube Dashboard Before")
+- SonarQube Dashboard Now
+![SonarQube Dashboard Now](sonarqube_dashboard_now.jpg "SonarQube Dashboard Now")
 
 
 ---
