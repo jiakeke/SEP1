@@ -39,4 +39,7 @@ build/
 *.swp
 src/main/resources/config.properties
 src/main/resources/db.properties
+
+### SonarQube ###
 sonar-project.properties
+/.scannerwork

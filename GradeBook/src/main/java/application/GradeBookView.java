@@ -215,7 +215,7 @@ public class GradeBookView extends Application {
 
     private void openStudents() {
         StudentController studentController = new StudentController(this, getBundle());
-        studentController.handleOpenStudents(new ActionEvent());
+        studentController.handleOpenStudents();
     }
 
 
