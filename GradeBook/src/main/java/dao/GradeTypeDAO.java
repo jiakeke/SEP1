@@ -14,6 +14,10 @@ import java.util.Map;
 public class GradeTypeDAO {
     private static Connection conn = MariaDbConnection.getConnection();
 
+    private GradeTypeDAO() {
+        // Private constructor to prevent instantiation
+    }
+
     public static void setConnection(Connection conn) {
         GradeTypeDAO.conn = conn;
     }
@@ -113,10 +117,12 @@ public class GradeTypeDAO {
 
     // check all GradeType
     public static List<GradeType> showAllGradeTypes() throws SQLException {
+
 //        String query = "SELECT * FROM grade_types";
 
         //query from localizd db
         String query="select a.id,b.name,a.weight,a.group_id  from grade_types a left join grade_type_localized b on a.id=b.grade_type_id where b.lang=?";
+
         List<GradeType> gradeTypes = new ArrayList<>();
 
         try (PreparedStatement stmt = conn.prepareStatement(query);
@@ -135,10 +141,12 @@ public class GradeTypeDAO {
     }
 
     // check GradeType by groupId
+
     public static List<GradeType> showGradeTypesByGroupId(int groupId,String lang) throws SQLException {
 //        String query = "SELECT * FROM grade_types WHERE group_id = ?";
         //query from localizd db
         String query="select a.id,b.name,a.weight,a.group_id  from grade_types a left join grade_type_localized b on a.id=b.grade_type_id where a.group_id=? and b.lang=?";
+
 
         List<GradeType> gradeTypes = new ArrayList<>();
 

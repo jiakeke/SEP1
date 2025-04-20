@@ -51,6 +51,10 @@ public class GradeController {
     private static Map<String, Object> avgRow;
     private static ResourceBundle bundle = LangContext.getBundle();
 
+    private GradeController() {
+        // Private constructor to prevent instantiation
+    }
+
     public static void showGradeEditor(GradeBookView view, int groupId, String groupName) {
         rootview = view;
         currentGroupId = groupId;
@@ -73,7 +77,6 @@ public class GradeController {
         HBox buttonContainer = new HBox(exportButton);
         buttonContainer.setAlignment(Pos.CENTER);
 
-//        exportButton.setOnAction(e -> exportToPDF());
         exportButton.setOnAction(e -> exportToPDFFromTable());
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(20, 20, 20, 20));

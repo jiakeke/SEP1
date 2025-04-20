@@ -17,6 +17,7 @@ import util.LangContext;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -184,7 +185,7 @@ public class AddNewGroupController {
     @FXML
     void createNewGroup(MouseEvent event) {
         if (groupName.getText().isEmpty() || groupDes.getText().isEmpty()) {
-            System.out.println(bundle.getString("groupNameEmpty"));
+            logger.error(bundle.getString("groupNameEmpty"));
             return;
         }
         
