@@ -325,4 +325,19 @@ public class AddNewGroupController {
         this.selectedStudents = selectedStudents;
     }
 
+    public void setGroupNameCn(TextField groupNameCn) {
+        this.groupNameCn = groupNameCn;
+    }
+
+    public void setGroupDesCn(TextField groupDesCn) {
+        this.groupDesCn = groupDesCn;
+    }
+
+    public void setGroupNameJa(TextField groupNameJa) {
+        this.groupNameJa = groupNameJa;
+    }
+
+    public void setGroupDesJa(TextField groupDesJa) {
+        this.groupDesJa = groupDesJa;
+    }
 }

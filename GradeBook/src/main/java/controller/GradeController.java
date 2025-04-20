@@ -55,6 +55,7 @@ public class GradeController {
         rootview = view;
         currentGroupId = groupId;
         currentGroupName = groupName;
+
         initializeUI(LangContext.getBundle());
         loadGradeData();
 
@@ -83,7 +84,7 @@ public class GradeController {
 
     private static void loadGradeData() {
         try {
-            List<GradeType> gradeTypes = GradeTypeDAO.showGradeTypesByGroupId(currentGroupId);
+            List<GradeType> gradeTypes = GradeTypeDAO.showGradeTypesByGroupId(currentGroupId, bundle.getLocale().getLanguage());
             List<Student> students = StudentDAO.getStudentsByGroupId(currentGroupId);
 
             for (Student student : students) {
@@ -215,25 +216,6 @@ public class GradeController {
         }
     }
 
-//    private static void handleDelete() {
-//        Map<String, Object> selectedRow = gradeTable.getSelectionModel().getSelectedItem();
-//        if (selectedRow == null) {
-//            showError("Selection error", "Please select a grade to delete.");
-//            return;
-//        }
-//
-//        int studentId = (int) selectedRow.get("studentId");
-//        int gradeTypeId = 1;
-//        double gradeValue = (double) selectedRow.getOrDefault("total", 0.0);
-//
-//        try {
-//            GradeDAO.deleteGradeByStudentAndType(studentId, currentGroupId, gradeTypeId);
-//            loadGradeData();
-//        } catch (SQLException e) {
-//            showError("Database error", "Unable to delete grade: " + e.getMessage());
-//        }
-//    }
-
     private static void updateTexts() {
         exportButton.setText(bundle.getString("export"));
         nameColumn.setText(bundle.getString("name"));
@@ -271,7 +253,7 @@ public class GradeController {
 
             writer.setPageEvent(createPageEvent());
             document.open();
-
+            System.out.println("currentGroupId: " + currentGroupId+", currentGroupName: " + currentGroupName+"wokankan daodi nadao meiyou ");
             addDocumentHeader(document, currentGroupName);
 
             PdfPTable table = createPdfTableFromTableView(gradeTable);

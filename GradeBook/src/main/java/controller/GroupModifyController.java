@@ -83,11 +83,11 @@ public class GroupModifyController {
     @FXML
     private TableColumn<Student, String> unselectedName;
 
-    private GroupDao groupDao = new GroupDao();
-    private ObservableList<Student> unselectedStudents = FXCollections.observableArrayList();
-    private ObservableList<Student> selectedStudents = FXCollections.observableArrayList();
+    public GroupDao groupDao = new GroupDao();
+    public ObservableList<Student> unselectedStudents = FXCollections.observableArrayList();
+    public ObservableList<Student> selectedStudents = FXCollections.observableArrayList();
 
-    private GroupManageController groupManageController;
+    public GroupManageController groupManageController;
 
     // This method loads the group details
     public void initialize() {
@@ -170,7 +170,7 @@ public class GroupModifyController {
         selectedStudentList.setItems(selectedStudents);
     }
 
-    private void autoTranslate(String sourceText,
+    public void autoTranslate(String sourceText,
                                TextField target1, String target1Lang,
                                TextField target2, String target2Lang) {
         if (sourceText == null || sourceText.isBlank()) return;
@@ -190,7 +190,7 @@ public class GroupModifyController {
         }).start();
     }
 
-    private void updateTexts() {
+    public void updateTexts() {
         saveBtn.setText(bundle.getString("save"));
         allStudentsLabel.setText(bundle.getString("allStudents"));
         selectedStudentsLabel.setText(bundle.getString("selectedStudents"));
@@ -202,14 +202,14 @@ public class GroupModifyController {
     }
 
     // This method refreshes the table view
-    void refresh() {
+    public void refresh() {
         unSelectedStudentsList.setItems(unselectedStudents);
         selectedStudentList.setItems(selectedStudents);
     }
 
     // This method moves a student to the selected list
     @FXML
-    void moveStudentToSelectedList(MouseEvent event) {
+   public void moveStudentToSelectedList(MouseEvent event) {
         Student selectedStudent = unSelectedStudentsList.getSelectionModel().getSelectedItem();
         if (selectedStudent != null) {
             selectedStudents.add(selectedStudent);
@@ -220,7 +220,7 @@ public class GroupModifyController {
 
     // This method moves a student to the unselected list
     @FXML
-    void moveStudentToUnselectedList(MouseEvent event) {
+    public void moveStudentToUnselectedList(MouseEvent event) {
         Student selectedStudent = selectedStudentList.getSelectionModel().getSelectedItem();
         if (selectedStudent != null) {
             unselectedStudents.add(selectedStudent);
@@ -231,7 +231,7 @@ public class GroupModifyController {
 
     // This method saves the modifications
     @FXML
-    void saveModify(MouseEvent event) {
+    public void saveModify(MouseEvent event) {
         if (groupName.getText().isEmpty() || groupDes.getText().isEmpty()) {
             return;
         }
