@@ -59,6 +59,7 @@ public class GradeController {
         rootview = view;
         currentGroupId = groupId;
         currentGroupName = groupName;
+
         initializeUI(LangContext.getBundle());
         loadGradeData();
 
@@ -86,7 +87,7 @@ public class GradeController {
 
     private static void loadGradeData() {
         try {
-            List<GradeType> gradeTypes = GradeTypeDAO.showGradeTypesByGroupId(currentGroupId);
+            List<GradeType> gradeTypes = GradeTypeDAO.showGradeTypesByGroupId(currentGroupId, bundle.getLocale().getLanguage());
             List<Student> students = StudentDAO.getStudentsByGroupId(currentGroupId);
 
             for (Student student : students) {
@@ -255,7 +256,7 @@ public class GradeController {
 
             writer.setPageEvent(createPageEvent());
             document.open();
-
+            System.out.println("currentGroupId: " + currentGroupId+", currentGroupName: " + currentGroupName+"wokankan daodi nadao meiyou ");
             addDocumentHeader(document, currentGroupName);
 
             PdfPTable table = createPdfTableFromTableView(gradeTable);
