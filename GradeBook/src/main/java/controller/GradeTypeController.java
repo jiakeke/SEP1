@@ -87,7 +87,7 @@ public class GradeTypeController {
 
         // TextFields
         nameField = new TextField();
-        nameField.setPromptText("grade_type_name");
+        nameField.setPromptText("Grade Type Name");
 
         weightField = new TextField();
         weightField.setPromptText(bundle.getString("weight"));
