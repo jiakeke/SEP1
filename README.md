@@ -31,12 +31,24 @@ interaction.
 ![Project Modellling Diagram](docs/modelling-dia.png "Project Modelling Diagram")
 - [See More](docs/Diagrams.md)
 
+## Sprints Review
+- [Sprint 1 Review](1st_sprint_review_group3.pdf)
+- [Sprint 2 Review](2nd_sprint_review_group3.pdf)
+- [Sprint 3 Review](3rd_sprint_review_group3.pdf)
+- [Sprint 4 Review](4th_sprint_review_group3.pdf)
+- [Sprint 5 Review](5th_sprint_review_group3.pdf)
+- [Sprint 6 Review](6th_sprint_review_group3.pdf)
+- [Sprint 7 Review](7th_sprint_review_group3.pdf)
+
 
 ## Code Review
 - [Code Review](docs/CodeReview.md)
 
 ## SonarQube
 - [SonarQube](docs/SonarQube.md)
+
+## Testing
+- [Testing](docs/Testing.md)
 
 ## Logging
 - [Logger](docs/Logging.md)
