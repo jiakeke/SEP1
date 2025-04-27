@@ -32,13 +32,13 @@ interaction.
 - [See More](docs/Diagrams.md)
 
 ## Sprints Review
-- [Sprint 1 Review](1st_sprint_review_group3.pdf)
-- [Sprint 2 Review](2nd_sprint_review_group3.pdf)
-- [Sprint 3 Review](3rd_sprint_review_group3.pdf)
-- [Sprint 4 Review](4th_sprint_review_group3.pdf)
-- [Sprint 5 Review](5th_sprint_review_group3.pdf)
-- [Sprint 6 Review](6th_sprint_review_group3.pdf)
-- [Sprint 7 Review](7th_sprint_review_group3.pdf)
+- [Sprint 1 Review](docs/1st_sprint_review_group3.pdf)
+- [Sprint 2 Review](docs/2nd_sprint_review_group3.pdf)
+- [Sprint 3 Review](docs/3rd_sprint_review_group3.pdf)
+- [Sprint 4 Review](docs/4th_sprint_review_group3.pdf)
+- [Sprint 5 Review](docs/5th_sprint_review_group3.pdf)
+- [Sprint 6 Review](docs/6th_sprint_review_group3.pdf)
+- [Sprint 7 Review](docs/7th_sprint_review_group3.pdf)
 
 
 ## Code Review

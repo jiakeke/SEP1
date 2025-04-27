@@ -16,8 +16,8 @@
 | 9       | Entering grades into a Group                     | √          | √                | √             |
 | 10      | Export the Grades transcript to a PDF file       | √          | √                | √             |
 
-* [Detail Test Cases](docs/TestCases.xlsx)
+* [Detail Test Cases](TestCases.xlsx)
 
 
 ## Heuristic Evaluation
-*[Heuristic Evaluation](docs/heuristic_evaluation.pdf)
+*[Heuristic Evaluation](heuristic_evaluation.pdf)
