@@ -11,7 +11,7 @@
     <children>
         <TextField fx:id="groupName" alignment="CENTER" layoutX="64.0" layoutY="40.0" prefHeight="52.0" prefWidth="161.0" promptText="%groupName" style="-fx-font-size: 15px; -fx-background-radius: 8px; -fx-background-color: #e3f2fd; -fx-border-radius: 8px;" />
         <TextField fx:id="groupDes" alignment="CENTER" layoutX="342.0" layoutY="40.0" prefHeight="52.0" prefWidth="161.0" promptText="%groupDescription" style="-fx-font-size: 15px; -fx-background-radius: 8px; -fx-background-color: #e8f5e9; -fx-border-radius: 8px;" />
-        <Button fx:id="creatBtn" layoutX="234.0" layoutY="436.0" mnemonicParsing="false" onMouseClicked="#createNewGroup" style="-fx-background-color: #4CAF50; -fx-border-color: #388E3C; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-text-fill: white;" text="%create" />
+        <Button fx:id="creatBtn" layoutX="189.0" layoutY="435.0" mnemonicParsing="false" onMouseClicked="#createNewGroup" style="-fx-background-color: #4CAF50; -fx-border-color: #388E3C; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-text-fill: white;" text="%create" />
         <Label fx:id="allStudentslabel" layoutX="114.0" layoutY="174.0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333333; -fx-alignment: center;" text="%allStudents" />
         <Label fx:id="selectedStudentslabel" layoutX="364.0" layoutY="174.0" style="-fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: #333333; -fx-font-size: 12px;" text="%selectedStudents" />
         <TableView fx:id="unSelectedStudentsList" layoutX="53.0" layoutY="198.0" onMouseClicked="#moveStudentToSelectedList" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #f0f0f0; -fx-border-color: #cccccc; -fx-background-radius: 8px; -fx-border-radius: 8px; -fx-border-width: 4px;">
@@ -33,6 +33,6 @@
       <Label layoutX="22.0" layoutY="59.0" text="EN" />
       <Label layoutX="22.0" layoutY="106.0" text="中文" />
       <Label layoutX="22.0" layoutY="145.0" text="日本語" />
-      <Button fx:id="cancelButton" layoutX="341.0" layoutY="436.0" mnemonicParsing="false" onMouseClicked="#cancelNewGroup" style="-fx-background-color: #4CAF50; -fx-border-color: #388E3C; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-text-fill: white;" text="%cancel" />
+      <Button fx:id="cancelButton" layoutX="296.0" layoutY="435.0" mnemonicParsing="false" onMouseClicked="#cancelNewGroup" style="-fx-background-color: #4CAF50; -fx-border-color: #388E3C; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-text-fill: white;" text="%cancel" />
     </children>
 </Pane>
