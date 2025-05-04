@@ -7,6 +7,7 @@ import com.itextpdf.text.pdf.*;
 import dao.GradeDAO;
 import dao.GradeTypeDAO;
 import dao.StudentDAO;
+import dao.GroupDao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -20,6 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import model.Group;
 import model.Grade;
 import model.GradeType;
 import model.Student;
@@ -28,6 +30,7 @@ import util.LangContext;
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -44,7 +47,7 @@ public class GradeController {
 
     private static int currentGroupId;
     private static Stage stage;
-    private static String currentGroupName;
+    private static Group currentGroup;
     private static GradeBookView rootview;
     private static TableColumn<Map<String, Object>, String> nameColumn;
     private static TableColumn<Map<String, Object>, Double> totalColumn;
@@ -55,10 +58,10 @@ public class GradeController {
         // Private constructor to prevent instantiation
     }
 
-    public static void showGradeEditor(GradeBookView view, int groupId, String groupName) {
+    public static void showGradeEditor(GradeBookView view, Group group) {
         rootview = view;
-        currentGroupId = groupId;
-        currentGroupName = groupName;
+        currentGroupId = group.getId();
+        currentGroup = group;
 
         initializeUI(LangContext.getBundle());
         loadGradeData();
@@ -103,7 +106,7 @@ public class GradeController {
 
             nameColumn = new TableColumn<>(bundle.getString("name"));
             nameColumn.setCellValueFactory(cellData ->
-                    new javafx.beans.property.SimpleStringProperty((String) cellData.getValue().get("name"))
+                    new javafx.beans.property.SimpleStringProperty((String) cellData.getValue().get(bundle.getString("name")))
             );
             gradeTable.getColumns().add(nameColumn);
 
@@ -153,7 +156,7 @@ public class GradeController {
             for (Student student : students) {
                 Map<String, Object> row = new HashMap<>();
                 row.put("studentId", student.getId());
-                row.put("name", student.getName());
+                row.put(bundle.getString("name"), student.getName());
 
                 double total = 0;
                 for (GradeType gt : gradeTypes) {
@@ -165,14 +168,14 @@ public class GradeController {
                     row.put(gt.getName(), gradeValue);
                     total += gradeValue * (gt.getWeight() / 100.0);
                 }
-                row.put("total", Double.parseDouble(String.format("%.2f", total)));
+                row.put(bundle.getString("total"), Double.parseDouble(String.format("%.2f", total)));
                 tableData.add(row);
             }
 
             // Calculate average grades
             if (!students.isEmpty()) {
                 avgRow = new HashMap<>();
-                avgRow.put("name", bundle.getString("average"));
+                avgRow.put(bundle.getString("name"), bundle.getString("average"));
 
                 for (GradeType gt : gradeTypes) {
                     double sum = 0;
@@ -192,12 +195,12 @@ public class GradeController {
 
                 double totalSum = 0;
                 for (Map<String, Object> row : tableData) {
-                    Object totalObj = row.get("total");
+                    Object totalObj = row.get(bundle.getString("total"));
                     if (totalObj instanceof Double) {
                         totalSum += (Double) totalObj;
                     }
                 }
-                avgRow.put("total", Double.parseDouble(String.format("%.2f", students.size() > 0 ? totalSum / students.size() : 0.0)));
+                avgRow.put(bundle.getString("total"), Double.parseDouble(String.format("%.2f", students.size() > 0 ? totalSum / students.size() : 0.0)));
 
                 tableData.add(avgRow);
             }
@@ -224,8 +227,20 @@ public class GradeController {
         nameColumn.setText(bundle.getString("name"));
         totalColumn.setText(bundle.getString("total"));
         avgRow = new HashMap<>();
-        avgRow.put("name", bundle.getString("average"));
+        avgRow.put(bundle.getString("name"), bundle.getString("average"));
         loadGradeData();
+    }
+
+    public static Font getFont(String fontName, int size) {
+        try {
+            String fontPath = "fonts/NotoSansSC-Regular.ttf";
+            BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font font = new Font(baseFont, size);
+            return font;
+        } catch (Exception e) {
+            logger.error("Font registration failed", e);
+        }
+        return null;
     }
 
     public static void exportToPDFFromTable() {
@@ -235,8 +250,9 @@ public class GradeController {
         }
 
         // set default file name
+        Group currentGroup = new GroupDao().getGroupById(currentGroupId, LangContext.currentLang.get());
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String defaultFileName = "Group_" + currentGroupName + "_Table_Report_" + timestamp + ".pdf";
+        String defaultFileName = "Group_" + currentGroup.getName() + "_Table_Report_" + timestamp + ".pdf";
 
         // user selects folder
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -256,8 +272,7 @@ public class GradeController {
 
             writer.setPageEvent(createPageEvent());
             document.open();
-            System.out.println("currentGroupId: " + currentGroupId+", currentGroupName: " + currentGroupName+"wokankan daodi nadao meiyou ");
-            addDocumentHeader(document, currentGroupName);
+            addDocumentHeader(document, currentGroup.getName());
 
             PdfPTable table = createPdfTableFromTableView(gradeTable);
             document.add(table);
@@ -278,7 +293,8 @@ public class GradeController {
     // this method is used to create a footer for the pdf
     public static PdfPageEventHelper createPageEvent() {
         return new PdfPageEventHelper() {
-            Font footerFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
+            //Font footerFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
+            Font footerFont = getFont("Regular", 10);
 
             @Override
             public void onEndPage(PdfWriter writer, Document document) {
@@ -289,7 +305,7 @@ public class GradeController {
                         document.left(), document.top() + 20, 0);
 
                 ColumnText.showTextAligned(canvas, Element.ALIGN_CENTER,
-                        new Phrase(String.format("Page %d", writer.getPageNumber()), footerFont),
+                        new Phrase(String.format(bundle.getString("page_number"), writer.getPageNumber()), footerFont),
                         (document.right() + document.left()) / 2, document.bottom() - 20, 0);
             }
         };
@@ -297,13 +313,15 @@ public class GradeController {
 
     // this method is used to add a header to the pdf
     public static void addDocumentHeader(Document document, String groupName) throws DocumentException {
-        Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
-        document.add(new Paragraph("Grade Report: " + groupName, titleFont));
+        //Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+        Font titleFont = getFont("Bold", 18);
+        document.add(new Paragraph(bundle.getString("grade_report") + ": " + groupName, titleFont));
         document.add(Chunk.NEWLINE);
 
         String exportTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        Font timeFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
-        document.add(new Paragraph("Exported on: " + exportTime, timeFont));
+        //Font timeFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
+        Font timeFont = getFont("Regular", 10);
+        document.add(new Paragraph(bundle.getString("export_on") + ": " + exportTime, timeFont));
         document.add(Chunk.NEWLINE);
     }
 
@@ -319,7 +337,8 @@ public class GradeController {
         table.setWidths(columnWidths);
 
         // 表头（灰底+加粗+居中）
-        Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+        //Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+        Font headerFont = getFont("Bold", 12);
         for (TableColumn<Map<String, Object>, ?> column : tableView.getColumns()) {
             PdfPCell headerCell = new PdfPCell(new Phrase(column.getText(), headerFont));
             headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -329,12 +348,13 @@ public class GradeController {
         }
 
         // 数据行
+        Font cellFont = getFont("Regular", 12);
         for (Map<String, Object> row : tableView.getItems()) {
             for (TableColumn<Map<String, Object>, ?> column : tableView.getColumns()) {
                 String columnName = column.getText();
                 Object cellValue = getCellValueIgnoreCase(row, columnName);
                 String cellText = formatCellValue(cellValue);
-                PdfPCell cell = new PdfPCell(new Phrase(cellText));
+                PdfPCell cell = new PdfPCell(new Phrase(cellText, cellFont));
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cell.setPadding(5);
                 table.addCell(cell);

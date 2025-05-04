@@ -92,7 +92,6 @@ public class GroupManageController {
         groupDao.getAllGroupsByUser(LangContext.currentLang.get(),view.getCurrentUserId()).forEach(group ->
             groupInfoList.add(group)
         );
-        System.out.println("GroupManageController: "+view.getCurrentLang());
         groupsInfo.setItems(groupInfoList);
 
     }
@@ -174,7 +173,7 @@ public class GroupManageController {
             showError("Selection error", "Please select a Group first.");
             return;
         }
-        GradeController.showGradeEditor(this.view, selectedGroup.getId(), selectedGroup.getName());
+        GradeController.showGradeEditor(this.view, selectedGroup);
     }
 
     // This method is shown when an error occurs
