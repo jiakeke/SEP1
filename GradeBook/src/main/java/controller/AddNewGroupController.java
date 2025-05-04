@@ -37,6 +37,9 @@ public class AddNewGroupController {
     private Button creatBtn;
 
     @FXML
+    private Button cancelButton;
+
+    @FXML
     private TextField groupDes;
 
     @FXML
@@ -167,6 +170,7 @@ public class AddNewGroupController {
 
     private void updateTexts() {
         creatBtn.setText(bundle.getString("create"));
+        cancelButton.setText(bundle.getString("cancel"));
         groupName.setPromptText(bundle.getString("groupName"));
         groupDes.setPromptText(bundle.getString("groupDescription"));
         selectedName.setText(bundle.getString("name"));
@@ -205,6 +209,11 @@ public class AddNewGroupController {
             }
         }
 
+        this.view.openGroups();
+    }
+
+    @FXML
+    void cancelNewGroup(MouseEvent event) {
         this.view.openGroups();
     }
 

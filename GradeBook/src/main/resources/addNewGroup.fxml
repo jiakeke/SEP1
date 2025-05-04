@@ -33,5 +33,6 @@
       <Label layoutX="22.0" layoutY="59.0" text="EN" />
       <Label layoutX="22.0" layoutY="106.0" text="中文" />
       <Label layoutX="22.0" layoutY="145.0" text="日本語" />
+      <Button fx:id="cancelButton" layoutX="341.0" layoutY="436.0" mnemonicParsing="false" onMouseClicked="#cancelNewGroup" style="-fx-background-color: #4CAF50; -fx-border-color: #388E3C; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8px 16px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-cursor: hand; -fx-text-fill: white;" text="%cancel" />
     </children>
 </Pane>

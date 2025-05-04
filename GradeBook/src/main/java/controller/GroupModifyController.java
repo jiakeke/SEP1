@@ -57,6 +57,9 @@ public class GroupModifyController {
     private Button saveBtn;
 
     @FXML
+    private Button cancelButton;
+
+    @FXML
     private Label allStudentsLabel;
 
     @FXML
@@ -192,6 +195,7 @@ public class GroupModifyController {
 
     public void updateTexts() {
         saveBtn.setText(bundle.getString("save"));
+        cancelButton.setText(bundle.getString("cancel"));
         allStudentsLabel.setText(bundle.getString("allStudents"));
         selectedStudentsLabel.setText(bundle.getString("selectedStudents"));
         topLabel.setText(bundle.getString("groupEdit"));
@@ -243,6 +247,11 @@ public class GroupModifyController {
             groupDao.addStudentToGroup(group.getId(), student.getId());
         }
 
+        this.view.openGroups();
+    }
+
+    @FXML
+    public void cancelModify(MouseEvent event) {
         this.view.openGroups();
     }
 

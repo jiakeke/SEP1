@@ -39,6 +39,7 @@ public class StudentController {
     private Button modifyStudentButton;
     private Button deleteStudentButton;
     private Button submitButton;
+    private Button cancelButton;
     private Button saveButton;
     private TableColumn<Student, String> nameCol;
     private TableColumn<Student, String> emailCol;
@@ -146,6 +147,7 @@ public class StudentController {
         setTextIfNotNull(modifyStudentButton, "modify_student");
         setTextIfNotNull(deleteStudentButton, "delete_student");
         setTextIfNotNull(submitButton, "submit");
+        setTextIfNotNull(cancelButton, "cancel");
         setTextIfNotNull(saveButton, "save");
 
         if (nameCol != null) nameCol.setText(bundle.getString("name"));
@@ -194,6 +196,7 @@ public class StudentController {
         phoneField.setPromptText(bundle.getString("phone"));
 
         submitButton = new Button(bundle.getString("submit"));
+        cancelButton = new Button(bundle.getString("cancel"));
         submitButton.setId("submit-button");
         submitButton.setOnAction(event -> {
             try {
@@ -215,9 +218,17 @@ public class StudentController {
                 showAlert("database_error", "add_student_fail");
             }
         });
+        // Cancel button action, go back to student list
+        cancelButton.setOnAction(event -> {
+            handleOpenStudents();
+        });
 
         submitButton.getStyleClass().add("submit-button");
-        HBox submitButtonContainer = new HBox(submitButton);
+        cancelButton.getStyleClass().add("submit-button");
+
+        HBox submitButtonContainer = new HBox(submitButton, cancelButton);
+        // add spacing to the buttons
+        submitButtonContainer.setSpacing(10);
         submitButtonContainer.setAlignment(Pos.CENTER);
         VBox layout = new VBox(10, subtitleLabel, nameField, emailField, phoneField, submitButtonContainer);
         layout.setPadding(new Insets(20, 20, 20, 20));
@@ -240,6 +251,7 @@ public class StudentController {
         phoneField.setPromptText(bundle.getString("phone"));
 
         saveButton = new Button(bundle.getString("save"));
+        cancelButton = new Button(bundle.getString("cancel"));
         saveButton.setId("save-button");
         saveButton.setOnAction(event -> {
             try {
@@ -263,9 +275,16 @@ public class StudentController {
                 showAlert("database_error", "update_student_fail");
             }
         });
+        // Cancel button action, go back to student list
+        cancelButton.setOnAction(event -> {
+            handleOpenStudents();
+        });
 
         saveButton.getStyleClass().add("save-button");
-        HBox saveButtonContainer = new HBox(saveButton);
+        cancelButton.getStyleClass().add("save-button");
+        HBox saveButtonContainer = new HBox(saveButton, cancelButton);
+        // add spacing to the buttons
+        saveButtonContainer.setSpacing(10);
         saveButtonContainer.setAlignment(Pos.CENTER);
         VBox layout = new VBox(10, modifytitleLabel, nameField, emailField, phoneField, saveButtonContainer);
         layout.setPadding(new Insets(20, 20, 20, 20));
