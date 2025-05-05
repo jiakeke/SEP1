@@ -1,225 +1,148 @@
 package controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
-
 import dao.GroupDao;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import model.Group;
 import model.Student;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+import application.GradeBookView;
 
 public class GroupModifyControllerTest {
 
-    // 自定义 DummyStage，用于记录 hide() 是否被调用
-    public static class DummyStage extends Stage {
-        private boolean hidden = false;
-        @Override
-        public void hide() {
-            hidden = true;
-            super.hide();
-        }
-        public boolean isHidden() {
-            return hidden;
-        }
-    }
-
     private GroupModifyController controller;
-    private GroupDao mockGroupDao;
-    private GroupManageController mockGroupManageController;
-
-    // 模拟 FXML 控件
-    private TextField groupName;
-    private TextField groupDes;
-    private Button saveBtn;
-    private TableView<Student> selectedStudentList;
-    private TableView<Student> unSelectedStudentsList;
-    private TableColumn<Student, Integer> selectedId;
-    private TableColumn<Student, String> selectedName;
-    private TableColumn<Student, Integer> unselectedId;
-    private TableColumn<Student, String> unselectedName;
-
-    // 用于测试 saveModify() 时窗口隐藏调用的 dummyStage（DummyStage 类型）
-    private DummyStage dummyStage;
-
-    // 用于测试的 Group 对象
-    private Group dummyGroup;
-
-    @BeforeAll
-    public static void initJFX() throws Exception {
-        new JFXPanel();
-        Thread.sleep(500);
-    }
+    private GroupDao mockDao;
+    private Group mockGroup;
+    private ResourceBundle mockBundle;
+    private GradeBookView mockView;
 
     @BeforeEach
-    public void setUp() throws Exception {
-        MockitoAnnotations.openMocks(this);
-        controller = new GroupModifyController();
+    public void setup() {
+        // 初始化 JavaFX 环境
+        new JFXPanel();
 
-        // 模拟 DAO 和 GroupManageController 依赖
-        mockGroupDao = mock(GroupDao.class);
-        controller.setGroupDao(mockGroupDao);
-        mockGroupManageController = mock(GroupManageController.class);
+        mockDao = mock(GroupDao.class);
+        mockGroup = new Group(1, "Test Group", "Description");
+        mockBundle = ResourceBundle.getBundle("messages"); // 确保 lang_en 存在
+        mockView = mock(GradeBookView.class);
 
-        // 构造一个 dummy Group 用于测试 loadGroupDetails()
-        dummyGroup = new Group(1, "TestGroup", "TestDesc");
+        controller = new GroupModifyController(mockView, mockGroup, mockBundle);
+        controller.groupDao = mockDao;
 
-        // 创建控件
-        groupName = new TextField();
-        groupDes = new TextField();
-        saveBtn = new Button();
-        selectedStudentList = new TableView<>();
-        unSelectedStudentsList = new TableView<>();
-        selectedId = new TableColumn<>();
-        selectedName = new TableColumn<>();
-        unselectedId = new TableColumn<>();
-        unselectedName = new TableColumn<>();
+        // 初始化 JavaFX 控件
+        controller.setGroupName(new TextField());
+        controller.setGroupDes(new TextField());
+        controller.setGroupNameCn(new TextField());
+        controller.setGroupDesCn(new TextField());
+        controller.setGroupNameJa(new TextField());
+        controller.setGroupDesJa(new TextField());
+        controller.setSaveBtn(new Button());
+        controller.setCancelButton(new Button());
+        controller.setAllStudentsLabel(new Label());
+        controller.setSelectedStudentsLabel(new Label());
+        controller.setTopLabel(new Label());
+        controller.setUnselectedId(new TableColumn<>());
+        controller.setUnselectedName(new TableColumn<>());
+        controller.setSelectedId(new TableColumn<>());
+        controller.setSelectedName(new TableColumn<>());
+        controller.setUnSelectedStudentsList(new TableView<>());
+        controller.setSelectedStudentList(new TableView<>());
 
-        // 注入控件到 controller
-        controller.setGroupName(groupName);
-        controller.setGroupDes(groupDes);
-        controller.setSaveBtn(saveBtn);
-        controller.setSelectedStudentList(selectedStudentList);
-        controller.setUnSelectedStudentsList(unSelectedStudentsList);
-        controller.setSelectedId(selectedId);
-        controller.setSelectedName(selectedName);
-        controller.setUnselectedId(unselectedId);
-        controller.setUnselectedName(unselectedName);
-
-        // 初始化内部 ObservableList
         controller.setUnselectedStudents(FXCollections.observableArrayList());
         controller.setSelectedStudents(FXCollections.observableArrayList());
-        unSelectedStudentsList.setItems(controller.getUnselectedStudents());
-        selectedStudentList.setItems(controller.getSelectedStudents());
-
-        // 设置 dummyStage（必须在 FX 线程中创建）
-        setUpDummyStage();
-
-        // 模拟 DAO 方法，供 loadGroupDetails() 调用
-        when(mockGroupDao.getGroupById(dummyGroup.getId()))
-                .thenReturn(new Group(dummyGroup.getId(), "TestGroup", "TestDesc"));
-        when(mockGroupDao.getStudentsNotInGroup(dummyGroup.getId()))
-                .thenReturn(Arrays.asList(new Student(2, "StuNotIn")));
-        when(mockGroupDao.getStudentsInGroup(dummyGroup.getId()))
-                .thenReturn(Arrays.asList(new Student(1, "StuIn")));
-
-        // 调用 setGroupManageController() 触发 loadGroupDetails()
-        controller.setGroupManageController(mockGroupManageController, dummyGroup);
-    }
-
-    // 在 FX 线程中创建 dummyStage，并将 saveBtn 包含在 VBox 中，确保 saveBtn.getScene().getWindow() 返回 dummyStage
-    private void setUpDummyStage() throws Exception {
-        CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(() -> {
-            try {
-                VBox root = new VBox(saveBtn);
-                Scene scene = new Scene(root);
-                dummyStage = new DummyStage();
-                dummyStage.setScene(scene);
-                dummyStage.show(); // 显示窗口，确保 scene.getWindow() 返回 dummyStage
-            } finally {
-                latch.countDown();
-            }
-        });
-        assertTrue(latch.await(15, TimeUnit.SECONDS), "FX task did not complete in time");
-    }
-
-    @Test
-    public void testLoadGroupDetails() {
-        // loadGroupDetails() 已在 setGroupManageController() 调用时执行
-        assertEquals("TestGroup", groupName.getText());
-        assertEquals("TestDesc", groupDes.getText());
-        // 根据模拟 DAO，未选中学生列表和选中学生列表各有1条数据
-        assertEquals(1, controller.getUnselectedStudents().size());
-        assertEquals(1, controller.getSelectedStudents().size());
-        assertEquals(controller.getUnselectedStudents(), unSelectedStudentsList.getItems());
-        assertEquals(controller.getSelectedStudents(), selectedStudentList.getItems());
     }
 
     @Test
     public void testMoveStudentToSelectedList() {
-        Student student = new Student(3, "Stu3");
-        controller.getUnselectedStudents().add(student);
-        unSelectedStudentsList.getSelectionModel().select(student);
+        Student s = new Student(1, "John");
+        controller.getUnselectedStudents().add(s);
+        controller.getUnSelectedStudentsList().getItems().add(s);
+        controller.getUnSelectedStudentsList().getSelectionModel().select(s);
 
-        controller.moveStudentToSelectedList(null);
+        controller.moveStudentToSelectedList(mock(MouseEvent.class));
 
-        assertTrue(controller.getSelectedStudents().contains(student));
-        assertFalse(controller.getUnselectedStudents().contains(student));
+        assertEquals(0, controller.getUnselectedStudents().size());
+        assertEquals(1, controller.getSelectedStudents().size());
     }
 
     @Test
     public void testMoveStudentToUnselectedList() {
-        Student student = new Student(3, "Stu3");
-        controller.getSelectedStudents().add(student);
-        selectedStudentList.getSelectionModel().select(student);
+        Student s = new Student(2, "Alice");
+        controller.getSelectedStudents().add(s);
+        controller.getSelectedStudentList().getItems().add(s);
+        controller.getSelectedStudentList().getSelectionModel().select(s);
 
-        controller.moveStudentToUnselectedList(null);
+        controller.moveStudentToUnselectedList(mock(MouseEvent.class));
 
-        assertTrue(controller.getUnselectedStudents().contains(student));
-        assertFalse(controller.getSelectedStudents().contains(student));
+        assertEquals(1, controller.getUnselectedStudents().size());
+        assertEquals(0, controller.getSelectedStudents().size());
     }
 
     @Test
-    public void testSaveModify_EmptyFields() throws Exception {
-        groupName.setText("");
-        groupDes.setText("");
-        CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(() -> {
-            try {
-                controller.saveModify(null);
-            } finally {
-                latch.countDown();
-            }
-        });
-        assertTrue(latch.await(15, TimeUnit.SECONDS));
-        verify(mockGroupDao, never()).updateGroup(anyInt(), anyString(), anyString());
+    public void testSaveModify() {
+        controller.getGroupName().setText("Updated Name");
+        controller.getGroupDes().setText("Updated Description");
+
+        Student s1 = new Student(10, "S1");
+        Student s2 = new Student(11, "S2");
+        controller.getSelectedStudents().addAll(s1, s2);
+
+        controller.saveModify(mock(MouseEvent.class));
+
+        verify(mockDao).updateGroup(mockGroup.getId(), "Updated Name", "Updated Description", mockView.getCurrentLang());
+        verify(mockDao).deleteGroupStudents(mockGroup.getId());
+        verify(mockDao).addStudentToGroup(mockGroup.getId(), s1.getId());
+        verify(mockDao).addStudentToGroup(mockGroup.getId(), s2.getId());
+        verify(mockView).openGroups();
     }
 
     @Test
-    public void testSaveModify_Success() throws Exception {
-        groupName.setText("ModifiedGroup");
-        groupDes.setText("ModifiedDesc");
-        Student student = new Student(4, "Stu4");
-        controller.getSelectedStudents().add(student);
+    public void testSaveModify_missingFields_shouldNotSave() {
+        controller.getGroupName().setText("");
+        controller.getGroupDes().setText("");
 
-        CountDownLatch latch = new CountDownLatch(1);
-        Platform.runLater(() -> {
-            try {
-                controller.saveModify(null);
-            } finally {
-                latch.countDown();
-            }
-        });
-        assertTrue(latch.await(15, TimeUnit.SECONDS));
+        controller.saveModify(mock(MouseEvent.class));
 
-        verify(mockGroupDao).updateGroup(dummyGroup.getId(), "ModifiedGroup", "ModifiedDesc");
-        verify(mockGroupDao).deleteGroupStudents(dummyGroup.getId());
-        verify(mockGroupDao).addStudentToGroup(dummyGroup.getId(), student.getId());
-        verify(mockGroupManageController).initialize();
+        verify(mockDao, never()).updateGroup(anyInt(), anyString(), anyString(), anyString());
+    }
 
-        // 验证窗口关闭调用：saveBtn.getScene().getWindow() 应返回 dummyStage (DummyStage 类型)
-        Stage window = (Stage) saveBtn.getScene().getWindow();
-        // 由于我们使用 DummyStage 重写了 hide()，直接判断其标志
-        assertTrue(((DummyStage) window).isHidden(), "Window should be hidden");
+    @Test
+    public void testCancelModify() {
+        controller.cancelModify(mock(MouseEvent.class));
+        verify(mockView).openGroups();
+    }
+
+    @Test
+    public void testInitialize_setsGroupFields() {
+        Group groupEN = new Group(1, "GroupEN", "DescEN");
+        Group groupCN = new Group(1, "组CN", "描述CN");
+        Group groupJA = new Group(1, "グループJA", "説明JA");
+        List<Student> inGroup = Arrays.asList(new Student(1, "Tom"));
+        List<Student> notInGroup = Arrays.asList(new Student(2, "Jerry"));
+
+        when(mockDao.getGroupById(1, "en")).thenReturn(groupEN);
+        when(mockDao.getGroupById(1, "zh")).thenReturn(groupCN);
+        when(mockDao.getGroupById(1, "ja")).thenReturn(groupJA);
+        when(mockDao.getStudentsInGroup(1)).thenReturn(inGroup);
+        when(mockDao.getStudentsNotInGroup(1)).thenReturn(notInGroup);
+
+        controller.initialize();
+
+        assertEquals("GroupEN", controller.getGroupName().getText());
+        assertEquals("组CN", controller.getGroupNameCn().getText());
+        assertEquals("グループJA", controller.getGroupNameJa().getText());
+
+        assertEquals(1, controller.getSelectedStudents().size());
+        assertEquals(1, controller.getUnselectedStudents().size());
     }
 }

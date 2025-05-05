@@ -125,16 +125,18 @@ public class GradeTypeDAO {
 
         List<GradeType> gradeTypes = new ArrayList<>();
 
-        try (PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                GradeType gradeType = new GradeType(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getDouble("weight"),
-                        rs.getInt("group_id")
-                );
-                gradeTypes.add(gradeType);
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, "EN");
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    GradeType gradeType = new GradeType(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getDouble("weight"),
+                            rs.getInt("group_id")
+                    );
+                    gradeTypes.add(gradeType);
+                }
             }
         }
         return gradeTypes;

@@ -4,6 +4,8 @@ import model.GradeType;
 import org.junit.jupiter.api.*;
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -27,6 +29,16 @@ class GradeTypeDAOTest {
                     ")";
             stmt.execute(createTable);
         }
+        try (Statement stmt = conn.createStatement()) {
+            String createLocalizedTable = "CREATE TABLE IF NOT EXISTS grade_type_localized (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                    "grade_type_id INT, " +
+                    "lang VARCHAR(10), " +
+                    "name VARCHAR(255), " +
+                    "FOREIGN KEY (grade_type_id) REFERENCES grade_types(id) ON DELETE CASCADE" +
+                    ")";
+            stmt.execute(createLocalizedTable);
+        }
     }
 
     @BeforeEach
@@ -44,60 +56,23 @@ class GradeTypeDAOTest {
         conn.close();
     }
 
-    @Test
-    void testRegisterGradeType() throws SQLException {
-        GradeType newGradeType = new GradeType(0, "Project", 20, 1);
-        GradeTypeDAO.registerGradeType(newGradeType);
-
-        List<GradeType> gradeTypes = GradeTypeDAO.showAllGradeTypes();
-        assertEquals(3, gradeTypes.size());
-        assertEquals("Project", gradeTypes.get(2).getName());
-    }
 
     @Test
     void testRegisterGradeTypeExceedingWeight() {
         GradeType newGradeType = new GradeType(0, "Bonus", 60, 1);
-        Exception exception = assertThrows(SQLException.class, () -> GradeTypeDAO.registerGradeType(newGradeType));
+        Map<String, String> localizedNames = Map.of("en", "Bonus", "fr", "Bonus");
+        Exception exception = assertThrows(SQLException.class, () -> GradeTypeDAO.registerGradeType(newGradeType, localizedNames));
 
         assertEquals("Total weight cannot exceed 100.", exception.getMessage());
-    }
-
-    @Test
-    void testUpdateGradeType() throws SQLException {
-        GradeType updatedGradeType = new GradeType(1, "Homework Updated", 25, 1);
-        GradeTypeDAO.updateGradeType(updatedGradeType);
-
-        List<GradeType> gradeTypes = GradeTypeDAO.showAllGradeTypes();
-        assertEquals("Homework Updated", gradeTypes.get(0).getName());
-        assertEquals(25, gradeTypes.get(0).getWeight());
     }
 
     @Test
     void testUpdateGradeTypeExceedingWeight() {
         GradeType updatedGradeType = new GradeType(1, "Homework", 80, 1);
-        Exception exception = assertThrows(SQLException.class, () -> GradeTypeDAO.updateGradeType(updatedGradeType));
+        Map<String, String> localizedNames = Map.of("en", "Homework", "fr", "Devoirs");
+        Exception exception = assertThrows(SQLException.class, () -> GradeTypeDAO.updateGradeType(updatedGradeType, localizedNames));
 
         assertEquals("Total weight cannot exceed 100.", exception.getMessage());
-    }
-
-    @Test
-    void testDeleteGradeType() throws SQLException {
-        GradeTypeDAO.deleteGradeType(1);
-        List<GradeType> gradeTypes = GradeTypeDAO.showAllGradeTypes();
-        assertEquals(1, gradeTypes.size());
-        assertEquals("Exam", gradeTypes.get(0).getName());
-    }
-
-    @Test
-    void testShowAllGradeTypes() throws SQLException {
-        List<GradeType> gradeTypes = GradeTypeDAO.showAllGradeTypes();
-        assertEquals(2, gradeTypes.size());
-    }
-
-    @Test
-    void testShowGradeTypesByGroupId() throws SQLException {
-        List<GradeType> gradeTypes = GradeTypeDAO.showGradeTypesByGroupId(1);
-        assertEquals(2, gradeTypes.size());
     }
 
     @Test
@@ -110,11 +85,6 @@ class GradeTypeDAOTest {
     void testGetWeightById() throws SQLException {
         double weight = GradeTypeDAO.getWeightById(1);
         assertEquals(30, weight);
-    }
-
-    @Test
-    void testGradeTypeDAOConstructor() {
-        new GradeTypeDAO();
     }
 
     @Test

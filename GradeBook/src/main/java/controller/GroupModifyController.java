@@ -363,4 +363,47 @@ public class GroupModifyController {
         return groupManageController;
     }
 
+    public TextField getGroupNameCn() {
+        return groupNameCn;
+    }
+
+    public void setGroupNameCn(TextField groupNameCn) {
+        this.groupNameCn = groupNameCn;
+    }
+
+    public TextField getGroupDesCn() {
+        return groupDesCn;
+    }
+
+    public void setGroupDesCn(TextField groupDesCn) {
+        this.groupDesCn = groupDesCn;
+    }
+
+    public TextField getGroupNameJa() {
+        return this.groupNameJa;
+    }
+    public void setGroupNameJa(TextField textField) {
+        this.groupNameJa = textField;
+    }
+
+    public void setGroupDesJa(TextField textField) {
+        this.groupDesJa = textField;
+    }
+
+    public void setCancelButton(Button button) {
+        this.cancelButton = button;
+    }
+
+    public void setAllStudentsLabel(Label label) {
+        this.allStudentsLabel = label;
+    }
+
+    public void setSelectedStudentsLabel(Label label) {
+        this.selectedStudentsLabel = label;
+    }
+
+    public void setTopLabel(Label label) {
+        this.topLabel = label;
+    }
+
 }

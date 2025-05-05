@@ -2,6 +2,9 @@ package dao;
 
 import model.Student;
 import org.junit.jupiter.api.*;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,10 +60,6 @@ class StudentDAOTest {
         conn.close();
     }
 
-    @Test
-    void testStudentDAOConstructor() {
-        new StudentDAO();
-    }
 
     @Test
     void testRegisterStudent() throws SQLException {

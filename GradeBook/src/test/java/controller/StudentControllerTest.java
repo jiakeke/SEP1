@@ -147,6 +147,8 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.control.TableViewMatchers;
 import java.util.Locale;
+import util.LangContext;
+import java.util.ResourceBundle;
 import javafx.stage.Window;
 import javafx.scene.input.MouseButton;
 
@@ -174,7 +176,7 @@ class StudentControllerTest extends ApplicationTest {
     public void start(Stage stage) {
         Locale.setDefault(new Locale("en", "US"));
         gradeBookView = new GradeBookView();
-        studentController = new StudentController(gradeBookView, null);
+        studentController = new StudentController(gradeBookView, LangContext.getBundle());
         gradeBookView.start(stage);
     }
 

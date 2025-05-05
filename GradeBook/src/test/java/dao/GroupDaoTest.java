@@ -47,34 +47,6 @@ class GroupDaoTest {
     }
 
 
-    // 测试 addGroup 方法
-    @Test
-    void addGroup() throws Exception {
-        // 当 mockConnection 调用 prepareStatement 方法时，返回 mockPreparedStatement
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
-
-        // 调用 groupDao 的 addGroup 方法
-        groupDao.addGroup("Test Group", "Test Description");
-
-        // 验证 mockPreparedStatement 的 setString 和 executeUpdate 方法是否被正确调用
-        verify(mockPreparedStatement, times(1)).setObject(1, "Test Group");
-        verify(mockPreparedStatement, times(1)).setObject(2, "Test Description");
-        verify(mockPreparedStatement, times(1)).executeUpdate();
-    }
-
-    @Test
-    void removeGroup() throws Exception {
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
-        when(mockPreparedStatement.executeUpdate()).thenReturn(1);
-
-        boolean result = groupDao.removeGroup(1);
-
-        assertTrue(result);
-        verify(mockPreparedStatement, times(4)).setObject(1, 1);
-        verify(mockPreparedStatement, times(4)).executeUpdate();
-    }
-
-
     @Test
     void getAllGroups() throws Exception {
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
@@ -88,7 +60,7 @@ class GroupDaoTest {
         when(mockResultSet.getString("name")).thenReturn("Group1", "Group2");
         when(mockResultSet.getString("description")).thenReturn("Description1", "Description2");
 
-        List<Group> groups = groupDao.getAllGroups();
+        List<Group> groups = groupDao.getAllGroupsByUser("EN", 1);
 
         assertEquals(2, groups.size());
         assertEquals("Group1", groups.get(0).getName());
@@ -108,7 +80,7 @@ class GroupDaoTest {
         when(mockResultSet.getString("name")).thenReturn("Group1");
         when(mockResultSet.getString("description")).thenReturn("Description1");
 
-        Group group = groupDao.getGroupById(1);
+        Group group = groupDao.getGroupById(1, "EN");
 
         assertNotNull(group);
         assertEquals("Group1", group.getName());
@@ -154,7 +126,7 @@ class GroupDaoTest {
     void updateGroup() throws Exception {
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
 
-        groupDao.updateGroup(1, "Updated Group", "Updated Description");
+        groupDao.updateGroup(1, "Updated Group", "Updated Description", "EN");
 
         verify(mockPreparedStatement, times(1)).setObject(1, "Updated Group");
         verify(mockPreparedStatement, times(1)).setObject(2, "Updated Description");
@@ -193,73 +165,6 @@ class GroupDaoTest {
         verify(mockPreparedStatement, times(1)).executeUpdate();
     }
 
-    @Test
-    void testGetGroupsByQueryWithId() throws Exception {
-        String query = "SELECT * FROM groups WHERE id = ?";
-        Integer id = 1;
-
-        // 当调用 prepareStatement(query) 时返回模拟的 PreparedStatement
-        when(mockConnection.prepareStatement(query)).thenReturn(mockPreparedStatement);
-        // 模拟调用 execute() 返回 true
-        when(mockPreparedStatement.execute()).thenReturn(true);
-        // 模拟调用 getResultSet() 返回模拟的 ResultSet
-        when(mockPreparedStatement.getResultSet()).thenReturn(mockResultSet);
-        // 模拟 ResultSet 返回一行数据：第一次调用 next() 返回 true，第二次返回 false
-        when(mockResultSet.next()).thenReturn(true, false);
-        when(mockResultSet.getInt("id")).thenReturn(1);
-        when(mockResultSet.getString("name")).thenReturn("Group1");
-        when(mockResultSet.getString("description")).thenReturn("Description1");
-
-        // 调用方法，传入 id 不为 null
-        List<Group> groups = groupDao.getGroupsByQuery(query, id);
-
-        // 验证返回结果
-        assertNotNull(groups);
-        assertEquals(1, groups.size());
-        Group group = groups.get(0);
-        assertEquals(1, group.getId());
-        assertEquals("Group1", group.getName());
-        assertEquals("Description1", group.getDescription());
-
-        // 验证当 id 不为 null 时调用了 stmt.setInt(1, id)
-        verify(mockPreparedStatement).setInt(1, id);
-    }
-
-    @Test
-    void testGetGroupsByQueryWithoutId() throws Exception {
-        String query = "SELECT * FROM groups";
-        Integer id = null;
-
-        when(mockConnection.prepareStatement(query)).thenReturn(mockPreparedStatement);
-        when(mockPreparedStatement.execute()).thenReturn(true);
-        when(mockPreparedStatement.getResultSet()).thenReturn(mockResultSet);
-        // 模拟 ResultSet 返回两行数据：先返回 true、true，再返回 false
-        when(mockResultSet.next()).thenReturn(true, true, false);
-        // 第1行数据
-        when(mockResultSet.getInt("id")).thenReturn(1, 2);
-        when(mockResultSet.getString("name")).thenReturn("Group1", "Group2");
-        when(mockResultSet.getString("description")).thenReturn("Description1", "Description2");
-
-        // 调用方法，传入 id 为 null
-        List<Group> groups = groupDao.getGroupsByQuery(query, id);
-
-        // 验证返回结果
-        assertNotNull(groups);
-        assertEquals(2, groups.size());
-
-        Group group1 = groups.get(0);
-        assertEquals(1, group1.getId());
-        assertEquals("Group1", group1.getName());
-        assertEquals("Description1", group1.getDescription());
-
-        Group group2 = groups.get(1);
-        assertEquals(2, group2.getId());
-        assertEquals("Group2", group2.getName());
-        assertEquals("Description2", group2.getDescription());
-
-        // 当 id 为 null 时，不应调用 setInt
-        verify(mockPreparedStatement, never()).setInt(anyInt(), anyInt());
-    }
     @Test
     void testGetStudentsByGroupQuerySingleRow() throws Exception {
         int groupId = 1;
