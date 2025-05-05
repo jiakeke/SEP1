@@ -56,11 +56,6 @@ RUN mvn clean package -DskipTests
 CMD ["java", "--module-path", "/opt/javafx/javafx-sdk-23.0.2/lib", "--add-modules", "javafx.controls,javafx.fxml", "-Djava.library.path=/opt/javafx/javafx-sdk-23.0.2/lib", "-Dprism.order=sw", "-jar", "target/gradebook.jar"]
 ```
 
-## Build Docker Image
-```bash
-docker build -t gradebook .
-```
-
 ## Dockerfile(For CJK version)
 ```Dockerfile
 FROM arm64v8/ubuntu:22.04
@@ -97,6 +92,11 @@ COPY javafx-sdk-23.0.2 /opt/javafx/javafx-sdk-23.0.2
 RUN mvn clean package -DskipTests
 
 CMD ["java", "--module-path", "/opt/javafx/javafx-sdk-23.0.2/lib", "--add-modules", "javafx.controls,javafx.fxml", "-Djava.library.path=/opt/javafx/javafx-sdk-23.0.2/lib", "-Dprism.order=sw", "-jar", "target/gradebook.jar"]
+```
+
+## Build Docker Image
+```bash
+docker build -t gradebook .
 ```
 
 ## Run Docker Container
