@@ -203,6 +203,7 @@ public class GradeBookView extends Application {
         groupsButton.getStyleClass().add("big-button");
 
         vbox.getChildren().addAll(studentsButton, groupsButton);
+        vbox.setPadding(new Insets(0, 0, 0, 10));
 
         studentsButton.setOnAction(e -> openStudents());
         groupsButton.setOnAction(e -> openGroups());
