@@ -37,7 +37,7 @@ public class GroupModifyControllerTest {
         mockView = mock(GradeBookView.class);
 
         controller = new GroupModifyController(mockView, mockGroup, mockBundle);
-        controller.groupDao = mockDao;
+        controller.setGroupDao(mockDao);
 
         // 初始化 JavaFX 控件
         controller.setGroupName(new TextField());

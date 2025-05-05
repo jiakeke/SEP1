@@ -21,6 +21,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StudentController {
+    public static final String SAVE_BUTTON = "save";
+    public static final String SAVE_BUTTON_ID = "save-button";
+    public static final String SUBMIN_BUTTON = "submit";
+    public static final String SUBMIT_BUTTON_ID = "submit-button";
+    public static final String CANCEL_BUTTON = "cancel";
+    public static final String EMAIL_LABEL = "email";
+    public static final String PHONE_LABEL = "phone";
+    public static final String DATABASE_ERROR = "database_error";
     private GradeBookView view;
     Stage studentsStage = new Stage();
     private ResourceBundle bundle;
@@ -80,9 +88,9 @@ public class StudentController {
         studentTable.setId("studentTable");
         nameCol = new TableColumn<>(bundle.getString("name"));
         nameCol.setId("name-col");
-        emailCol = new TableColumn<>(bundle.getString("email"));
+        emailCol = new TableColumn<>(bundle.getString(EMAIL_LABEL));
         emailCol.setId("email-col");
-        phoneCol = new TableColumn<>(bundle.getString("phone"));
+        phoneCol = new TableColumn<>(bundle.getString(PHONE_LABEL));
         phoneCol.setId("phone-col");
 
         nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getName()));
@@ -138,21 +146,21 @@ public class StudentController {
 
         setPromptIfNotNull(searchField, "search");
         setPromptIfNotNull(nameField, "name");
-        setPromptIfNotNull(emailField, "email");
-        setPromptIfNotNull(phoneField, "phone");
+        setPromptIfNotNull(emailField, EMAIL_LABEL);
+        setPromptIfNotNull(phoneField, PHONE_LABEL);
 
         setTextIfNotNull(searchButton, "search_button");
         setTextIfNotNull(refreshButton, "refresh");
         setTextIfNotNull(addStudentButton, "add_student");
         setTextIfNotNull(modifyStudentButton, "modify_student");
         setTextIfNotNull(deleteStudentButton, "delete_student");
-        setTextIfNotNull(submitButton, "submit");
-        setTextIfNotNull(cancelButton, "cancel");
+        setTextIfNotNull(submitButton, SUBMIN_BUTTON);
+        setTextIfNotNull(cancelButton, CANCEL_BUTTON);
         setTextIfNotNull(saveButton, "save");
 
         if (nameCol != null) nameCol.setText(bundle.getString("name"));
-        if (emailCol != null) emailCol.setText(bundle.getString("email"));
-        if (phoneCol != null) phoneCol.setText(bundle.getString("phone"));
+        if (emailCol != null) emailCol.setText(bundle.getString(EMAIL_LABEL));
+        if (phoneCol != null) phoneCol.setText(bundle.getString(PHONE_LABEL));
     }
 
 
@@ -163,7 +171,7 @@ public class StudentController {
             studentTable.getItems().setAll(students);
         } catch (SQLException e) {
             logger.error("Failed to load students", e);
-            showAlert("database_error", "load_students_fail");
+            showAlert(DATABASE_ERROR, "load_students_fail");
         }
     }
 
@@ -174,7 +182,7 @@ public class StudentController {
             studentTable.getItems().setAll(students);
         } catch (SQLException e) {
             logger.error("Failed to search students", e);
-            showAlert("database_error", "search_fail");
+            showAlert(DATABASE_ERROR, "search_fail");
         }
     }
 
@@ -189,15 +197,15 @@ public class StudentController {
 
         emailField = new TextField();
         emailField.setId("email-field");
-        emailField.setPromptText(bundle.getString("email"));
+        emailField.setPromptText(bundle.getString(EMAIL_LABEL));
 
         phoneField = new TextField();
         phoneField.setId("phone-field");
-        phoneField.setPromptText(bundle.getString("phone"));
+        phoneField.setPromptText(bundle.getString(PHONE_LABEL));
 
-        submitButton = new Button(bundle.getString("submit"));
-        cancelButton = new Button(bundle.getString("cancel"));
-        submitButton.setId("submit-button");
+        submitButton = new Button(bundle.getString(SUBMIN_BUTTON));
+        cancelButton = new Button(bundle.getString(CANCEL_BUTTON));
+        submitButton.setId(SUBMIT_BUTTON_ID);
         submitButton.setOnAction(event -> {
             try {
                 String name = nameField.getText();
@@ -215,16 +223,14 @@ public class StudentController {
                 handleOpenStudents();
             } catch (SQLException e) {
                 logger.error("Failed to add student", e);
-                showAlert("database_error", "add_student_fail");
+                showAlert(DATABASE_ERROR, "add_student_fail");
             }
         });
         // Cancel button action, go back to student list
-        cancelButton.setOnAction(event -> {
-            handleOpenStudents();
-        });
+        cancelButton.setOnAction(event -> handleOpenStudents());
 
-        submitButton.getStyleClass().add("submit-button");
-        cancelButton.getStyleClass().add("submit-button");
+        submitButton.getStyleClass().add(SUBMIT_BUTTON_ID);
+        cancelButton.getStyleClass().add(SUBMIT_BUTTON_ID);
 
         HBox submitButtonContainer = new HBox(submitButton, cancelButton);
         // add spacing to the buttons
@@ -245,14 +251,14 @@ public class StudentController {
         nameField.setPromptText(bundle.getString("name"));
         emailField = new TextField(student.getEmail());
         emailField.setId("email-field");
-        emailField.setPromptText(bundle.getString("email"));
+        emailField.setPromptText(bundle.getString(EMAIL_LABEL));
         phoneField = new TextField(student.getPhone());
         phoneField.setId("phone-field");
-        phoneField.setPromptText(bundle.getString("phone"));
+        phoneField.setPromptText(bundle.getString(PHONE_LABEL));
 
         saveButton = new Button(bundle.getString("save"));
-        cancelButton = new Button(bundle.getString("cancel"));
-        saveButton.setId("save-button");
+        cancelButton = new Button(bundle.getString(CANCEL_BUTTON));
+        saveButton.setId(SAVE_BUTTON_ID);
         saveButton.setOnAction(event -> {
             try {
                 String name = nameField.getText();
@@ -272,16 +278,14 @@ public class StudentController {
                 handleOpenStudents();
             } catch (SQLException e) {
                 logger.error("Failed to update student", e);
-                showAlert("database_error", "update_student_fail");
+                showAlert(DATABASE_ERROR, "update_student_fail");
             }
         });
         // Cancel button action, go back to student list
-        cancelButton.setOnAction(event -> {
-            handleOpenStudents();
-        });
+        cancelButton.setOnAction(event -> handleOpenStudents());
 
-        saveButton.getStyleClass().add("save-button");
-        cancelButton.getStyleClass().add("save-button");
+        saveButton.getStyleClass().add(SAVE_BUTTON_ID);
+        cancelButton.getStyleClass().add(SUBMIT_BUTTON_ID);
         HBox saveButtonContainer = new HBox(saveButton, cancelButton);
         // add spacing to the buttons
         saveButtonContainer.setSpacing(10);
@@ -304,10 +308,10 @@ public class StudentController {
                     loadStudents(studentTable);
                 } catch (SQLException e) {
                     logger.error("Failed to delete student", e);
-                    showAlert("database_error", "delete_student_fail");
+                    showAlert(DATABASE_ERROR, "delete_student_fail");
                 }
             } else {
-                System.out.println("Deletion cancelled");
+                logger.info("Deletion cancelled");
             }
         });
 

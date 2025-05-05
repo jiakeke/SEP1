@@ -47,7 +47,6 @@ public class GradeController {
 
     private static int currentGroupId;
     private static Stage stage;
-    private static Group currentGroup;
     private static GradeBookView rootview;
     private static TableColumn<Map<String, Object>, String> nameColumn;
     private static TableColumn<Map<String, Object>, Double> totalColumn;
@@ -61,7 +60,6 @@ public class GradeController {
     public static void showGradeEditor(GradeBookView view, Group group) {
         rootview = view;
         currentGroupId = group.getId();
-        currentGroup = group;
 
         initializeUI(LangContext.getBundle());
         loadGradeData();
@@ -200,7 +198,7 @@ public class GradeController {
                         totalSum += (Double) totalObj;
                     }
                 }
-                avgRow.put(bundle.getString("total"), Double.parseDouble(String.format("%.2f", students.size() > 0 ? totalSum / students.size() : 0.0)));
+                avgRow.put(bundle.getString("total"), Double.parseDouble(String.format("%.2f", students.isEmpty() ? totalSum / students.size() : 0.0)));
 
                 tableData.add(avgRow);
             }
@@ -231,12 +229,11 @@ public class GradeController {
         loadGradeData();
     }
 
-    public static Font getFont(String fontName, int size) {
+    public static Font getFont(int size) {
         try {
             String fontPath = "fonts/NotoSansSC-Regular.ttf";
             BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            Font font = new Font(baseFont, size);
-            return font;
+            return new Font(baseFont, size);
         } catch (Exception e) {
             logger.error("Font registration failed", e);
         }
@@ -293,8 +290,7 @@ public class GradeController {
     // this method is used to create a footer for the pdf
     public static PdfPageEventHelper createPageEvent() {
         return new PdfPageEventHelper() {
-            //Font footerFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
-            Font footerFont = getFont("Regular", 10);
+            Font footerFont = getFont(10);
 
             @Override
             public void onEndPage(PdfWriter writer, Document document) {
@@ -313,14 +309,12 @@ public class GradeController {
 
     // this method is used to add a header to the pdf
     public static void addDocumentHeader(Document document, String groupName) throws DocumentException {
-        //Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
-        Font titleFont = getFont("Bold", 18);
+        Font titleFont = getFont(18);
         document.add(new Paragraph(bundle.getString("grade_report") + ": " + groupName, titleFont));
         document.add(Chunk.NEWLINE);
 
         String exportTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        //Font timeFont = FontFactory.getFont(FontFactory.HELVETICA, 10);
-        Font timeFont = getFont("Regular", 10);
+        Font timeFont = getFont(10);
         document.add(new Paragraph(bundle.getString("export_on") + ": " + exportTime, timeFont));
         document.add(Chunk.NEWLINE);
     }
@@ -337,8 +331,7 @@ public class GradeController {
         table.setWidths(columnWidths);
 
         // 表头（灰底+加粗+居中）
-        //Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
-        Font headerFont = getFont("Bold", 12);
+        Font headerFont = getFont(12);
         for (TableColumn<Map<String, Object>, ?> column : tableView.getColumns()) {
             PdfPCell headerCell = new PdfPCell(new Phrase(column.getText(), headerFont));
             headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -348,7 +341,7 @@ public class GradeController {
         }
 
         // 数据行
-        Font cellFont = getFont("Regular", 12);
+        Font cellFont = getFont(12);
         for (Map<String, Object> row : tableView.getItems()) {
             for (TableColumn<Map<String, Object>, ?> column : tableView.getColumns()) {
                 String columnName = column.getText();

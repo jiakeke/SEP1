@@ -86,11 +86,11 @@ public class GroupModifyController {
     @FXML
     private TableColumn<Student, String> unselectedName;
 
-    public GroupDao groupDao = new GroupDao();
-    public ObservableList<Student> unselectedStudents = FXCollections.observableArrayList();
-    public ObservableList<Student> selectedStudents = FXCollections.observableArrayList();
+    private GroupDao groupDao = new GroupDao();
+    private ObservableList<Student> unselectedStudents = FXCollections.observableArrayList();
+    private ObservableList<Student> selectedStudents = FXCollections.observableArrayList();
 
-    public GroupManageController groupManageController;
+    private GroupManageController groupManageController;
 
     // This method loads the group details
     public void initialize() {

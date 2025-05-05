@@ -164,7 +164,6 @@ public class GradeTypeController {
 
     // Load GradeType
     private static void loadGradeTypes() {
-        System.out.println("dangqianyuyan "+LangContext.currentLang.get()+" shishenme");
         try {
             List<GradeType> gradeTypes = GradeTypeDAO.showGradeTypesByGroupId(currentGroupId, LangContext.currentLang.get());
             ObservableList<GradeType> observableList = FXCollections.observableArrayList(gradeTypes);
@@ -243,7 +242,6 @@ public class GradeTypeController {
     private static void updateTexts() {
         nameColumn.setText(bundle.getString("name"));
         weightColumn.setText(bundle.getString("weight"));
-//        nameField.setPromptText(bundle.getString("grade_type_name"));
         weightField.setPromptText(bundle.getString("weight"));
         saveButton.setText(bundle.getString("save"));
         deleteButton.setText(bundle.getString("delete"));

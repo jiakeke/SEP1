@@ -51,11 +51,10 @@ public class GradeTypeDAO {
 
         String insertLocalizedQuery = "INSERT INTO grade_type_localized (grade_type_id, lang, name) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(insertLocalizedQuery)) {
-
+            stmt.setInt(1, gradeTypeId);
             for (var entry: localizedNames.entrySet()) {
                 String lang = entry.getKey();
                 String name = entry.getValue();
-                stmt.setInt(1, gradeTypeId);
                 stmt.setString(2, lang);
                 stmt.setString(3, name);
                 stmt.executeUpdate();
@@ -118,7 +117,6 @@ public class GradeTypeDAO {
     // check all GradeType
     public static List<GradeType> showAllGradeTypes() throws SQLException {
 
-//        String query = "SELECT * FROM grade_types";
 
         //query from localizd db
         String query="select a.id,b.name,a.weight,a.group_id  from grade_types a left join grade_type_localized b on a.id=b.grade_type_id where b.lang=?";
@@ -145,7 +143,6 @@ public class GradeTypeDAO {
     // check GradeType by groupId
 
     public static List<GradeType> showGradeTypesByGroupId(int groupId,String lang) throws SQLException {
-//        String query = "SELECT * FROM grade_types WHERE group_id = ?";
         //query from localizd db
         String query="select a.id,b.name,a.weight,a.group_id  from grade_types a left join grade_type_localized b on a.id=b.grade_type_id where a.group_id=? and b.lang=?";
 
