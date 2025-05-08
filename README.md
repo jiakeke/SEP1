@@ -54,5 +54,5 @@ interaction.
 - [Logger](docs/Logging.md)
 
 ## Database
-- Put all the database modification into database.sql
+- Put all the database modification into gradebook_localized.sql
 
