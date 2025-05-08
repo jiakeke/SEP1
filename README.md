@@ -28,7 +28,7 @@ interaction.
 ## Diagrams
 
 ### Project Modelling Diagram
-![Project Modellling Diagram](docs/modelling-dia.png "Project Modelling Diagram")
+![Project Modellling Diagram](docs/dia-modelling.jpg "Project Modelling Diagram")
 - [See More](docs/Diagrams.md)
 
 ## Sprints Review
