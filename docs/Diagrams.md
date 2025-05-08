@@ -1,10 +1,10 @@
 # Diagrams
 
 ## Project Modelling Diagram
-![Project Modellling Diagram](modelling-dia.png "Project Modelling Diagram")
+![Project Modellling Diagram](dia-modelling.jpg "Project Modelling Diagram")
 
 ## Project Database Schema
-![Project Database Schema](database-schema.png "Project Database Schema")
+![Project Database Schema](dia-db-schema.jpg"Project Database Schema")
 
 ## Use Case Diagram
 ![Project Use Case Diagram](dia_use_case.jpg "Project Use Case Diagram")
